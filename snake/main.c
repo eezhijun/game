@@ -4,16 +4,13 @@
 #include "conio.h"
 #include "time.h"
 #include "debug.h"
+#include "log/src/log.h"
 
 #define SNAKE_MAP_H 25
 #define SNAKE_MAP_W 75
 #define SNAKE_INIT_POS_X SNAKE_MAP_W / 12
 #define SNAKE_INIT_POS_Y SNAKE_MAP_H / 2
-<<<<<<< HEAD
-#define SNAKE_MOVE_SPEED 100 //  ���ڿ������ƶ��ٶ�
-=======
 #define SNAKE_MOVE_SPEED 100 //  用于控制蛇移动速度
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
 #define SNAKE_CURSOR_SIZE 1     // [1-100]
 #define SNAKE_INIT_LEN 4
 
@@ -41,21 +38,12 @@ enum sanke_status {
 };
 
 typedef struct {
-<<<<<<< HEAD
-    int x[SNAKE_MAP_H * SNAKE_MAP_W];   // ����x
-    int y[SNAKE_MAP_H * SNAKE_MAP_W];   // ����y
-    int len;                            // �߳�
-    enum snake_direction dir;           // �߷���
-    enum snake_status status;           // �ߵ�״̬
-    BOOL iseat;                           // ���Ƿ�Ե�ʳ�1���Ե���
-=======
     int x[SNAKE_MAP_H * SNAKE_MAP_W];   // 蛇身x
     int y[SNAKE_MAP_H * SNAKE_MAP_W];   // 蛇身y
     int len;                            // 蛇长
     enum snake_direction dir;           // 蛇方向
     enum snake_status status;           // 蛇的状态
     BOOL iseat;                           // 蛇是否吃到食物，1：吃到了
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
 } snake_object_t;
 
 void snake_init(void);
@@ -72,11 +60,7 @@ static BOOL snake_is_invalid_food(int x, int y);
 static void snake_add_food(void);
 
 
-<<<<<<< HEAD
-static int g_snake_map[SNAKE_MAP_H][SNAKE_MAP_W];   // ��ͼ���飬���ڴ���ߵ�ʳ��
-=======
 static int g_snake_map[SNAKE_MAP_H][SNAKE_MAP_W];   // 地图数组，用于存放蛇的食物
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
 static snake_object_t g_snake;
 
 static void snake_gotoxy(int x, int y)
@@ -84,13 +68,9 @@ static void snake_gotoxy(int x, int y)
     if (x < 0 || y < 0) {
         return;
     }
-<<<<<<< HEAD
-    COORD position = { x, y };
-=======
     COORD position = {x, y};
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
     if (!SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), position)) {
-        SNAKE_LOG_ERROR("SetConsoleCursorPosition fail");
+        log_error("SetConsoleCursorPosition fail");
     }
 }
 
@@ -99,16 +79,9 @@ static void snake_draw_map_init(void)
     int i, j;
     for (i = 0; i < SNAKE_MAP_H; i++) {
         for (j = 0; j < SNAKE_MAP_W; j++) {
-<<<<<<< HEAD
-            if (i == 0 || j == 0 || i == SNAKE_MAP_H - 1 || j == SNAKE_MAP_W - 1) {
-                SNAKE_PRINT("#");
-            }
-            else {
-=======
             if(i == 0 || j == 0 || i == SNAKE_MAP_H - 1 || j == SNAKE_MAP_W - 1) {
                 SNAKE_PRINT("#");
             } else {
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
                 SNAKE_PRINT(" ");
             }
         }
@@ -145,25 +118,6 @@ static BOOL snake_is_key_start(void)
             in = _getch();
         }
         switch (in) {
-<<<<<<< HEAD
-        case 'w':
-        case 'W':
-            g_snake.dir = SNAKE_DIR_UP;
-            g_snake.status = SNAKE_STATUS_START;
-            return TRUE;
-        case 's':
-        case 'S':
-            g_snake.dir = SNAKE_DIR_DOWN;
-            g_snake.status = SNAKE_STATUS_START;
-            return TRUE;
-        case 'd':
-        case 'D':
-            g_snake.dir = SNAKE_DIR_RIGHT;
-            g_snake.status = SNAKE_STATUS_START;
-            return TRUE;
-        default:
-            break;
-=======
             case 'w':
             case 'W':
                 g_snake.dir = SNAKE_DIR_UP;
@@ -181,7 +135,6 @@ static BOOL snake_is_key_start(void)
                 return TRUE;
             default:
                 break;
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
         }
     }
     return FALSE;
@@ -189,23 +142,9 @@ static BOOL snake_is_key_start(void)
 
 void snake_init(void)
 {
-<<<<<<< HEAD
-    CONSOLE_CURSOR_INFO cursor_info = { SNAKE_CURSOR_SIZE, FALSE };
-    if (!SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info)) { // ���ع��
-        SNAKE_LOG_ERROR("SetConsoleCursorInfo fail");
-    }
-
-    snake_gotoxy(0, 0); // ����ʼλ��
-    snake_draw_map_init();
-    snake_param_init();
-    snake_draw_snake();
-    srand((unsigned)time(NULL)); // ��ʼ�������������
-
-    // ���ӳ�ʼʳ��
-=======
     CONSOLE_CURSOR_INFO cursor_info = {SNAKE_CURSOR_SIZE, FALSE};
     if (!SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info)) { // 隐藏光标
-        SNAKE_LOG_ERROR("SetConsoleCursorInfo fail");
+        log_error("SetConsoleCursorInfo fail");
     }
 
     snake_gotoxy(0, 0); // 光标初始位置
@@ -215,13 +154,12 @@ void snake_init(void)
     srand((unsigned)time(NULL)); // 初始化随机数发生器
 
     // 添加初始食物
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
     g_snake_map[SNAKE_MAP_W / 2][SNAKE_MAP_H / 2] = SNAKE_FOOD_DOLLAR;
     snake_gotoxy(SNAKE_MAP_W / 2, SNAKE_MAP_H / 2);
     SNAKE_PRINT("$");
 
     snake_gotoxy(0, SNAKE_MAP_H);
-    SNAKE_LOG_INFO("Snake init success, please press \033[40;33mw/s/d\033[0m to start!");
+    log_info("Snake init success, please press a/s/d/w to start!");
     snake_gotoxy(0, 0);
     while (!snake_is_key_start()) {
 
@@ -248,72 +186,32 @@ static void snake_key_scan(void)
             in = _getch();
         }
         switch (in) {
-<<<<<<< HEAD
-        case 'w':
-        case 'W':
-            if (g_snake.dir != SNAKE_DIR_DOWN) {
-                g_snake.dir = SNAKE_DIR_UP;
-                SNAKE_LOG_DEBUG("W");
-            }
-            break;
-        case 's':
-        case 'S':
-            if (g_snake.dir != SNAKE_DIR_UP) {
-                g_snake.dir = SNAKE_DIR_DOWN;
-                SNAKE_LOG_DEBUG("S");
-            }
-            break;
-        case 'a':
-        case 'A':
-            if (g_snake.dir != SNAKE_DIR_RIGHT) {
-                g_snake.dir = SNAKE_DIR_LEFT;
-                SNAKE_LOG_DEBUG("A");
-            }
-            break;
-        case 'd':
-        case 'D':
-            if (g_snake.dir != SNAKE_DIR_LEFT) {
-                g_snake.dir = SNAKE_DIR_RIGHT;
-                SNAKE_LOG_DEBUG("D");
-            }
-            break;
-        case 'p':
-        case 'P':
-            snake_gotoxy(0, SNAKE_MAP_H + 1);
-            system("pause");
-            snake_gotoxy(0, SNAKE_MAP_H + 1);
-            SNAKE_PRINT("\33[2K\r");
-            break;
-        default:
-            SNAKE_LOG_DEBUG("INVALID KEY");
-            break;
-=======
             case 'w':
             case 'W':
                 if (g_snake.dir != SNAKE_DIR_DOWN) {
                     g_snake.dir = SNAKE_DIR_UP;
-                    SNAKE_LOG_DEBUG("W");
+                    log_trace("W");
                 }
                 break;
             case 's':
             case 'S':
                 if (g_snake.dir != SNAKE_DIR_UP) {
                     g_snake.dir = SNAKE_DIR_DOWN;
-                    SNAKE_LOG_DEBUG("S");
+                    log_trace("S");
                 }
                 break;
             case 'a':
             case 'A':
                 if (g_snake.dir != SNAKE_DIR_RIGHT) {
                     g_snake.dir = SNAKE_DIR_LEFT;
-                    SNAKE_LOG_DEBUG("A");
+                    log_trace("A");
                 }
                 break;
             case 'd':
             case 'D':
                 if (g_snake.dir != SNAKE_DIR_LEFT) {
                     g_snake.dir = SNAKE_DIR_RIGHT;
-                    SNAKE_LOG_DEBUG("D");
+                    log_trace("D");
                 }
                 break;
             case 'p':
@@ -324,9 +222,8 @@ static void snake_key_scan(void)
                 SNAKE_PRINT("\33[2K\r");
                 break;
             default:
-                SNAKE_LOG_DEBUG("INVALID KEY");
+                log_trace("INVALID KEY");
                 break;
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
         }
     }
 }
@@ -345,58 +242,32 @@ static void snake_move(void)
         g_snake.y[i] = g_snake.y[i - 1];
     }
     switch (g_snake.dir) {
-<<<<<<< HEAD
-    case SNAKE_DIR_UP:
-        g_snake.y[0]--;
-        SNAKE_LOG_DEBUG("U-");
-        break;
-    case SNAKE_DIR_DOWN:
-        g_snake.y[0]++;
-        SNAKE_LOG_DEBUG("D+");
-        break;
-    case SNAKE_DIR_LEFT:
-        g_snake.x[0]--;
-        SNAKE_LOG_DEBUG("L-");
-        break;
-    case SNAKE_DIR_RIGHT:
-        g_snake.x[0]++;
-        SNAKE_LOG_DEBUG("R+");
-        break;
-    default:
-        SNAKE_LOG_DEBUG("INVALID DIR");
-        break;
-=======
         case SNAKE_DIR_UP:
             g_snake.y[0]--;
-            SNAKE_LOG_DEBUG("U-");
+            log_trace("U-");
             break;
         case SNAKE_DIR_DOWN:
             g_snake.y[0]++;
-            SNAKE_LOG_DEBUG("D+");
+            log_trace("D+");
             break;
         case SNAKE_DIR_LEFT:
             g_snake.x[0]--;
-            SNAKE_LOG_DEBUG("L-");
+            log_trace("L-");
             break;
         case SNAKE_DIR_RIGHT:
             g_snake.x[0]++;
-            SNAKE_LOG_DEBUG("R+");
+            log_trace("R+");
             break;
         default:
-            SNAKE_LOG_DEBUG("INVALID DIR");
+            log_trace("INVALID DIR");
             break;
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
     }
 
 }
 
 static BOOL snake_is_kill_by_wall(void)
 {
-<<<<<<< HEAD
-    if (g_snake.x[0] == 0 || g_snake.y[0] == 0 || g_snake.x[0] == SNAKE_MAP_W ||
-=======
     if (g_snake.x[0] == 0 || g_snake.y[0] == 0 || g_snake.x[0] == SNAKE_MAP_W || 
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
         g_snake.y[0] == SNAKE_MAP_H) {
         return TRUE;
     }
@@ -421,14 +292,9 @@ static void snake_add_food(void)
 {
     int i, j;
     do {
-<<<<<<< HEAD
-        i = rand() % (SNAKE_MAP_W - 2) + 1; // ��Χ��1~SNAKE_MAP_W-2
-        j = rand() % (SNAKE_MAP_H - 2) + 1; // ��Χ��1~SANKE_MAP_H-2
-=======
         i = rand() % (SNAKE_MAP_W - 2) + 1; // 范围：1~SNAKE_MAP_W-2
         j = rand() % (SNAKE_MAP_H - 2) + 1; // 范围：1~SANKE_MAP_H-2
->>>>>>> 813dbe7d3ee8387671fe041c996e58e9dcab6b1c
-        SNAKE_LOG_DEBUG("i=%d, j=%d", i, j);
+        log_trace("i=%d, j=%d", i, j);
     } while (snake_is_invalid_food(i, j));
     g_snake_map[i][j] = SNAKE_FOOD_DOLLAR;
     snake_gotoxy(i, j);
@@ -457,6 +323,7 @@ void snake_task(void)
 
 int main(int argc, char *argv[])
 {
+    log_set_level(LOG_INFO);
     snake_init();
     while (1) {
         snake_task();
