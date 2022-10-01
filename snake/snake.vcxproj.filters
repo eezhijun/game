@@ -13,15 +13,27 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="log">
+      <UniqueIdentifier>{15e2c9d1-6159-4b48-b3a4-2544f8d403bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log\src">
+      <UniqueIdentifier>{f283f8a9-0022-43d5-b0b1-d8234894d4b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="log\src\log.c">
+      <Filter>log\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debug.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\log.h">
+      <Filter>log\src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
