@@ -1,0 +1,55 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "demo/**",
+                "src/**"
+            ],
+            "defines": [
+
+            ],
+            "cStandard": "c11",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-x86",
+            "compilerPath": "/usr/bin/gcc",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "demo",
+                    "src"
+                ],
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
+            },
+            "compilerArgs": [
+                "-Wall"
+            ]
+        },
+        {
+            "name": "Win32",
+            "includePath": [
+                "demo/**",
+                "src/**"
+            ],
+            "defines": [
+
+            ],
+            "cStandard": "c11",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-x86",
+            "compilerPath": "/usr/bin/gcc",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "demo/**",
+                    "src/**"
+                ],
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
+            },
+            "compilerArgs": [
+                "-Wall"
+            ]
+        }
+    ],
+    "version": 4
+}

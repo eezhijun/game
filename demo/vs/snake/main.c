@@ -4,7 +4,7 @@
 #include "conio.h"
 #include "time.h"
 #include "debug.h"
-#include "log/src/log.h"
+#include "log.h"
 
 #define SNAKE_MAP_H 25
 #define SNAKE_MAP_W 75
@@ -267,7 +267,7 @@ static void snake_move(void)
 
 static BOOL snake_is_kill_by_wall(void)
 {
-    if (g_snake.x[0] == 0 || g_snake.y[0] == 0 || g_snake.x[0] == SNAKE_MAP_W || 
+    if (g_snake.x[0] == 0 || g_snake.y[0] == 0 || g_snake.x[0] == SNAKE_MAP_W ||
         g_snake.y[0] == SNAKE_MAP_H) {
         return TRUE;
     }

@@ -1,0 +1,24 @@
+{
+    "files.associations": {
+        "*.h": "c",
+        "*.s": "c",
+        "random": "c",
+        "array": "c",
+        "functional": "c",
+        "istream": "c",
+        "ostream": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c"
+    },
+    "search.exclude": {
+        "output/": true
+    },
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "editor.rulers": [
+        100
+    ],
+    "C_Cpp.errorSquiggles": "disabled"
+}
