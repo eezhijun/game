@@ -1,7 +1,6 @@
 #include "stdio.h"
 #include "stdlib.h"
-#include "windows.h"
-#include "conio.h"
+#include "stdbool.h"
 #include "time.h"
 #include "debug.h"
 #include "log.h"
@@ -27,36 +26,36 @@ enum snake_direction {
     SNAKE_DIR_RIGHT,
 };
 
-enum sanke_status {
-    SNAKE_STATUS_NONE,
-    SNAKE_STATUS_START,
-    SNAKE_STATUS_PAUSE,
-    SNAKE_STATUS_KILL_BY_SELF,
-    SNAKE_STATUS_KILL_BY_WALL,
-    SNAKE_STATUS_ESC,
-    SNAKE_STATUS_END,
-};
+// enum sanke_status {
+//     SNAKE_STATUS_NONE,
+//     SNAKE_STATUS_START,
+//     SNAKE_STATUS_PAUSE,
+//     SNAKE_STATUS_KILL_BY_SELF,
+//     SNAKE_STATUS_KILL_BY_WALL,
+//     SNAKE_STATUS_ESC,
+//     SNAKE_STATUS_END,
+// };
 
 typedef struct {
     int x[SNAKE_MAP_H * SNAKE_MAP_W];   // 蛇身x
     int y[SNAKE_MAP_H * SNAKE_MAP_W];   // 蛇身y
     int len;                            // 蛇长
     enum snake_direction dir;           // 蛇方向
-    enum snake_status status;           // 蛇的状态
-    BOOL iseat;                           // 蛇是否吃到食物，1：吃到了
+    // enum snake_status status;           // 蛇的状态
+    bool iseat;                           // 蛇是否吃到食物，1：吃到了
 } snake_object_t;
-
+/*
 void snake_init(void);
 void snake_task(void);
 static void snake_gotoxy(int x, int y);
 static void snake_draw_map_init(void);
 static void snake_param_init(void);
-static BOOL snake_is_key_start(void);
+static bool snake_is_key_start(void);
 static void snake_draw_snake(void);
 static void snake_key_scan(void);
 static void snake_move(void);
-static BOOL snake_is_kill_by_wall(void);
-static BOOL snake_is_invalid_food(int x, int y);
+static bool snake_is_kill_by_wall(void);
+static bool snake_is_invalid_food(int x, int y);
 static void snake_add_food(void);
 
 
@@ -110,7 +109,7 @@ static void snake_param_init(void)
     g_snake.iseat = FALSE;
 }
 
-static BOOL snake_is_key_start(void)
+static bool snake_is_key_start(void)
 {
     if (_kbhit() != 0) {
         int in;
@@ -265,7 +264,7 @@ static void snake_move(void)
 
 }
 
-static BOOL snake_is_kill_by_wall(void)
+static bool snake_is_kill_by_wall(void)
 {
     if (g_snake.x[0] == 0 || g_snake.y[0] == 0 || g_snake.x[0] == SNAKE_MAP_W ||
         g_snake.y[0] == SNAKE_MAP_H) {
@@ -274,7 +273,7 @@ static BOOL snake_is_kill_by_wall(void)
     return FALSE;
 }
 
-static BOOL snake_is_invalid_food(int x, int y)
+static bool snake_is_invalid_food(int x, int y)
 {
     int i;
     if (g_snake_map[x][y] == SNAKE_FOOD_DOLLAR) {
@@ -320,13 +319,15 @@ void snake_task(void)
         g_snake.iseat = TRUE;
     }
 }
-
+*/
+#ifdef SNAKE_DEMO
 int main(int argc, char *argv[])
 {
     log_set_level(LOG_INFO);
-    snake_init();
+    // snake_init();
     while (1) {
-        snake_task();
+        // snake_task();
     }
     return 0;
 }
+#endif

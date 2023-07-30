@@ -9,6 +9,7 @@ ROOT_DIR                              := $(shell dirname $(realpath $(firstword 
 BUILD_DIR                             := $(ROOT_DIR)/output
 BUILD_ABS_DIR                         := $(abspath $(BUILD_DIR))
 DEMO_DIR                              := $(ROOT_DIR)/demo
+DEMO_TEST_DIR                         := $(DEMO_DIR)/test
 SRC_DIR                               := $(ROOT_DIR)/src
 SRC_LIB_DIR                           := $(SRC_DIR)/lib
 SRC_UTILS_DIR                         := $(SRC_DIR)/utils
@@ -25,9 +26,12 @@ INCLUDE_DIRS          += -I$(SRC_UTILS_COMMMON_DIR)
 
 
 SOURCE_FILES          := $(wildcard *.c)
-SOURCE_FILES          += $(wildcard demo/*.c)
+SOURCE_FILES          += $(wildcard demo/test/*.c)
+SOURCE_FILES          += $(wildcard demo/snake/*.c)
 SOURCE_FILES          += $(wildcard src/lib/log/*.c)
+SOURCE_FILES          += $(wildcard src/lib/snake/*.c)
 SOURCE_FILES          += $(wildcard src/utils/common/*.c)
+
 
 
 CFLAGS                := -ggdb3
@@ -42,6 +46,8 @@ LDFLAGS               += -m32
 LDFLAGS               += -lm # to link againt the math library (libm)
 CPPFLAGS              += -Wall
 
+CPPFLAGS              += -lcurses  # graph lib
+
 
 ifdef SANITIZE_ADDRESS
   CFLAGS              += -fsanitize=address -fsanitize=alignment
@@ -54,11 +60,11 @@ endif
 
 # user choose demo
 ifeq ($(demo),tt)
-  CPPFLAGS            += -DUSER_DEMO=0
+  CPPFLAGS            += -DTEST_DEMO=1
 endif
 
-ifeq ($(demo),lc)
-  CPPFLAGS            += -DUSER_DEMO=1
+ifeq ($(demo),sn)
+  CPPFLAGS            += -DSNAKE_DEMO=1
 endif
 
 

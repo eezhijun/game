@@ -7,7 +7,7 @@
                 "src/**"
             ],
             "defines": [
-
+                "TEST_DEMO"
             ],
             "cStandard": "c11",
             "cppStandard": "gnu++14",
