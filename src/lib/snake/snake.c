@@ -25,102 +25,53 @@ Although this program may compile/ run in Cygwin it runs slowly.
 #include "ctype.h"
 
 #include "common.h"
+#include "string.h"
+#include "assert.h"
 
 #define SNAKE_ARRAY_SIZE 310
 
 #ifdef _WIN32
-    //Windows Libraries
-    #include <conio.h>
+//Windows Libraries
+#include <conio.h>
 
-    //Windows Constants
-    //Controls
-    #define UP_ARROW 72
-    #define LEFT_ARROW 75
-    #define RIGHT_ARROW 77
-    #define DOWN_ARROW 80
+//Windows Constants
+//Controls
+#define UP_ARROW 72
+#define LEFT_ARROW 75
+#define RIGHT_ARROW 77
+#define DOWN_ARROW 80
 
-    #define ENTER_KEY 13
+#define ENTER_KEY 13
 
-    const char SNAKE_HEAD = (char)177;
-    const char SNAKE_BODY = (char)178;
-    const char WALL = (char)219;
-    const char FOOD = (char)254;
-    const char BLANK = ' ';
+const char SNAKE_HEAD = (char)177;
+const char SNAKE_BODY = (char)178;
+const char WALL = (char)219;
+const char FOOD = (char)254;
+const char BLANK = ' ';
 #else
-    //Linux Libraries
-    #include <stdlib.h>
-    #include <termios.h>
-    #include <unistd.h>
-    #include <fcntl.h>
+//Linux Libraries
+#include <stdlib.h>
+#include <termios.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-    //Linux Constants
+//Linux Constants
 
-    //Controls (arrow keys for Ubuntu)
-    #define UP_ARROW (char)'A' //Originally I used constants but borland started giving me errors, so I changed to #define - I do realize that is not the best way.
-    #define LEFT_ARROW (char)'D'
-    #define RIGHT_ARROW (char)'C'
-    #define DOWN_ARROW (char)'B'
+//Controls (arrow keys for Ubuntu)
+#define UP_ARROW (char)'A' //Originally I used constants but borland started giving me errors, so I changed to #define - I do realize that is not the best way.
+#define LEFT_ARROW (char)'D'
+#define RIGHT_ARROW (char)'C'
+#define DOWN_ARROW (char)'B'
 
-    #define ENTER_KEY 10
+#define ENTER_KEY 10
 
-    const char SNAKE_HEAD = 'X';
-    const char SNAKE_BODY = '#';
-    const char WALL = '#';
-    const char FOOD = '*';
-    const char BLANK = ' ';
+const char SNAKE_HEAD = 'X';
+const char SNAKE_BODY = '#';
+const char WALL = '#';
+const char FOOD = '*';
+const char BLANK = ' ';
 
-    //Linux Functions - These functions emulate some functions from the windows only conio header file
-    //Code: http://ubuntuforums.org/showthread.php?t=549023
-    void gotoxy(int x,int y)
-    {
-        printf("%c[%d;%df",0x1B,y,x);
-    }
-
-    //http://cboard.cprogramming.com/c-programming/63166-kbhit-linux.html
-    int kbhit(void)
-    {
-    struct termios oldt, newt;
-    int ch;
-    int oldf;
-
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
-    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
-
-    ch = getchar();
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-    fcntl(STDIN_FILENO, F_SETFL, oldf);
-
-    if(ch != EOF)
-    {
-        ungetc(ch, stdin);
-        return 1;
-    }
-
-    return 0;
-    }
-
-    //http://www.experts-exchange.com/Programming/Languages/C/Q_10119844.html - posted by jos
-    char getch()
-    {
-        char c;
-        system("stty raw");
-        c= getchar();
-        system("stty sane");
-        //printf("%c",c);
-        return(c);
-    }
-
-    void clrscr()
-    {
-        system("clear");
-        return;
-    }
-    //End linux Functions
+//End linux Functions
 #endif
 
 //This should be the same on both operating systems
@@ -929,23 +880,22 @@ void welcomeArt(void)
     clrscr(); //clear the console
     //Ascii art reference: http://www.chris.com/ascii/index.php?art=animals/reptiles/snakes
     printf("\n");
-    printf("\t\t    _________         _________ 			\n");
-    printf("\t\t   /         \\       /         \\ 			\n");
-    printf("\t\t  /  /~~~~~\\  \\     /  /~~~~~\\  \\ 			\n");
-    printf("\t\t  |  |     |  |     |  |     |  | 			\n");
-    printf("\t\t  |  |     |  |     |  |     |  | 			\n");
+    printf("\t\t    _________         _________             \n");
+    printf("\t\t   /         \\       /         \\          \n");
+    printf("\t\t  /  /~~~~~\\  \\     /  /~~~~~\\  \\       \n");
+    printf("\t\t  |  |     |  |     |  |     |  |           \n");
+    printf("\t\t  |  |     |  |     |  |     |  |           \n");
     printf("\t\t  |  |     |  |     |  |     |  |         /	\n");
     printf("\t\t  |  |     |  |     |  |     |  |       //	\n");
-    printf("\t\t (o  o)    \\  \\_____/  /     \\  \\_____/ / 	\n");
-    printf("\t\t  \\__/      \\         /       \\        / 	\n");
-    printf("\t\t    |        ~~~~~~~~~         ~~~~~~~~ 		\n");
-    printf("\t\t    ^											\n");
-    printf("\t		Welcome To The Snake Game!			\n");
-    printf("\t			    Press Any Key To Continue...	\n");
+    printf("\t\t (o  o)    \\  \\_____/  /     \\  \\_____/ /   \n");
+    printf("\t\t  \\__/      \\         /       \\        /     \n");
+    printf("\t\t    |        ~~~~~~~~~         ~~~~~~~~         \n");
+    printf("\t\t    ^                                           \n");
+    printf("\t      Welcome To The Snake Game!              \n");
+    printf("\t      Press Any Key To Continue...            \n");
     printf("\n");
 
     waitForAnyKey();
-    return;
 }
 
 void controls(void)
@@ -1003,15 +953,20 @@ int mainMenu(void)
 
     clrscr(); //clear the console
     //Might be better with arrays of strings???
-    gotoxy(x,y++);
+    gotoxy(x,y);
+    y++;
     printf("New Game\n");
-    gotoxy(x,y++);
+    gotoxy(x,y);
+    y++;
     printf("High Scores\n");
-    gotoxy(x,y++);
+    gotoxy(x,y);
+    y++;
     printf("Controls\n");
-    gotoxy(x,y++);
+    gotoxy(x,y);
+    y++;
     printf("Exit\n");
-    gotoxy(x,y++);
+    gotoxy(x,y);
+    y++;
 
     selected = menuSelector(x, y, yStart);
 
@@ -1042,7 +997,7 @@ int mainSnakeTest(void) //Need to fix this up
                 exitYN();
                 break;
         }
-    } while(1);	//
+    } while(1);
 
     return(0);
 }

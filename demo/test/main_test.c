@@ -1,10 +1,11 @@
 #ifdef TEST_DEMO
 
 #include "stdio.h"
+#include "unistd.h"
 #include "external.h"
 
 
-void test_gets(void)
+void tt_fgets(void)
 {
     char s[20] = "\0";
     printf("please input str\n");
@@ -12,10 +13,37 @@ void test_gets(void)
     printf("output:%s\n", s);
 }
 
+void tt_gotoxy(void)
+{
+    gotoxy(50, 10);
+    printf("cursor end\n");
+    sleep(5);
+}
+
+void tt_getchar(void)
+{
+    char c;
+
+    printf("please enter a char\n");
+    c = getchar();
+    printf("c=%c\n", c);
+}
+
+void tt_getch(void)
+{
+    char c;
+
+    printf("please enter a char\n");
+    c = getch();
+    printf("c=%c\n", c);
+}
+
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
     mainSnakeTest();
+    // tt_getchar();
+    // tt_getch();
     return 0;
 }
 
