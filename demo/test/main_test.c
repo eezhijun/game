@@ -2,7 +2,8 @@
 
 #include "stdio.h"
 #include "unistd.h"
-#include "external.h"
+#include "common.h"
+#include "test.h"
 
 
 void tt_fgets(void)
@@ -41,7 +42,7 @@ void tt_getch(void)
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
-    mainSnakeTest();
+    test();
     // tt_getchar();
     // tt_getch();
     return 0;
