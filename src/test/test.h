@@ -2,7 +2,7 @@
 #define _TEST_H_
 
 
-void test(void);
+int test(void);
 int mainSnakeTest(void);
 
 #endif

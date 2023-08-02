@@ -14,7 +14,8 @@ SRC_DIR                               := $(ROOT_DIR)/src
 SRC_LIB_DIR                           := $(SRC_DIR)/lib
 SRC_UTILS_DIR                         := $(SRC_DIR)/utils
 SRC_LIB_LOG_DIR                       := $(SRC_LIB_DIR)/log
-SDR_TEST_DIR                          := $(SRC_DIR)/test
+SRC_LIB_RINGBUFFER_DIR                := $(SRC_LIB_DIR)/ringbuffer
+SRC_TEST_DIR                          := $(SRC_DIR)/test
 
 
 INCLUDE_DIRS          := -I.
@@ -23,7 +24,8 @@ INCLUDE_DIRS          += -I$(DEMO_DIR)
 INCLUDE_DIRS          += -I$(SRC_LIB_DIR)
 INCLUDE_DIRS          += -I$(SRC_LIB_LOG_DIR)
 INCLUDE_DIRS          += -I$(SRC_UTILS_DIR)
-INCLUDE_DIRS          += -I$(SDR_TEST_DIR)
+INCLUDE_DIRS          += -I$(SRC_TEST_DIR)
+INCLUDE_DIRS          += -I$(SRC_LIB_RINGBUFFER_DIR)
 
 
 SOURCE_FILES          := $(wildcard *.c)
@@ -31,6 +33,7 @@ SOURCE_FILES          += $(wildcard demo/test/*.c)
 SOURCE_FILES          += $(wildcard demo/snake/*.c)
 SOURCE_FILES          += $(wildcard src/lib/log/*.c)
 SOURCE_FILES          += $(wildcard src/lib/snake/*.c)
+SOURCE_FILES          += $(wildcard src/lib/ringbuffer/*.c)
 SOURCE_FILES          += $(wildcard src/utils/*.c)
 SOURCE_FILES          += $(wildcard src/test/*.c)
 
