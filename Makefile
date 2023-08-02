@@ -61,6 +61,12 @@ ifdef SANITIZE_LEAK
 endif
 
 # user choose demo
+ifeq ($(demo),?)
+run:
+	@echo "tt"
+	@echo "sn"
+endif
+
 ifeq ($(demo),tt)
   CPPFLAGS            += -DTEST_DEMO=1
 endif
