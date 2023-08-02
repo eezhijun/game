@@ -3,12 +3,8 @@
 #include "test.h"
 
 
-
-
-
-int test(void)
+void it_ringbuffer(void)
 {
-    // mainSnakeTest();
     int i, cnt;
     char tmp;
     char tmp_arr[50];
@@ -88,6 +84,13 @@ int test(void)
         /* Print contents */
         printf("Read: 0x%02x\n", tmp);
     }
+}
+
+
+int it_test(void)
+{
+    // mainSnakeTest();
+    it_ringbuffer();
 
     return 0;
 }

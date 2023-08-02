@@ -42,7 +42,7 @@ void tt_getch(void)
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
-    test();
+    it_test();
     // tt_getchar();
     // tt_getch();
     return 0;
