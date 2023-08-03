@@ -37,10 +37,19 @@ void swap_by_sum(int* lhs, int* rhs);
 void swap_by_xor(int *lhs, int *rhs);
 
 /* keyboard */
+//Controls (arrow keys for Ubuntu)
+#define UP_ARROW (char)'A' //Originally I used constants but borland started giving me errors, so I changed to #define - I do realize that is not the best way.
+#define LEFT_ARROW (char)'D'
+#define RIGHT_ARROW (char)'C'
+#define DOWN_ARROW (char)'B'
+
+#define ENTER_KEY 10
+
 void gotoxy(int x,int y);
 char getch(void);
 void clrscr(void);
 int kbhit(void);
+char waitForAnyKey(void);
 
 /* sort */
 void bubble_sort (int arr[], int len);

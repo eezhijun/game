@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
+
 //Linux Functions - These functions emulate some functions from the windows only conio header file
 //Code: http://ubuntuforums.org/showthread.php?t=549023
 void gotoxy(int x,int y)
@@ -53,4 +54,15 @@ int kbhit(void)
     }
 
     return 0;
+}
+
+char waitForAnyKey(void)
+{
+    int pressed;
+
+    while(!kbhit());
+
+    pressed = getch();
+    //pressed = tolower(pressed);
+    return((char)pressed);
 }

@@ -1,9 +1,16 @@
+#ifdef TEST_DEMO
+
 #include "stdio.h"
+#include "unistd.h"
+#include "assert.h"
+
 #include "ringbuffer.h"
-#include "test.h"
+#include "common.h"
 
 
-void it_ringbuffer(void)
+extern int mainSnakeTest(void);
+
+void tt_ringbuffer(void)
 {
     int i, cnt;
     char tmp;
@@ -86,11 +93,66 @@ void it_ringbuffer(void)
     }
 }
 
-
-int it_test(void)
+void tt_fgets(void)
 {
-    // mainSnakeTest();
-    it_ringbuffer();
+    char s[20] = "\0";
+    printf("please input str\n");
+    fgets(s, 20, stdin);
+    printf("output:%s\n", s);
+}
+
+void tt_gotoxy(void)
+{
+    gotoxy(50, 10);
+    printf("cursor end\n");
+    sleep(5);
+}
+
+void tt_getchar(void)
+{
+    char c;
+
+    printf("please enter a char\n");
+    c = getchar();
+    printf("c=%c\n", c);
+}
+
+/* https://stackoverflow.com/questions/10463201/getch-and-arrow-codes/11432632#11432632 */
+void tt_getch(void)
+{
+    if (getch() == '\033') // if the first value is esc
+    {
+        getch(); // skip the [
+        switch(getch()) // the real value
+        {
+            case 'A':
+                assert(0);
+                // code for arrow up
+                break;
+            case 'B':
+                // code for arrow down
+                break;
+            case 'C':
+                // code for arrow right
+                break;
+            case 'D':
+                // code for arrow left
+                break;
+        }
+    }
+}
+
+int main(void)
+{
+    printf("TEST MAIN ENTRY\n");
+
+    mainSnakeTest();
+    // tt_ringbuffer();
+    // char key=waitForAnyKey();
+    // tt_getchar();
+    // tt_getch();
 
     return 0;
 }
+
+#endif

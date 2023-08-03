@@ -9,7 +9,6 @@ ROOT_DIR                              := $(shell dirname $(realpath $(firstword 
 BUILD_DIR                             := $(ROOT_DIR)/output
 BUILD_ABS_DIR                         := $(abspath $(BUILD_DIR))
 DEMO_DIR                              := $(ROOT_DIR)/demo
-DEMO_TEST_DIR                         := $(DEMO_DIR)/test
 SRC_DIR                               := $(ROOT_DIR)/src
 SRC_LIB_DIR                           := $(SRC_DIR)/lib
 SRC_UTILS_DIR                         := $(SRC_DIR)/utils
@@ -19,8 +18,8 @@ SRC_TEST_DIR                          := $(SRC_DIR)/test
 
 
 INCLUDE_DIRS          := -I.
-INCLUDE_DIRS          += -I$(SRC_DIR)
 INCLUDE_DIRS          += -I$(DEMO_DIR)
+INCLUDE_DIRS          += -I$(SRC_DIR)
 INCLUDE_DIRS          += -I$(SRC_LIB_DIR)
 INCLUDE_DIRS          += -I$(SRC_LIB_LOG_DIR)
 INCLUDE_DIRS          += -I$(SRC_UTILS_DIR)
@@ -29,7 +28,6 @@ INCLUDE_DIRS          += -I$(SRC_LIB_RINGBUFFER_DIR)
 
 
 SOURCE_FILES          := $(wildcard *.c)
-SOURCE_FILES          += $(wildcard demo/test/*.c)
 SOURCE_FILES          += $(wildcard demo/snake/*.c)
 SOURCE_FILES          += $(wildcard src/lib/log/*.c)
 SOURCE_FILES          += $(wildcard src/lib/snake/*.c)

@@ -12,7 +12,7 @@ Compile with borland
 Linux:
 Please note, tested under Ubuntu not sure if it works in other linux environments. I recommend compiling with borland under windows for best results.
 Compile with gcc in linux using the following command:
-gcc snake.c –lm –o snake.out
+gcc snake.c ï¿½lm ï¿½o snake.out
 
 Cygwin:
 Although this program may compile/ run in Cygwin it runs slowly.
@@ -57,14 +57,6 @@ const char BLANK = ' ';
 
 //Linux Constants
 
-//Controls (arrow keys for Ubuntu)
-#define UP_ARROW (char)'A' //Originally I used constants but borland started giving me errors, so I changed to #define - I do realize that is not the best way.
-#define LEFT_ARROW (char)'D'
-#define RIGHT_ARROW (char)'C'
-#define DOWN_ARROW (char)'B'
-
-#define ENTER_KEY 10
-
 const char SNAKE_HEAD = 'X';
 const char SNAKE_BODY = '#';
 const char WALL = '#';
@@ -78,16 +70,6 @@ const char BLANK = ' ';
 #define EXIT_BUTTON 27 //ESC
 #define PAUSE_BUTTON 112 //P
 
-char waitForAnyKey(void)
-{
-    int pressed;
-
-    while(!kbhit());
-
-    pressed = getch();
-    //pressed = tolower(pressed);
-    return((char)pressed);
-}
 
 int getGameSpeed(void)
 {
@@ -843,8 +825,8 @@ int menuSelector(int x, int y, int yStart)
     do
     {
         key = waitForAnyKey();
-        //printf("%c %d", key, (int)key);
-        if ( key == (char)UP_ARROW )
+        // printf("%c %d", key, (int)key);
+        if (key == (char)UP_ARROW)
         {
             gotoxy(x,yStart+i);
             printf(" ");
@@ -856,19 +838,18 @@ int menuSelector(int x, int y, int yStart)
             gotoxy(x,yStart+i);
             printf(">");
         }
-        else
-            if ( key == (char)DOWN_ARROW )
-            {
-                gotoxy(x,yStart+i);
-                printf(" ");
+        else if (key == (char)DOWN_ARROW)
+        {
+            gotoxy(x,yStart+i);
+            printf(" ");
 
-                if (i+2 >= y - yStart )
-                    i = 0;
-                else
-                    i++;
-                gotoxy(x,yStart+i);
-                printf(">");
-            }
+            if (i+2 >= y - yStart )
+                i = 0;
+            else
+                i++;
+            gotoxy(x,yStart+i);
+            printf(">");
+        }
             //gotoxy(1,1);
             //printf("%d", key);
     } while(key != (char)ENTER_KEY); //While doesn't equal enter... (13 ASCII code for enter) - note ubuntu is 10
