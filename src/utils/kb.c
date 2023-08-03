@@ -56,7 +56,7 @@ int kbhit(void)
     return 0;
 }
 
-char waitForAnyKey(void)
+char wait_4_key(void)
 {
     int pressed;
 

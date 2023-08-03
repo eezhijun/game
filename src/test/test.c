@@ -8,7 +8,7 @@
 #include "common.h"
 
 
-extern int mainSnakeTest(void);
+extern int snake_test(void);
 
 void tt_ringbuffer(void)
 {
@@ -146,7 +146,7 @@ int main(void)
 {
     printf("TEST MAIN ENTRY\n");
 
-    mainSnakeTest();
+    snake_test();
     // tt_ringbuffer();
     // char key=waitForAnyKey();
     // tt_getchar();
