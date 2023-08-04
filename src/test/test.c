@@ -5,12 +5,13 @@
 #include "assert.h"
 
 #include "ringbuffer.h"
+
 #include "common.h"
 
 
 extern int snake_test(void);
-extern int test_stack(void);
-extern int test_queue(void);
+extern int stack_test(void);
+extern int queue_test(void);
 
 /* ringbuffer test */
 void tt_ringbuffer(void)
@@ -156,8 +157,8 @@ int main(void)
     // char key=waitForAnyKey();
     // tt_getchar();
     // tt_getch();
-    test_stack();
-    test_queue();
+    stack_test();
+    queue_test();
 
     return 0;
 }

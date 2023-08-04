@@ -16,6 +16,7 @@ SRC_LIB_RINGBUFFER_DIR                := $(SRC_LIB_DIR)/ringbuffer
 SRC_LIB_CJSON_DIR                     := $(SRC_LIB_DIR)/cjson
 SRC_LIB_TLSF_DIR                      := $(SRC_LIB_DIR)/tlsf
 SRC_LIB_STACK_DIR                     := $(SRC_LIB_DIR)/stack
+SRC_LIB_QUEUE_DIR                     := $(SRC_LIB_DIR)/queue
 SRC_UTILS_DIR                         := $(SRC_DIR)/utils
 SRC_TEST_DIR                          := $(SRC_DIR)/test
 
@@ -31,6 +32,7 @@ INCLUDE_DIRS          += -I$(SRC_LIB_RINGBUFFER_DIR)
 INCLUDE_DIRS          += -I$(SRC_LIB_CJSON_DIR)
 INCLUDE_DIRS          += -I$(SRC_LIB_TLSF_DIR)
 INCLUDE_DIRS          += -I$(SRC_LIB_STACK_DIR)
+INCLUDE_DIRS          += -I$(SRC_LIB_QUEUE_DIR)
 
 
 SOURCE_FILES          := $(wildcard *.c)
@@ -38,6 +40,8 @@ SOURCE_FILES          += $(wildcard demo/snake/*.c)
 SOURCE_FILES          += $(wildcard src/lib/log/*.c)
 SOURCE_FILES          += $(wildcard src/lib/snake/*.c)
 SOURCE_FILES          += $(wildcard src/lib/ringbuffer/*.c)
+SOURCE_FILES          += $(wildcard src/lib/stack/*.c)
+SOURCE_FILES          += $(wildcard src/lib/queue/*.c)
 SOURCE_FILES          += $(wildcard src/utils/*.c)
 SOURCE_FILES          += $(wildcard src/test/*.c)
 

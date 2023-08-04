@@ -1,37 +1,44 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 #define MAX_SIZE 100 // Maximum size of the queue
 
-typedef struct {
+typedef struct
+{
     int data[MAX_SIZE];
     int front;
     int rear;
 } Queue;
 
 // Function to initialize the queue
-static void initializeQueue(Queue *queue) {
+void queue_init(Queue *queue)
+{
     queue->front = -1;
     queue->rear = -1;
 }
 
 // Function to check if the queue is empty
-static int isEmpty(Queue *queue) {
+bool queue_is_empty(const Queue *queue)
+{
     return (queue->front == -1 && queue->rear == -1);
 }
 
 // Function to check if the queue is full
-static int isFull(Queue *queue) {
+bool queue_is_full(const Queue *queue)
+{
     return (queue->rear + 1) % MAX_SIZE == queue->front;
 }
 
 // Function to enqueue (push) an element into the queue
-static void enqueue(Queue *queue, int value) {
-    if (isFull(queue)) {
-        printf("Error: Queue overflow\n");
+void enqueue(Queue *queue, int value)
+{
+    if (queue_is_full(queue))
+    {
+        fprintf(stderr, "Error: Queue overflow\n");
         return;
     }
 
-    if (isEmpty(queue))
+    if (queue_is_empty(queue))
         queue->front = queue->rear = 0;
     else
         queue->rear = (queue->rear + 1) % MAX_SIZE;
@@ -40,16 +47,18 @@ static void enqueue(Queue *queue, int value) {
 }
 
 // Function to dequeue (pop) an element from the queue
-static int dequeue(Queue *queue) {
-    if (isEmpty(queue)) {
-        printf("Error: Queue underflow\n");
+int dequeue(Queue *queue)
+{
+    if (queue_is_empty(queue))
+    {
+        fprintf(stderr, "Error: Queue underflow\n");
         return -1; // You can choose an appropriate value to return for underflow.
     }
 
     int value = queue->data[queue->front];
 
     if (queue->front == queue->rear) // If it's the last element in the queue
-        initializeQueue(queue);
+        queue_init(queue);
     else
         queue->front = (queue->front + 1) % MAX_SIZE;
 
@@ -57,19 +66,21 @@ static int dequeue(Queue *queue) {
 }
 
 // Function to get the front element of the queue
-static int front(Queue *queue) {
-    if (isEmpty(queue)) {
-        printf("Error: Queue is empty\n");
+int front(const Queue *queue)
+{
+    if (queue_is_empty(queue))
+    {
+        fprintf(stderr, "Error: Queue is empty\n");
         return -1; // You can choose an appropriate value to return for an empty queue.
     }
 
     return queue->data[queue->front];
 }
 
-int test_queue(void)
+int queue_test(void)
 {
     Queue queue;
-    initializeQueue(&queue);
+    queue_init(&queue);
 
     enqueue(&queue, 10);
     enqueue(&queue, 20);
@@ -77,8 +88,9 @@ int test_queue(void)
 
     printf("Front element: %d\n", front(&queue));
 
-    printf("Dequeue elements: ");
-    while (!isEmpty(&queue)) {
+    printf("Dequeuing elements: ");
+    while (!queue_is_empty(&queue))
+    {
         printf("%d ", dequeue(&queue));
     }
     printf("\n");
