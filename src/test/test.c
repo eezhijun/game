@@ -9,7 +9,10 @@
 
 
 extern int snake_test(void);
+extern int test_stack(void);
+extern int test_queue(void);
 
+/* ringbuffer test */
 void tt_ringbuffer(void)
 {
     int i, cnt;
@@ -93,6 +96,7 @@ void tt_ringbuffer(void)
     }
 }
 
+/* keyboard test */
 void tt_fgets(void)
 {
     char s[20] = "\0";
@@ -142,15 +146,18 @@ void tt_getch(void)
     }
 }
 
+
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
 
-    snake_test();
+    // snake_test();
     // tt_ringbuffer();
     // char key=waitForAnyKey();
     // tt_getchar();
     // tt_getch();
+    test_stack();
+    test_queue();
 
     return 0;
 }
