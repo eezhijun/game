@@ -3,8 +3,7 @@
 
 #define MAX_SIZE 100 // Maximum size of the stack
 
-typedef struct
-{
+typedef struct {
     int data[MAX_SIZE];
     int top;
 } Stack;
@@ -30,8 +29,7 @@ bool stack_is_full(const Stack *stack)
 // Function to push an element onto the stack
 void stack_push(Stack *stack, int value)
 {
-    if (stack_is_full(stack))
-    {
+    if (stack_is_full(stack)) {
         fprintf(stderr, "Error: Stack overflow\n");
         return;
     }
@@ -43,8 +41,7 @@ void stack_push(Stack *stack, int value)
 // Function to pop an element from the stack
 int stack_pop(Stack *stack)
 {
-    if (stack_is_empty(stack))
-    {
+    if (stack_is_empty(stack)) {
         fprintf(stderr, "Error: Stack underflow\n");
         return -1; // You can choose an appropriate value to return for underflow.
     }
@@ -57,8 +54,7 @@ int stack_pop(Stack *stack)
 // Function to get the top element of the stack
 int stack_top(const Stack *stack)
 {
-    if (stack_is_empty(stack))
-    {
+    if (stack_is_empty(stack)) {
         fprintf(stderr, "Error: Stack is empty\n");
         return -1; // You can choose an appropriate value to return for an empty stack.
     }
@@ -78,8 +74,7 @@ int stack_test(void)
     printf("Top element: %d\n", stack_top(&stack));
 
     printf("Popping elements: ");
-    while (!stack_is_empty(&stack))
-    {
+    while (!stack_is_empty(&stack)) {
         printf("%d ", stack_pop(&stack));
     }
     printf("\n");

@@ -10,8 +10,7 @@
 #define RINGBUFFER_H
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #define RING_BUFFER_ASSERT(x) assert(x)
@@ -22,7 +21,8 @@ extern "C"
  * can be contained in the buffer.
  * buffer_size must be a power of two.
 */
-#define RING_BUFFER_IS_POWER_OF_TWO(buffer_size) ((buffer_size & (buffer_size - 1)) == 0)
+#define RING_BUFFER_IS_POWER_OF_TWO(buffer_size) \
+    ((buffer_size & (buffer_size - 1)) == 0)
 
 /**
  * The type which is used to hold the size
@@ -49,14 +49,14 @@ typedef struct ring_buffer_t ring_buffer_t;
  * as well as metadata for the ring buffer.
  */
 struct ring_buffer_t {
-  /** Buffer memory. */
-  char *buffer;
-  /** Buffer mask. */
-  ring_buffer_size_t buffer_mask;
-  /** Index of tail. */
-  ring_buffer_size_t tail_index;
-  /** Index of head. */
-  ring_buffer_size_t head_index;
+    /** Buffer memory. */
+    char *buffer;
+    /** Buffer mask. */
+    ring_buffer_size_t buffer_mask;
+    /** Index of tail. */
+    ring_buffer_size_t tail_index;
+    /** Index of head. */
+    ring_buffer_size_t head_index;
 };
 
 /**
@@ -82,7 +82,8 @@ void ring_buffer_queue(ring_buffer_t *buffer, char data);
  * @param data A pointer to the array of bytes to place in the queue.
  * @param size The size of the array.
  */
-void ring_buffer_queue_arr(ring_buffer_t *buffer, const char *data, ring_buffer_size_t size);
+void ring_buffer_queue_arr(ring_buffer_t *buffer, const char *data,
+                           ring_buffer_size_t size);
 
 /**
  * Returns the oldest byte in a ring buffer.
@@ -99,7 +100,8 @@ uint8_t ring_buffer_dequeue(ring_buffer_t *buffer, char *data);
  * @param len The maximum number of bytes to return.
  * @return The number of bytes returned.
  */
-ring_buffer_size_t ring_buffer_dequeue_arr(ring_buffer_t *buffer, char *data, ring_buffer_size_t len);
+ring_buffer_size_t ring_buffer_dequeue_arr(ring_buffer_t *buffer, char *data,
+                                           ring_buffer_size_t len);
 /**
  * Peeks a ring buffer, i.e. returns an element without removing it.
  * @param buffer The buffer from which the data should be returned.
@@ -107,16 +109,17 @@ ring_buffer_size_t ring_buffer_dequeue_arr(ring_buffer_t *buffer, char *data, ri
  * @param index The index to peek.
  * @return 1 if data was returned; 0 otherwise.
  */
-uint8_t ring_buffer_peek(ring_buffer_t *buffer, char *data, ring_buffer_size_t index);
-
+uint8_t ring_buffer_peek(ring_buffer_t *buffer, char *data,
+                         ring_buffer_size_t index);
 
 /**
  * Returns whether a ring buffer is empty.
  * @param buffer The buffer for which it should be returned whether it is empty.
  * @return 1 if empty; 0 otherwise.
  */
-inline uint8_t ring_buffer_is_empty(ring_buffer_t *buffer) {
-  return (buffer->head_index == buffer->tail_index);
+inline uint8_t ring_buffer_is_empty(ring_buffer_t *buffer)
+{
+    return (buffer->head_index == buffer->tail_index);
 }
 
 /**
@@ -124,8 +127,10 @@ inline uint8_t ring_buffer_is_empty(ring_buffer_t *buffer) {
  * @param buffer The buffer for which it should be returned whether it is full.
  * @return 1 if full; 0 otherwise.
  */
-inline uint8_t ring_buffer_is_full(ring_buffer_t *buffer) {
-  return ((buffer->head_index - buffer->tail_index) & RING_BUFFER_MASK(buffer)) == RING_BUFFER_MASK(buffer);
+inline uint8_t ring_buffer_is_full(ring_buffer_t *buffer)
+{
+    return ((buffer->head_index - buffer->tail_index) &
+            RING_BUFFER_MASK(buffer)) == RING_BUFFER_MASK(buffer);
 }
 
 /**
@@ -133,8 +138,10 @@ inline uint8_t ring_buffer_is_full(ring_buffer_t *buffer) {
  * @param buffer The buffer for which the number of items should be returned.
  * @return The number of items in the ring buffer.
  */
-inline ring_buffer_size_t ring_buffer_num_items(ring_buffer_t *buffer) {
-  return ((buffer->head_index - buffer->tail_index) & RING_BUFFER_MASK(buffer));
+inline ring_buffer_size_t ring_buffer_num_items(ring_buffer_t *buffer)
+{
+    return ((buffer->head_index - buffer->tail_index) &
+            RING_BUFFER_MASK(buffer));
 }
 
 #ifdef __cplusplus

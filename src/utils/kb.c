@@ -4,12 +4,11 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
-
 //Linux Functions - These functions emulate some functions from the windows only conio header file
 //Code: http://ubuntuforums.org/showthread.php?t=549023
-void gotoxy(int x,int y)
+void gotoxy(int x, int y)
 {
-    printf("%c[%d;%df",0x1B,y,x);
+    printf("%c[%d;%df", 0x1B, y, x);
 }
 
 //http://www.experts-exchange.com/Programming/Languages/C/Q_10119844.html - posted by jos
@@ -17,15 +16,14 @@ char getch(void)
 {
     char c;
     system("stty raw");
-    c= getchar();
+    c = getchar();
     system("stty sane");
-    return(c);
+    return c;
 }
 
 void clrscr(void)
 {
     system("clear");
-    return;
 }
 
 //http://cboard.cprogramming.com/c-programming/63166-kbhit-linux.html
@@ -47,8 +45,7 @@ int kbhit(void)
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     fcntl(STDIN_FILENO, F_SETFL, oldf);
 
-    if(ch != EOF)
-    {
+    if (ch != EOF) {
         ungetc(ch, stdin);
         return 1;
     }
@@ -60,9 +57,10 @@ char wait_4_key(void)
 {
     int pressed;
 
-    while(!kbhit());
+    while (!kbhit())
+        ;
 
     pressed = getch();
     //pressed = tolower(pressed);
-    return((char)pressed);
+    return (char)pressed;
 }

@@ -18,10 +18,10 @@
 #define LOG_COLOR_BLUE "\033[40;36m"
 #define LOG_COLOR_RESET "\033[0m"
 #else
-#define LOG_COLOR_BLACK 
-#define LOG_COLOR_RED 
-#define LOG_COLOR_GREEN 
-#define LOG_COLOR_YELLOW 
+#define LOG_COLOR_BLACK
+#define LOG_COLOR_RED
+#define LOG_COLOR_GREEN
+#define LOG_COLOR_YELLOW
 #define LOG_COLOR_DARK_BLUE
 #define LOG_COLOR_PURPLE
 #define LOG_COLOR_BLUE
@@ -41,34 +41,36 @@ enum trace_leve {
     TRACE_LEVEL_END = TRACE_LEVEL_DEBUG,
 };
 
-#define SNAKE_LOG_DEBUG(fmt, ...) \
-{ \
-    if (SNAKE_TRACE_LEVEL >= TRACE_LEVEL_DEBUG) \
-    PRINT(LOG_COLOR_BLUE"[DEBUG  ] "LOG_COLOR_RESET fmt, ##__VA_ARGS__); \
-    PRINT("\n"); \
-}
+#define SNAKE_LOG_DEBUG(fmt, ...)                                  \
+    {                                                              \
+        if (SNAKE_TRACE_LEVEL >= TRACE_LEVEL_DEBUG)                \
+            PRINT(LOG_COLOR_BLUE "[DEBUG  ] " LOG_COLOR_RESET fmt, \
+                  ##__VA_ARGS__);                                  \
+        PRINT("\n");                                               \
+    }
 
-#define SNAKE_LOG_INFO(fmt, ...) \
-{ \
-    if (SNAKE_TRACE_LEVEL >= TRACE_LEVEL_INFO) \
-    PRINT(LOG_COLOR_GREEN"[INFO   ] "LOG_COLOR_RESET fmt, ##__VA_ARGS__); \
-    PRINT("\n"); \
-}
+#define SNAKE_LOG_INFO(fmt, ...)                                    \
+    {                                                               \
+        if (SNAKE_TRACE_LEVEL >= TRACE_LEVEL_INFO)                  \
+            PRINT(LOG_COLOR_GREEN "[INFO   ] " LOG_COLOR_RESET fmt, \
+                  ##__VA_ARGS__);                                   \
+        PRINT("\n");                                                \
+    }
 
-#define SNAKE_LOG_WARNING(fmt, ...) \
-{ \
-    if (SNAKE_TRACE_LEVEL >= TRACE_LEVEL_WARNING) \
-    PRINT(LOG_COLOR_YELLOW"[WARNING] "LOG_COLOR_RESET fmt, ##__VA_ARGS__); \
-    PRINT("\n"); \
-}
+#define SNAKE_LOG_WARNING(fmt, ...)                                  \
+    {                                                                \
+        if (SNAKE_TRACE_LEVEL >= TRACE_LEVEL_WARNING)                \
+            PRINT(LOG_COLOR_YELLOW "[WARNING] " LOG_COLOR_RESET fmt, \
+                  ##__VA_ARGS__);                                    \
+        PRINT("\n");                                                 \
+    }
 
-#define SNAKE_LOG_ERROR(fmt, ...) \
-{ \
-    if (SNAKE_TRACE_LEVEL >= TRACE_LEVEL_ERROR) \
-    PRINT(LOG_COLOR_RED"[ERROR  ] "LOG_COLOR_RESET fmt, ##__VA_ARGS__); \
-    PRINT("\n"); \
-}
-
+#define SNAKE_LOG_ERROR(fmt, ...)                                 \
+    {                                                             \
+        if (SNAKE_TRACE_LEVEL >= TRACE_LEVEL_ERROR)               \
+            PRINT(LOG_COLOR_RED "[ERROR  ] " LOG_COLOR_RESET fmt, \
+                  ##__VA_ARGS__);                                 \
+        PRINT("\n");                                              \
+    }
 
 #endif
-

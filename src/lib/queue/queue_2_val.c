@@ -3,8 +3,7 @@
 
 #define MAX_SIZE 100 // Maximum size of the queue
 
-typedef struct
-{
+typedef struct {
     int data[MAX_SIZE];
     int front;
     int rear;
@@ -32,8 +31,7 @@ bool queue_is_full(const Queue *queue)
 // Function to enqueue (push) an element into the queue
 void enqueue(Queue *queue, int value)
 {
-    if (queue_is_full(queue))
-    {
+    if (queue_is_full(queue)) {
         fprintf(stderr, "Error: Queue overflow\n");
         return;
     }
@@ -49,8 +47,7 @@ void enqueue(Queue *queue, int value)
 // Function to dequeue (pop) an element from the queue
 int dequeue(Queue *queue)
 {
-    if (queue_is_empty(queue))
-    {
+    if (queue_is_empty(queue)) {
         fprintf(stderr, "Error: Queue underflow\n");
         return -1; // You can choose an appropriate value to return for underflow.
     }
@@ -68,8 +65,7 @@ int dequeue(Queue *queue)
 // Function to get the front element of the queue
 int front(const Queue *queue)
 {
-    if (queue_is_empty(queue))
-    {
+    if (queue_is_empty(queue)) {
         fprintf(stderr, "Error: Queue is empty\n");
         return -1; // You can choose an appropriate value to return for an empty queue.
     }
@@ -89,8 +85,7 @@ int queue_test(void)
     printf("Front element: %d\n", front(&queue));
 
     printf("Dequeuing elements: ");
-    while (!queue_is_empty(&queue))
-    {
+    while (!queue_is_empty(&queue)) {
         printf("%d ", dequeue(&queue));
     }
     printf("\n");
