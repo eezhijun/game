@@ -1,6 +1,9 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+// clang-format off
+// clang-format on
+
 #define UNUSED(x) (void)(x)
 
 /* max */
@@ -43,6 +46,11 @@ void swap_by_xor(int *lhs, int *rhs);
 #define ENTER_KEY 10
 #define EXIT_BUTTON 27 //ESC
 #define PAUSE_BUTTON 112 //P
+
+#define BELL()        \
+    do {              \
+        printf("\7"); \
+    } while (0)
 
 void gotoxy(int x, int y);
 char getch(void);
