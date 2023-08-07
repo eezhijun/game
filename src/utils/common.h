@@ -3,34 +3,41 @@
 
 // clang-format off
 // clang-format on
-
+#ifndef UNUSED
 #define UNUSED(x) (void)(x)
+#endif
 
 /* max */
+#ifndef MAX
 #define MAX(a, b)           \
     ({                      \
         typeof(a) _a = (a); \
         typeof(b) _b = (b); \
         _a > _b ? _a : _b;  \
     })
+#endif
 
+#ifndef MIN
 #define MIN(a, b)           \
     ({                      \
         typeof(a) _a = (a); \
         typeof(b) _b = (b); \
         _a < _b ? _a : _b;  \
     })
+#endif
 
 int max(int a, int b);
 int min(int a, int b);
 
 /* swap */
+#ifndef SWAP
 #define SWAP(type, lhs, rhs) \
     do {                     \
         type temp = lhs;     \
         lhs = rhs;           \
         rhs = temp;          \
     } while (0)
+#endif
 
 void swap(void *lhs, void *rhs, size_t size);
 void swap_by_temp(int *lhs, int *rhs);
@@ -47,10 +54,12 @@ void swap_by_xor(int *lhs, int *rhs);
 #define EXIT_BUTTON 27 //ESC
 #define PAUSE_BUTTON 112 //P
 
+#ifndef BELL
 #define BELL()        \
     do {              \
         printf("\7"); \
     } while (0)
+#endif
 
 void gotoxy(int x, int y);
 char getch(void);
