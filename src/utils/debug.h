@@ -31,7 +31,7 @@
 #define SNAKE_TRACE_LEVEL TRACE_LEVEL_INFO
 
 /* Define trace levels */
-enum trace_leve {
+typedef enum {
     TRACE_LEVEL_BEGIN = 0,
     TRACE_LEVEL_NONE = TRACE_LEVEL_BEGIN,
     TRACE_LEVEL_ERROR,
@@ -39,7 +39,7 @@ enum trace_leve {
     TRACE_LEVEL_INFO,
     TRACE_LEVEL_DEBUG,
     TRACE_LEVEL_END = TRACE_LEVEL_DEBUG,
-};
+} TRACE_LEVEL;
 
 #define SNAKE_LOG_DEBUG(fmt, ...)                                  \
     {                                                              \

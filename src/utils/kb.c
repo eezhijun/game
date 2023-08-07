@@ -4,14 +4,22 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
-//Linux Functions - These functions emulate some functions from the windows only conio header file
-//Code: http://ubuntuforums.org/showthread.php?t=549023
+/**
+* @brief cursor move
+* @author eehongzhijun
+* @param x axis y axis
+* @see http://ubuntuforums.org/showthread.php?t=549023
+*/
 void gotoxy(int x, int y)
 {
     printf("%c[%d;%df", 0x1B, y, x);
 }
 
-//http://www.experts-exchange.com/Programming/Languages/C/Q_10119844.html - posted by jos
+/**
+* @brief get char
+* @author eehongzhijun
+* @see http://www.experts-exchange.com/Programming/Languages/C/Q_10119844.html - posted by jos
+*/
 char getch(void)
 {
     char c;
@@ -26,7 +34,11 @@ void clrscr(void)
     system("clear");
 }
 
-//http://cboard.cprogramming.com/c-programming/63166-kbhit-linux.html
+/**
+* @brief key check
+* @author eehongzhijun
+* @see http://cboard.cprogramming.com/c-programming/63166-kbhit-linux.html
+*/
 int kbhit(void)
 {
     struct termios oldt, newt;

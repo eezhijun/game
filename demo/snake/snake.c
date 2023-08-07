@@ -99,20 +99,20 @@ static const char *you_win_scr_str[] = {
     "....##.....#######...#######......###..###..####.##....##.####\n",
 };
 
-enum sanke_menu {
-    MENU0,
-    MENU1,
-    MENU2,
-    MENU3,
-};
+typedef enum {
+    SNAKE_MENU0,
+    SNAKE_MENU1,
+    SNAKE_MENU2,
+    SNAKE_MENU3,
+} SNAKE_MENU;
 
-enum snake_direction {
+typedef enum {
     SNAKE_DIR_NONE,
     SNAKE_DIR_UP,
     SNAKE_DIR_DOWN,
     SNAKE_DIR_LEFT,
     SNAKE_DIR_RIGHT,
-};
+} SNAKE_DIR;
 
 int snake_get_game_speed(void)
 {
@@ -769,16 +769,16 @@ int snake_test(void)
 
     do {
         switch (snake_main_meun()) {
-        case MENU0:
+        case SNAKE_MENU0:
             snake_load_game();
             break;
-        case MENU1:
+        case SNAKE_MENU1:
             display_high_scores();
             break;
-        case MENU2:
+        case SNAKE_MENU2:
             snake_tips();
             break;
-        case MENU3:
+        case SNAKE_MENU3:
             snake_exit_yn();
             break;
         default:
