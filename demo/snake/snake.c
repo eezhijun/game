@@ -150,7 +150,7 @@ int collision_snake(int x, int y, int snake_xy[][SNAKE_ARRAY_SIZE],
 }
 
 void snake_move_snake_array(int snake_xy[][SNAKE_ARRAY_SIZE], int snake_length,
-                      int direction)
+                            int direction)
 {
     int i;
     for (i = snake_length - 1; i >= 1; i--) {
@@ -604,7 +604,7 @@ static void snake_start_game(int snake_xy[][SNAKE_ARRAY_SIZE], int food_xy[],
         }
 
         game_over = collision_detection(snake_xy, consoleWidth, consoleHeight,
-                                       snake_length);
+                                        snake_length);
 
         if (snake_length >= SNAKE_ARRAY_SIZE - 5) {
             game_over = 2;
