@@ -61,10 +61,42 @@ void swap_by_xor(int *lhs, int *rhs);
     } while (0)
 #endif
 
+/**
+ * @brief cursor move
+ *
+ * @param x
+ * @param y
+ * @see http://ubuntuforums.org/showthread.php?t=549023
+ */
 void gotoxy(int x, int y);
+
+/**
+ * @brief get char
+ *
+ * @return char
+ * @see http://www.experts-exchange.com/Programming/Languages/C/Q_10119844.html - posted by jos
+ */
 char getch(void);
+
+/**
+ * @brief clear screen
+ *
+ */
 void clrscr(void);
+
+/**
+ * @brief key check
+ *
+ * @return int
+ * @see http://cboard.cprogramming.com/c-programming/63166-kbhit-linux.html
+ */
 int kbhit(void);
+
+/**
+ * @brief
+ *
+ * @return char
+ */
 char wait_4_key(void);
 
 /* sort */

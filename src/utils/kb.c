@@ -4,22 +4,11 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
-/**
-* @brief cursor move
-* @author eehongzhijun
-* @param x axis y axis
-* @see http://ubuntuforums.org/showthread.php?t=549023
-*/
 void gotoxy(int x, int y)
 {
     printf("%c[%d;%df", 0x1B, y, x);
 }
 
-/**
-* @brief get char
-* @author eehongzhijun
-* @see http://www.experts-exchange.com/Programming/Languages/C/Q_10119844.html - posted by jos
-*/
 char getch(void)
 {
     char c;
@@ -34,11 +23,6 @@ void clrscr(void)
     system("clear");
 }
 
-/**
-* @brief key check
-* @author eehongzhijun
-* @see http://cboard.cprogramming.com/c-programming/63166-kbhit-linux.html
-*/
 int kbhit(void)
 {
     struct termios oldt, newt;
@@ -69,8 +53,8 @@ char wait_4_key(void)
 {
     int pressed;
 
-    while (!kbhit())
-        ;
+    while (!kbhit()) {
+    }
 
     pressed = getch();
     //pressed = tolower(pressed);
