@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include "unistd.h"
 #include "assert.h"
+#include "stdint.h"
 
 #include "ringbuffer.h"
 
@@ -147,17 +148,40 @@ void tt_getch(void)
     }
 }
 
+void tt_hton(void)
+{
+    uint32_t original32 = 0x12345678;
+    uint16_t original16 = 0x1234;
+
+    uint32_t network32 = HTONL(original32);
+    uint16_t network16 = HTONS(original16);
+
+    uint32_t host32 = NTOHL(network32);
+    uint16_t host16 = NTOHS(network16);
+
+    printf("Original 32-bit value: 0x%08X\n", original32);
+    printf("Network 32-bit value: 0x%08X\n", network32);
+    printf("Host 32-bit value: 0x%08X\n", host32);
+
+    printf("Original 16-bit value: 0x%04X\n", original16);
+    printf("Network 16-bit value: 0x%04X\n", network16);
+    printf("Host 16-bit value: 0x%04X\n", host16);
+
+}
+
+
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
 
-    snake_test();
+    // snake_test();
     // tt_ringbuffer();
     // char key=waitForAnyKey();
     // tt_getchar();
     // tt_getch();
     // stack_test();
     // queue_test();
+    tt_hton();
 
     return 0;
 }

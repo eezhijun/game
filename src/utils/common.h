@@ -1,10 +1,30 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-// clang-format off
-// clang-format on
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
+#endif
+
+#ifndef BIT
+#define BIT(x) (1 << x)
+#endif
+
+#ifndef HTONL
+#define HTONL(x)                                                        \
+    (((x & 0xFF) << 24) | ((x & 0xFF00) << 8) | ((x & 0xFF0000) >> 8) | \
+     ((x & 0xFF000000) >> 24))
+#endif
+
+#ifndef HTONS
+#define HTONS(x) (((x & 0xFF) << 8) | ((x & 0xFF00) >> 8))
+#endif
+
+#ifndef NTOHL
+#define NTOHL(x) HTONL(x)
+#endif
+
+#ifndef NTOHS
+#define NTOHS(x) HTONS(x)
 #endif
 
 /* max */
@@ -26,7 +46,22 @@
     })
 #endif
 
+/**
+ * @brief
+ *
+ * @param a
+ * @param b
+ * @return int
+ */
 int max(int a, int b);
+
+/**
+ * @brief
+ *
+ * @param a
+ * @param b
+ * @return int
+ */
 int min(int a, int b);
 
 /* swap */
@@ -39,9 +74,37 @@ int min(int a, int b);
     } while (0)
 #endif
 
+/**
+ * @brief
+ *
+ * @param lhs
+ * @param rhs
+ * @param size
+ */
 void swap(void *lhs, void *rhs, size_t size);
+
+/**
+ * @brief
+ *
+ * @param lhs
+ * @param rhs
+ */
 void swap_by_temp(int *lhs, int *rhs);
+
+/**
+ * @brief
+ *
+ * @param lhs
+ * @param rhs
+ */
 void swap_by_sum(int *lhs, int *rhs);
+
+/**
+ * @brief
+ *
+ * @param lhs
+ * @param rhs
+ */
 void swap_by_xor(int *lhs, int *rhs);
 
 /* keyboard */
@@ -100,8 +163,29 @@ int kbhit(void);
 char wait_4_key(void);
 
 /* sort */
+/**
+ * @brief
+ *
+ * @param arr
+ * @param len
+ */
 void bubble_sort(int arr[], int len);
+
+/**
+ * @brief
+ *
+ * @param pa
+ * @param pb
+ * @return int
+ */
 int cmp(const void *pa, const void *pb);
+
+/**
+ * @brief
+ *
+ * @param arr
+ * @param len
+ */
 void print_array(int arr[], int len);
 
 #endif
