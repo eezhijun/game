@@ -97,7 +97,9 @@ ${BUILD_DIR}/${BIN} : ${OBJ_FILES}
 	@-mkdir -p ${@D}
 	@$(CC) $^ ${LDFLAGS} -o $@
 	@echo "BIN $@"
-	@echo "MAKE DONE!"
+	@echo "+--------------------------------------------+"
+	@echo "|            Finish compilation              |"
+	@echo "+--------------------------------------------+"
 
 -include ${DEP_FILE}
 
