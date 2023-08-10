@@ -1,5 +1,5 @@
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#ifndef _UTILS_H_
+#define _UTILS_H_
 
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)

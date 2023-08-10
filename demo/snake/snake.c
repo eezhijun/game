@@ -6,7 +6,7 @@
 #include "stdbool.h"
 
 #include "assert.h"
-#include "common.h"
+#include "utils.h"
 #include "string.h"
 
 #define SNAKE_ARRAY_SIZE 310

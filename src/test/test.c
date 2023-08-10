@@ -7,7 +7,7 @@
 
 #include "ringbuffer.h"
 
-#include "common.h"
+#include "utils.h"
 
 extern int snake_test(void);
 extern int stack_test(void);
