@@ -27,11 +27,11 @@ static void snake_food(int food_xy[], int width, int height,
                        int snake_xy[][SNAKE_ARRAY_SIZE], int snake_length);
 void snake_refresh_info_bar(int score, int speed);
 
-static const char *menu_str[] = {
+static const char *str_menu[] = {
     "New Game", "High Scores", "Tips", "Exit", "Test",
 };
 
-static const char *tips_str[] = {
+static const char *str_tips[] = {
     "Tips",
     "",
     "Use the following arrow keys to direct the snake to the food: ",
@@ -44,7 +44,7 @@ static const char *tips_str[] = {
     "Press any key to continue...",
 };
 
-static const char *info_bar_str[] = {
+static const char *str_info_bar[] = {
     "Score: ",
     "Speed: ",
     "Coder: HZJ",
@@ -53,7 +53,7 @@ static const char *info_bar_str[] = {
 
 // Ascii art reference:
 // http://www.chris.com/ascii/index.php?art=animals/reptiles/snakes
-static const char *wel_art_str[] = {
+static const char *str_wel_art[] = {
     "\n",
     "\t\t    _________         _________                 \n",
     "\t\t   /         \\       /         \\              \n",
@@ -72,7 +72,7 @@ static const char *wel_art_str[] = {
 };
 
 // http://www.network-science.de/ascii/ <- Ascii Art Gen
-static const char *game_over_scr_str[] = {
+static const char *str_game_voer_scr[] = {
     "..######......###....##.....##.########\n",
     ".##....##....##.##...###...###.##......\n",
     ".##.........##...##..####.####.##......\n",
@@ -89,7 +89,7 @@ static const char *game_over_scr_str[] = {
     "..#######.....###....########.##.....##.####\n",
 };
 
-static const char *you_win_scr_str[] = {
+static const char *str_you_win_scr[] = {
     ".##....##..#######..##.....##....##......##.####.##....##.####\n",
     "..##..##..##.....##.##.....##....##..##..##..##..###...##.####\n",
     "...####...##.....##.##.....##....##..##..##..##..####..##.####\n",
@@ -391,12 +391,11 @@ void snake_you_win_screen(void)
 {
     int x = 6, y = 7;
     int i;
-    int len = sizeof(you_win_scr_str) / sizeof(char *);
 
-    for (i = 0; i < len; i++) {
+    for (i = 0; i < ARRAY_SIZE(str_you_win_scr); i++) {
         gotoxy(x, y);
         y++;
-        printf("%s", you_win_scr_str[i]);
+        printf("%s", str_you_win_scr[i]);
     }
 
     wait_4_key();
@@ -407,13 +406,12 @@ void snake_game_overs_screen(void)
 {
     int x = 17, y = 3;
     int i;
-    int len = sizeof(game_over_scr_str) / sizeof(char *);
 
     clrscr();
-    for (i = 0; i < len; i++) {
+    for (i = 0; i < ARRAY_SIZE(str_game_voer_scr); i++) {
         gotoxy(x, y);
         y++;
-        printf("%s", game_over_scr_str[i]);
+        printf("%s", str_game_voer_scr[i]);
     }
     wait_4_key();
     clrscr();
@@ -490,16 +488,16 @@ static void snake_food(int food_xy[], int width, int height,
 void snake_refresh_info_bar(int score, int speed)
 {
     gotoxy(5, 23);
-    printf("%s%d", info_bar_str[0], score);
+    printf("%s%d", str_info_bar[0], score);
 
     gotoxy(5, 24);
-    printf("%s%d", info_bar_str[1], speed);
+    printf("%s%d", str_info_bar[1], speed);
 
     gotoxy(52, 23);
-    printf("%s", info_bar_str[2]);
+    printf("%s", str_info_bar[2]);
 
     gotoxy(52, 24);
-    printf("%s", info_bar_str[3]);
+    printf("%s", str_info_bar[3]);
 
     // wait_4_key();
 }
@@ -653,12 +651,11 @@ static void snake_load_game(void)
 
 static void snake_welcome_art(void)
 {
-    int len = sizeof(wel_art_str) / sizeof(char *);
     int i;
 
     clrscr();
-    for (i = 0; i < len; i++) {
-        printf("%s", wel_art_str[i]);
+    for (i = 0; i < ARRAY_SIZE(str_wel_art); i++) {
+        printf("%s", str_wel_art[i]);
     }
     wait_4_key();
 }
@@ -666,14 +663,13 @@ static void snake_welcome_art(void)
 static void snake_tips(void)
 {
     int x = 10, y = 5;
-    int len = sizeof(tips_str) / sizeof(char *);
     int i;
 
     clrscr();
-    for (i = 0; i < len; i++) {
+    for (i = 0; i < ARRAY_SIZE(str_tips); i++) {
         gotoxy(x, y);
         y++;
-        printf("%s", tips_str[i]);
+        printf("%s", str_tips[i]);
     }
     wait_4_key();
 }
@@ -745,15 +741,14 @@ static int snake_main_meun(void)
 {
     int x = 10, y = 5;
     int ystart = y;
-    int len = sizeof(menu_str) / sizeof(char *);
     int selected;
     int i;
 
     clrscr();
     gotoxy(x, y);
     y++;
-    for (i = 0; i < len; i++) {
-        printf("%s\n", menu_str[i]);
+    for (i = 0; i < ARRAY_SIZE(str_menu); i++) {
+        printf("%s\n", str_menu[i]);
         gotoxy(x, y);
         y++;
     }

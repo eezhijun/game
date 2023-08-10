@@ -174,14 +174,14 @@ int main(void)
 {
     printf("TEST MAIN ENTRY\n");
 
-    // snake_test();
+    snake_test();
     // tt_ringbuffer();
     // char key=waitForAnyKey();
     // tt_getchar();
     // tt_getch();
     // stack_test();
     // queue_test();
-    tt_hton();
+    // tt_hton();
 
     return 0;
 }

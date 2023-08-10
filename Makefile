@@ -98,7 +98,7 @@ ${BUILD_DIR}/${BIN} : ${OBJ_FILES}
 	@$(CC) $^ ${LDFLAGS} -o $@
 	@echo "BIN $@"
 	@echo "+--------------------------------------------+"
-	@echo "|            Finish compilation              |"
+	@echo "|            Finish Compilation              |"
 	@echo "+--------------------------------------------+"
 
 -include ${DEP_FILE}
