@@ -5,12 +5,30 @@
 #define UNUSED(x) (void)(x)
 #endif
 
+#ifndef LIKELY
+#define LIKELY(x)       __builtin_expect((x),1)
+#endif
+
+#ifndef UNLIKELY
+#define UNLIKELY(x)     __builtin_expect((x),0)
+#endif
+
 #ifndef BIT
 #define BIT(x) (1u << x)
 #endif
 
 #ifndef ARRAY_SIZE
 #define ARRAY_SIZE(a) sizeof(a) / sizeof(a[0])
+#endif
+
+#ifndef CLAMP
+#define CLAMP(value, min, max)                                  \
+    ({                                                          \
+        typeof(value) _value = (value);                         \
+        typeof(min) _min = (min);                               \
+        typeof(max) _max = (max);                               \
+        _value < _min ? _min : (_value > _max ? _max : _value); \
+    })
 #endif
 
 #ifndef HTONL
@@ -67,6 +85,18 @@ int max(int a, int b);
  * @return int
  */
 int min(int a, int b);
+
+/**
+ * @brief Limit a value between an upper and lower limit,
+ * when the value exceeds the range of the minimum and maximum values,
+ * choose a value between the minimum and maximum values to use
+ *
+ * @param value
+ * @param min
+ * @param max
+ * @return int
+ */
+int clamp(int value, int min, int max);
 
 /* swap */
 #ifndef SWAP
