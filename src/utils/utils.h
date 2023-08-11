@@ -5,16 +5,15 @@
 #define UNUSED(x) (void)(x)
 #endif
 
-#ifndef LIKELY
-#define LIKELY(x)       __builtin_expect((x),1)
-#endif
-
-#ifndef UNLIKELY
-#define UNLIKELY(x)     __builtin_expect((x),0)
-#endif
+#define linkly(x) __builtin_expect((x), 1)
+#define unlikely(x) __builtin_expect((x), 0)
 
 #ifndef BIT
-#define BIT(x) (1u << x)
+#define BIT(x) (1u << (x))
+#endif
+
+#ifndef BIT64
+#define BIT64(x) ((uint64_t)1u << (x))
 #endif
 
 #ifndef ARRAY_SIZE
@@ -67,6 +66,13 @@
         _a < _b ? _a : _b;  \
     })
 #endif
+
+// TODO
+// ROUNDUP ROUNDDOWN
+// __attribute__((section( name )))
+// #define CONTAINER_OF(ptr, type, member) ((type *)((char *)ptr - offsetof(type, member)))
+// endian int32/uint32 reverse uint8 point
+
 
 /**
  * @brief
