@@ -1,6 +1,8 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+#include "stdint.h"
+
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
 #endif
@@ -228,4 +230,11 @@ int cmp(const void *pa, const void *pb);
  */
 void print_array(int arr[], int len);
 
+/**
+ * @brief dump a piece of data
+ *
+ * @param data
+ * @param len
+ */
+void dump_bytes(const uint8_t *data, int len);
 #endif

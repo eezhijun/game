@@ -30,15 +30,8 @@ static void dump_line(const uint8_t *data, int len)
         total +=
             snprintf(buffer + total, sizeof(buffer) - (size_t)total, "%c", to_printable(data[i]));
     }
-    // DBGLOG_LIB_RAW("%s\n", buffer);
 }
 
-/**
- * @brief dump a piece of data
- *
- * @param data the data to dump
- * @param len length of the data
- */
 void dump_bytes(const uint8_t *data, int len)
 {
     int line_count;

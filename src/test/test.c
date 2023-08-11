@@ -4,6 +4,8 @@
 #include "unistd.h"
 #include "assert.h"
 #include "stdint.h"
+#include "stdlib.h"
+#include "time.h"
 
 #include "ringbuffer.h"
 
@@ -169,12 +171,39 @@ void tt_hton(void)
 
 }
 
+#define ARRAY_SIZEX 100
+#define MIN_VALUE 1
+#define MAX_VALUE 100
+void tt_dump_bytes(void)
+{
+    uint8_t random_numbers[ARRAY_SIZEX];
+    int i;
+
+    // 设置随机数种子，使用当前时间作为种子
+    srand(time(NULL));
+
+    for (i = 0; i < ARRAY_SIZEX; i++) {
+        random_numbers[i] = MIN_VALUE + rand() % (MAX_VALUE - MIN_VALUE + 1);
+    }
+
+    printf("Generated random numbers:\n");
+    for (i = 0; i < ARRAY_SIZEX; i++) {
+        printf("%d ", random_numbers[i]);
+    }
+
+    printf("dump:\n");
+    dump_bytes(random_numbers, ARRAY_SIZE(random_numbers));
+
+    for (i = 0; i < ARRAY_SIZE(random_numbers); i++) {
+        printf("%d ", random_numbers[i]);
+    }
+}
 
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
 
-    snake_test();
+    // snake_test();
     // tt_ringbuffer();
     // char key=waitForAnyKey();
     // tt_getchar();
@@ -182,6 +211,7 @@ int main(void)
     // stack_test();
     // queue_test();
     // tt_hton();
+    tt_dump_bytes();
 
     return 0;
 }
