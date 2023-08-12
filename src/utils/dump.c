@@ -7,7 +7,6 @@
 
 static char dump_buffer[DUMP_BUFFER_SIZE] = { 0 };
 
-
 /**
  * @brief
  *
@@ -19,11 +18,15 @@ void dump_x(const uint8_t *data, size_t len)
     size_t line = len / DUMP_BYTES;
     int offset = 0;
     for (int i = 0; i < line; i++) {
+        if (((int)sizeof(dump_buffer) - offset) < 0) {
+            break;
+        }
         for (int j = i * DUMP_BYTES; j < DUMP_BYTES + DUMP_BYTES * i; j++) {
             offset += snprintf(dump_buffer + offset,
                                sizeof(dump_buffer) - offset, "%02X ", data[j]);
         }
         offset += snprintf(dump_buffer + offset, sizeof(dump_buffer) - offset, "\n");
+
     }
 
     if (len > line * DUMP_BYTES) {
