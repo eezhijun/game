@@ -230,11 +230,13 @@ int cmp(const void *pa, const void *pb);
  */
 void print_array(int arr[], int len);
 
+
 /**
- * @brief dump a piece of data
+ * @brief
  *
  * @param data
  * @param len
  */
-void dump_bytes(const uint8_t *data, int len);
+void dump_x(const uint8_t *data, size_t len);
+
 #endif

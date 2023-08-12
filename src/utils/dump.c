@@ -1,47 +1,43 @@
 #include "stdio.h"
 #include "stdint.h"
+#include "assert.h"
 
-static inline char to_printable(uint8_t c)
+#define DUMP_BYTES 16
+#define DUMP_BUFFER_SIZE 512
+
+static char dump_buffer[DUMP_BUFFER_SIZE] = { 0 };
+
+
+/**
+ * @brief
+ *
+ * @param data
+ * @param len
+ */
+void dump_x(const uint8_t *data, size_t len)
 {
-    if ((c >= 0x20) && (c <= 0x7E)) {
-        return (char)c;
-    } else {
-        return '.';
-    }
-}
-
-static void dump_line(const uint8_t *data, int len)
-{
-    char buffer[16 * 4 + 8];
-    int total = 0;
-
-    if (len > 16) {
-        len = 16;
+    size_t line = len / DUMP_BYTES;
+    int offset = 0;
+    for (int i = 0; i < line; i++) {
+        for (int j = i * DUMP_BYTES; j < DUMP_BYTES + DUMP_BYTES * i; j++) {
+            offset += snprintf(dump_buffer + offset,
+                               sizeof(dump_buffer) - offset, "%02X ", data[j]);
+        }
+        offset += snprintf(dump_buffer + offset, sizeof(dump_buffer) - offset, "\n");
     }
 
-    for (int i = 0; i < len; i++) {
-        total += snprintf(buffer + total, sizeof(buffer) - (size_t)total, "%02X ", data[i]);
+    if (len > line * DUMP_BYTES) {
+        for (int i = line * DUMP_BYTES; i < DUMP_BYTES + line * DUMP_BYTES; i++) {
+            if (i < len) {
+                offset += snprintf(dump_buffer + offset,
+                                sizeof(dump_buffer) - offset, "%02X ", data[i]);
+            } else {
+                offset += snprintf(dump_buffer + offset,
+                                sizeof(dump_buffer) - offset, "%02X ", 0);
+            }
+        }
+        offset += snprintf(dump_buffer + offset, sizeof(dump_buffer) - offset, "\n");
     }
-    for (int i = len; i < 16; i++) {
-        total += snprintf(buffer + total, sizeof(buffer) - (size_t)total, "%02X ", data[i]);
-    }
-    total += snprintf(buffer + total, sizeof(buffer) - (size_t)total, "\t");
-    for (int i = 0; i < len; i++) {
-        total +=
-            snprintf(buffer + total, sizeof(buffer) - (size_t)total, "%c", to_printable(data[i]));
-    }
-}
-
-void dump_bytes(const uint8_t *data, int len)
-{
-    int line_count;
-
-    line_count = len / 16;
-    for (int i = 0; i < line_count; i++) {
-        dump_line(data + i * 16, 16);
-    }
-
-    if (len > line_count * 16) {
-        dump_line(data + line_count * 16, len - line_count * 16);
-    }
+    printf("date len: %d\n", len);
+    printf("%s", dump_buffer);
 }

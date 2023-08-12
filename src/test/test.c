@@ -171,7 +171,7 @@ void tt_hton(void)
 
 }
 
-#define ARRAY_SIZEX 100
+#define ARRAY_SIZEX 300
 #define MIN_VALUE 1
 #define MAX_VALUE 100
 void tt_dump_bytes(void)
@@ -188,15 +188,17 @@ void tt_dump_bytes(void)
 
     printf("Generated random numbers:\n");
     for (i = 0; i < ARRAY_SIZEX; i++) {
-        printf("%d ", random_numbers[i]);
+        // 0-15 16-31
+
+        printf("%02X ", random_numbers[i]);
+        if ((i + 1) % 16 == 0) {
+            printf("\n");
+            // assert(0);
+        }
     }
 
-    printf("dump:\n");
-    dump_bytes(random_numbers, ARRAY_SIZE(random_numbers));
-
-    for (i = 0; i < ARRAY_SIZE(random_numbers); i++) {
-        printf("%d ", random_numbers[i]);
-    }
+    printf("\n-----------------------------------------------------------\n");
+    dump_x(random_numbers, ARRAY_SIZE(random_numbers));
 }
 
 int main(void)
