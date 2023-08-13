@@ -21,6 +21,7 @@ void dump_x(const uint8_t *data, size_t len)
         if (((int)sizeof(dump_buffer) - offset) < 0) {
             break;
         }
+
         for (int j = i * DUMP_BYTES; j < DUMP_BYTES + DUMP_BYTES * i; j++) {
             offset += snprintf(dump_buffer + offset,
                                sizeof(dump_buffer) - offset, "%02X ", data[j]);
@@ -31,6 +32,10 @@ void dump_x(const uint8_t *data, size_t len)
 
     if (len > line * DUMP_BYTES) {
         for (int i = line * DUMP_BYTES; i < DUMP_BYTES + line * DUMP_BYTES; i++) {
+            if (((int)sizeof(dump_buffer) - offset) < 0) {
+                break;
+            }
+
             if (i < len) {
                 offset += snprintf(dump_buffer + offset,
                                 sizeof(dump_buffer) - offset, "%02X ", data[i]);

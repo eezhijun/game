@@ -2,6 +2,7 @@
 #define _UTILS_H_
 
 #include "stdint.h"
+#include "stddef.h"
 
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
@@ -69,12 +70,18 @@
     })
 #endif
 
-// TODO
-// ROUNDUP ROUNDDOWN
-// __attribute__((section( name )))
-// #define CONTAINER_OF(ptr, type, member) ((type *)((char *)ptr - offsetof(type, member)))
-// endian int32/uint32 reverse uint8 point
+#ifndef ROUNDUP
+#define ROUNDUP(x) ((x) < 0 ? (int)(x) : (int)((x) + 1))
+#endif
 
+#ifndef ROUNDDOWN
+#define ROUNDDOWN(x) ((x) < 0 ? (int)((x) - 1) : (int)(x))
+#endif
+
+#ifndef CONTAINER_OF
+#define CONTAINER_OF(ptr, type, member) \
+    ((type *)((char *)(ptr) - offsetof(type, member)))
+#endif
 
 /**
  * @brief
@@ -93,6 +100,22 @@ int max(int a, int b);
  * @return int
  */
 int min(int a, int b);
+
+/**
+ * @brief
+ *
+ * @param num
+ * @return double
+ */
+double roundup(double num);
+
+/**
+ * @brief
+ *
+ * @param num
+ * @return double
+ */
+double rounddown(double num);
 
 /**
  * @brief Limit a value between an upper and lower limit,

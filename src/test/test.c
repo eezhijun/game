@@ -201,6 +201,38 @@ void tt_dump_bytes(void)
     dump_x(random_numbers, ARRAY_SIZE(random_numbers));
 }
 
+void tt_roundx(void)
+{
+    double value = 7.3;
+    double result = ROUNDUP(value);
+    printf("Original value: %.2f\n", value);
+    printf("Rounded up value: %.2f\n", result);
+
+    value = 7.8;
+    result = ROUNDDOWN(value);
+    printf("Original value: %.2f\n", value);
+    printf("Rounded down value: %.2f\n", result);
+}
+
+struct Person {
+    char name[20];
+    int age;
+    float height;
+};
+
+void tt_container_of(void)
+{
+    struct Person person;
+    struct Person *person_ptr = &person;
+
+    person_ptr->age = 30;
+
+    // Using the CONTAINER_OF macro to get the address of the whole struct
+    struct Person *recovered_person_ptr = CONTAINER_OF(&person_ptr->age, struct Person, age);
+
+    printf("Recovered person's age: %d\n", recovered_person_ptr->age);
+}
+
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
@@ -213,7 +245,9 @@ int main(void)
     // stack_test();
     // queue_test();
     // tt_hton();
-    tt_dump_bytes();
+    // tt_dump_bytes();
+    // tt_roundx();
+    tt_container_of();
 
     return 0;
 }
