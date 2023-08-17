@@ -758,7 +758,8 @@ static int snake_main_meun(void)
     return selected;
 }
 
-int snake_test(void)
+#ifdef SNAKE_DEMO
+int main(void)
 {
     snake_welcome_art();
 
@@ -783,3 +784,4 @@ int snake_test(void)
 
     return 0;
 }
+#endif

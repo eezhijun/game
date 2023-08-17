@@ -11,7 +11,10 @@
 
 #include "utils.h"
 
-extern int snake_test(void);
+
+/**
+ * External Function
+*/
 extern int stack_test(void);
 extern int queue_test(void);
 
@@ -237,7 +240,6 @@ int main(void)
 {
     printf("TEST MAIN ENTRY\n");
 
-    // snake_test();
     // tt_ringbuffer();
     // char key=waitForAnyKey();
     // tt_getchar();
