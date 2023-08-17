@@ -1,3 +1,5 @@
+#ifdef SNAKE_DEMO
+
 #include "ctype.h"
 #include "math.h"
 #include "stdio.h"
@@ -758,7 +760,6 @@ static int snake_main_meun(void)
     return selected;
 }
 
-#ifdef SNAKE_DEMO
 int main(void)
 {
     snake_welcome_art();
