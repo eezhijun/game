@@ -236,6 +236,16 @@ void tt_container_of(void)
     printf("Recovered person's age: %d\n", recovered_person_ptr->age);
 }
 
+void tt_bit(void)
+{
+    int num = 0b00101000;
+
+    printf("ffs: %d\n", ffs(num));
+    printf("fls: %d\n", fls(num));
+    printf("clz: %d\n", clz(num));
+    printf("ctz: %d\n", ctz(num));
+}
+
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
@@ -249,7 +259,8 @@ int main(void)
     // tt_hton();
     // tt_dump_bytes();
     // tt_roundx();
-    tt_container_of();
+    // tt_container_of();
+    tt_bit();
 
     return 0;
 }

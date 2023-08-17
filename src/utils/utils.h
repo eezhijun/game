@@ -3,9 +3,26 @@
 
 #include "stdint.h"
 #include "stddef.h"
+#include "limits.h"
 
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
+#endif
+
+#ifndef FFS
+#define FFS(x) ((x) ? __builtin_ffs(x) : 0)
+#endif
+
+#ifndef FLS
+#define FLS(x) ((x) ? (sizeof(x) * CHAR_BIT - __builtin_clz(x)) : 0)
+#endif
+
+#ifndef CLZ
+#define CLZ(x) ((x) ? __builtin_clz(x) : sizeof(x) * CHAR_BIT)
+#endif
+
+#ifndef CTZ
+#define CTZ(x) ((x) ? __builtin_ctz(x) : sizeof(x) * CHAR_BIT)
 #endif
 
 #define linkly(x) __builtin_expect((x), 1)
@@ -75,12 +92,12 @@
 #endif
 
 #ifndef ROUNDDOWN
-#define ROUNDDOWN(x) ((x) < 0 ? (int)((x) - 1) : (int)(x))
+#define ROUNDDOWN(x) ((x) < 0 ? (int)((x)-1) : (int)(x))
 #endif
 
 #ifndef CONTAINER_OF
 #define CONTAINER_OF(ptr, type, member) \
-    ((type *)((char *)(ptr) - offsetof(type, member)))
+    ((type *)((char *)(ptr)-offsetof(type, member)))
 #endif
 
 /**
@@ -253,7 +270,6 @@ int cmp(const void *pa, const void *pb);
  */
 void print_array(int arr[], int len);
 
-
 /**
  * @brief
  *
@@ -261,5 +277,43 @@ void print_array(int arr[], int len);
  * @param len
  */
 void dump_x(const uint8_t *data, size_t len);
+
+/**
+ * @brief Find First One, used to find the position (index) of
+ * the first set (value 1) starting from the lowest bit in an integer or bit field,
+ * that is, to find the position of the rightmost 1
+ *
+ * @param x
+ * @return int
+ */
+int ffs(int x);
+
+/**
+ * @brief Find Last Set, Used to find the position (index) of
+ * the last set bit (value 1) starting from the highest bit in an integer or bit field,
+ * that is, to find the position of the leftmost 1.
+ *
+ * @param x
+ * @return int
+ */
+int fls(int x);
+
+/**
+ * @brief Count Leading Zeros, used to count the number of
+ * consecutive 0s starting from the highest bit in the binary representation of an integer
+ *
+ * @param x
+ * @return int
+ */
+int clz(int x);
+
+/**
+ * @brief Count Trailing Zeros, used to count the number of
+ * consecutive zeros starting from the lowest bit in the binary representation of an integer
+ *
+ * @param x
+ * @return int
+ */
+int ctz(int x);
 
 #endif

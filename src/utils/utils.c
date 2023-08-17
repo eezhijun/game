@@ -6,6 +6,7 @@
 #include "fcntl.h"
 #include "stdlib.h"
 #include "termios.h"
+#include "limits.h"
 
 /* function template */
 // #define MAXT(T) T max_##T(T a, T b) {return (a > b) ? a : b;}
@@ -150,4 +151,51 @@ char wait_4_key(void)
     pressed = getch();
     //pressed = tolower(pressed);
     return (char)pressed;
+}
+
+int ffs(int x)
+{
+    if (x == 0)
+        return 0;
+    int position = 1;
+    while ((x & 1) == 0) {
+        x >>= 1;
+        position++;
+    }
+    return position;
+}
+
+int fls(int x)
+{
+    if (x == 0)
+        return 0;
+    int position = sizeof(x) * CHAR_BIT;
+    while ((x & (1 << (position - 1))) == 0) {
+        position--;
+    }
+    return position;
+}
+
+int clz(int x)
+{
+    if (x == 0)
+        return sizeof(x) * CHAR_BIT;
+    int count = 0;
+    while ((x & (1 << (sizeof(x) * CHAR_BIT - 1))) == 0) {
+        x <<= 1;
+        count++;
+    }
+    return count;
+}
+
+int ctz(int x)
+{
+    if (x == 0)
+        return sizeof(x) * CHAR_BIT;
+    int count = 0;
+    while ((x & 1) == 0) {
+        x >>= 1;
+        count++;
+    }
+    return count;
 }
