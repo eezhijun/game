@@ -153,6 +153,32 @@ char wait_4_key(void)
     return (char)pressed;
 }
 
+void set_terminal_attributes(void)
+{
+    struct termios term;
+    tcgetattr(STDOUT_FILENO, &term);
+    term.c_lflag &= ~ECHO;
+    tcsetattr(STDOUT_FILENO, TCSANOW, &term);
+}
+
+void restore_terminal_attributes(void)
+{
+    struct termios term;
+    tcgetattr(STDOUT_FILENO, &term);
+    term.c_lflag |= ECHO;
+    tcsetattr(STDOUT_FILENO, TCSANOW, &term);
+}
+
+void hide_cursor(void)
+{
+    printf("\e[?25l");
+}
+
+void show_cursor(void)
+{
+    printf("\e[?25h");
+}
+
 int ffs(int x)
 {
     if (x == 0)

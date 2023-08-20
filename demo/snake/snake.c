@@ -6,28 +6,30 @@
 #include "stdlib.h"
 #include "time.h"
 #include "stdbool.h"
-
-#include "assert.h"
-#include "utils.h"
 #include "string.h"
+#include "assert.h"
+#include "unistd.h"
+
+#include "utils.h"
 
 #define SNAKE_ARRAY_SIZE 310
 
 #define SNAKE_CONSOLE_WIDTH 80
-#define SNAKE_CONSOLE_HEIGHT 21
+#define SNAKE_CONSOLE_HEIGHT 24
 
 /* snake init */
-#define SNAKE_INIT_LEN 8
+#define SNAKE_LEN_INIT 4
+#define SNAKE_LEN_MAX 30
+#define SNAKE_POS_X 8
+#define SNAKE_POS_Y 12
+#define SNAKE_FOOD_POS_X 64
+#define SNAKE_FOOD_POS_Y 12
 
 #define SNAKE_HEAD 'X'
 #define SNAKE_BODY '#'
 #define SNAKE_WALL '#'
 #define SNAKE_FOOD '*'
 #define SNAKE_BLANK ' '
-
-static void snake_food(int food_xy[], int width, int height,
-                       int snake_xy[][SNAKE_ARRAY_SIZE], int snake_length);
-void snake_refresh_info_bar(int score, int speed);
 
 static const char *str_menu[] = {
     "New Game", "High Scores", "Tips", "Exit", "Test",
@@ -110,24 +112,36 @@ typedef enum {
 
 typedef enum {
     SNAKE_DIR_NONE,
-    SNAKE_DIR_UP,
-    SNAKE_DIR_DOWN,
-    SNAKE_DIR_LEFT,
-    SNAKE_DIR_RIGHT,
+    SNAKE_DIR_UP = UP_ARROW,
+    SNAKE_DIR_DOWN = DOWN_ARROW,
+    SNAKE_DIR_LEFT = LEFT_ARROW,
+    SNAKE_DIR_RIGHT = RIGHT_ARROW,
 } SNAKE_DIR;
 
-int snake_get_game_speed(void)
-{
-    int speed;
-    clrscr();
+typedef enum {
+    SNAKE_GAME_OVER_NONE,
+    SNAKE_GAME_OVER_BY_WALL,
+    SNAKE_GAME_OVER_BY_SNAKE,
+    SNAKE_GAME_OVER_BY_YOU_WIN,
+} SNAKE_GAME_OVER;
 
-    do {
-        gotoxy(10, 5);
-        printf("Select The game speed between 1 and 9.");
-        speed = wait_4_key() - '0';
-    } while (speed < 1 || speed > 9);
-    return speed;
-}
+typedef struct {
+    int sx[SNAKE_LEN_MAX];
+    int sy[SNAKE_LEN_MAX];
+    int slen;
+    int fx;
+    int fy;
+    int speed;
+    SNAKE_DIR dir;
+} snake_object_t;
+
+static snake_object_t g_snake = { .sx = { 0 },
+                                  .sy = { 0 },
+                                  .slen = 0,
+                                  .fx = 0,
+                                  .fy = 0,
+                                  .dir = SNAKE_DIR_NONE};
+
 
 void pause_menu(void)
 {
@@ -139,73 +153,21 @@ void pause_menu(void)
     printf("            ");
 }
 
-int collision_snake(int x, int y, int snake_xy[][SNAKE_ARRAY_SIZE],
-                    int snake_length, int detect)
-{
-    int i;
-    for (i = detect; i < snake_length; i++) {
-        if (x == snake_xy[0][i] && y == snake_xy[1][i]) {
-            return 1;
-        }
-    }
-    return 0;
-}
+// int collision_detection(int snake_xy[][SNAKE_ARRAY_SIZE], int consoleWidth,
+//                         int consoleHeight, int snake_length)
+// {
+//     int colision = 0;
+//     if ((snake_xy[0][0] == 1) || (snake_xy[1][0] == 1) ||
+//         (snake_xy[0][0] == consoleWidth) ||
+//         (snake_xy[1][0] == consoleHeight - 4)) {
+//         colision = 1;
+//     } else if (collision_snake(snake_xy[0][0], snake_xy[1][0], snake_xy,
+//                                snake_length, 1)) {
+//         colision = 1;
+//     }
 
-void snake_move_snake_array(int snake_xy[][SNAKE_ARRAY_SIZE], int snake_length,
-                            int direction)
-{
-    int i;
-    for (i = snake_length - 1; i >= 1; i--) {
-        snake_xy[0][i] = snake_xy[0][i - 1];
-        snake_xy[1][i] = snake_xy[1][i - 1];
-    }
-
-    switch (direction) {
-    case DOWN_ARROW:
-        snake_xy[1][0]++;
-        break;
-    case RIGHT_ARROW:
-        snake_xy[0][0]++;
-        break;
-    case UP_ARROW:
-        snake_xy[1][0]--;
-        break;
-    case LEFT_ARROW:
-        snake_xy[0][0]--;
-        break;
-    default:
-        break;
-    }
-}
-
-bool snake_is_eat_food(int snake_xy[][SNAKE_ARRAY_SIZE], int food_xy[])
-{
-    if (snake_xy[0][0] == food_xy[0] && snake_xy[1][0] == food_xy[1]) {
-        food_xy[0] = 0;
-        food_xy[1] = 0;
-
-        BELL();
-        return true;
-    }
-
-    return false;
-}
-
-int collision_detection(int snake_xy[][SNAKE_ARRAY_SIZE], int consoleWidth,
-                        int consoleHeight, int snake_length)
-{
-    int colision = 0;
-    if ((snake_xy[0][0] == 1) || (snake_xy[1][0] == 1) ||
-        (snake_xy[0][0] == consoleWidth) ||
-        (snake_xy[1][0] == consoleHeight - 4)) {
-        colision = 1;
-    } else if (collision_snake(snake_xy[0][0], snake_xy[1][0], snake_xy,
-                               snake_length, 1)) {
-        colision = 1;
-    }
-
-    return colision;
-}
+//     return colision;
+// }
 
 void create_high_scores(void)
 {
@@ -419,74 +381,6 @@ void snake_game_overs_screen(void)
     clrscr();
 }
 
-static void snake_enviroment_init(int console_width, int console_height)
-{
-    int x = 1, y = 1;
-
-    clrscr();
-    gotoxy(x, y);
-
-    for (; y < console_height; y++) {
-        gotoxy(x, y);
-        printf("%c", SNAKE_WALL);
-
-        gotoxy(console_width, y);
-        printf("%c", SNAKE_WALL);
-    }
-
-    y = 1;
-    for (; x < console_width + 1; x++) {
-        gotoxy(x, y);
-        printf("%c", SNAKE_WALL);
-
-        gotoxy(x, console_height);
-        printf("%c", SNAKE_WALL);
-    }
-    wait_4_key();
-}
-
-static void snake_position_init(int snake_xy[][SNAKE_ARRAY_SIZE])
-{
-    snake_xy[0][0] = 40;
-    snake_xy[1][0] = 10;
-}
-
-static void snake_body_init(int snake_xy[][SNAKE_ARRAY_SIZE], int snake_length)
-{
-    int i;
-    int snake_x = snake_xy[0][0];
-    int snake_y = snake_xy[1][0];
-
-    for (i = 1; i <= snake_length; i++) {
-        snake_xy[0][i] = snake_x + i;
-        snake_xy[1][i] = snake_y;
-    }
-
-    for (i = 0; i < snake_length; i++) {
-        gotoxy(snake_xy[0][i], snake_xy[1][i]);
-        printf("%c", SNAKE_BODY);
-    }
-
-    // wait_4_key();
-}
-
-static void snake_food(int food_xy[], int width, int height,
-                       int snake_xy[][SNAKE_ARRAY_SIZE], int snake_length)
-{
-    do {
-        srand(time(NULL));
-        food_xy[0] = rand() % (width - 2) + 2;
-        srand(time(NULL));
-        food_xy[1] = rand() % (height - 6) + 2;
-    } while (
-        collision_snake(food_xy[0], food_xy[1], snake_xy, snake_length, 0));
-
-    gotoxy(food_xy[0], food_xy[1]);
-    printf("%c", SNAKE_FOOD);
-
-    // wait_4_key();
-}
-
 void snake_refresh_info_bar(int score, int speed)
 {
     gotoxy(5, 23);
@@ -500,13 +394,160 @@ void snake_refresh_info_bar(int score, int speed)
 
     gotoxy(52, 24);
     printf("%s", str_info_bar[3]);
-
-    // wait_4_key();
 }
 
-int snake_check_keys_pressed(int direction)
+static void snake_enviroment_init(int console_width, int console_height)
 {
-    int pressed;
+    int x = 1, y = 1;
+
+    clrscr();
+
+    for (; x < console_width; x++) {
+        gotoxy(x, y);
+        printf("%c", SNAKE_WALL);
+
+        gotoxy(x, console_height);
+        printf("%c", SNAKE_WALL);
+    }
+
+    x = 1;
+    for (; y < console_height + 1; y++) {
+        gotoxy(x, y);
+        printf("%c", SNAKE_WALL);
+
+        gotoxy(console_width, y);
+        printf("%c", SNAKE_WALL);
+    }
+}
+
+static void snake_len_init(snake_object_t *snake)
+{
+    snake->slen = SNAKE_LEN_INIT;
+}
+
+static void snake_body_init(snake_object_t *snake)
+{
+    int i;
+    int x, y;
+
+    snake->sx[0] = SNAKE_POS_X;
+    snake->sy[0] = SNAKE_POS_Y;
+
+    x = snake->sx[0];
+    y = snake->sy[0];
+
+    for (i = 0; i <= snake->slen; i++) {
+        snake->sx[i] = x + i;
+        snake->sy[i] = y;
+    }
+
+    for (i = 0; i < snake->slen - 1; i++) {
+        gotoxy(snake->sx[i], snake->sy[i]);
+        printf("%c", SNAKE_BODY);
+    }
+
+    gotoxy(snake->sx[snake->slen - 1], snake->sy[snake->slen - 1]);
+    printf("%c", SNAKE_HEAD);
+}
+
+static void snake_food_init(snake_object_t *snake)
+{
+    snake->fx = SNAKE_FOOD_POS_X;
+    snake->fy = SNAKE_FOOD_POS_Y;
+    gotoxy(snake->fx, snake->fy);
+    printf("%c", SNAKE_FOOD);
+}
+
+static void snake_speed_init(snake_object_t *snake)
+{
+    int speed;
+    clrscr();
+
+    do {
+        gotoxy(10, 5);
+        printf("Select The game speed between 1 and 9.");
+        speed = wait_4_key() - '0';
+    } while (speed < 1 || speed > 9);
+    snake->speed = speed;
+}
+
+void snake_move(snake_object_t *snake)
+{
+    // clear snake tail cursor
+    gotoxy(snake->sx[0], snake->sy[0]);
+    printf("%c", SNAKE_BLANK);
+
+    // update snake pos
+    for (int i = 0; i < snake->slen - 1; i++) {
+        snake->sx[i] = snake->sx[i + 1];
+        snake->sy[i] = snake->sy[i + 1];
+    }
+    switch (snake->dir) {
+    case SNAKE_DIR_UP:
+        snake->sy[snake->slen - 1]--;
+        break;
+    case SNAKE_DIR_DOWN:
+        snake->sy[snake->slen - 1]++;
+        break;
+    case SNAKE_DIR_RIGHT:
+        snake->sx[snake->slen - 1]++;
+        break;
+    case SNAKE_DIR_LEFT:
+        snake->sx[snake->slen - 1]--;
+        break;
+    default:
+        break;
+    }
+
+    // update snake head cursor
+    gotoxy(snake->sx[snake->slen - 1], snake->sy[snake->slen - 1]);
+    printf("%c", SNAKE_HEAD);
+
+    // update snake body cursor
+    for (int i = 0; i < snake->slen - 1; i++) {
+        gotoxy(snake->sx[i], snake->sy[i]);
+        printf("%c", SNAKE_BODY);
+    }
+
+    // update cursor origin
+    gotoxy(0, 0);
+}
+
+bool snake_is_eat_food(snake_object_t *snake)
+{
+    if (snake->sx[snake->slen - 1] == snake->fx &&
+        snake->sy[snake->slen - 1] == snake->fy) {
+        snake->fx = 0;
+        snake->fy = 0;
+        BELL();
+        return true; // eat
+    }
+    return false;
+}
+
+void snake_food(snake_object_t *snake)
+{
+    srand(time(NULL));
+    snake->fx = rand() % SNAKE_CONSOLE_WIDTH + 1;
+    srand(time(NULL));
+    snake->fy = rand() % SNAKE_CONSOLE_HEIGHT + 1;
+    gotoxy(snake->fx, snake->fy);
+    printf("%c", SNAKE_FOOD);
+}
+
+static bool snake_is_kill_by_wall(snake_object_t *snake)
+{
+    if (snake->sx[snake->slen - 1] == 0 || snake->sy[snake->slen - 1] == 0 ||
+        snake->sx[snake->slen - 1] == SNAKE_CONSOLE_WIDTH ||
+        snake->sy[snake->slen - 1] == SNAKE_CONSOLE_HEIGHT) {
+        return true;
+    }
+    return false;
+}
+
+SNAKE_DIR snake_check_keys_pressed(SNAKE_DIR direction)
+{
+    char pressed;
 
     if (kbhit()) {
         pressed = getch();
@@ -527,128 +568,79 @@ int snake_check_keys_pressed(int direction)
     return direction;
 }
 
-void snake_move(int snake_xy[][SNAKE_ARRAY_SIZE], int snake_length,
-                int direction)
+void snake_start_game(snake_object_t *snake)
 {
-    int x, y;
+    SNAKE_GAME_OVER game_over = SNAKE_GAME_OVER_NONE;
+    int wait =
+        clock() + CLOCKS_PER_SEC - (snake->speed) * (CLOCKS_PER_SEC / 10);
 
-    x = snake_xy[0][snake_length - 1];
-    y = snake_xy[1][snake_length - 1];
-
-    gotoxy(x, y);
-    printf("%c", SNAKE_BLANK);
-
-    gotoxy(snake_xy[0][0], snake_xy[1][0]);
-    printf("%c", SNAKE_BODY);
-
-    snake_move_snake_array(snake_xy, snake_length, direction);
-
-    gotoxy(snake_xy[0][0], snake_xy[1][0]);
-    printf("%c", SNAKE_HEAD);
-
-    gotoxy(0, 0);
-}
-
-static void snake_start_game(int snake_xy[][SNAKE_ARRAY_SIZE], int food_xy[],
-                             int consoleWidth, int consoleHeight,
-                             int snake_length, int direction, int score,
-                             int speed)
-{
-    int game_over = 0;
-    clock_t end_wait;
-
-    // CLOCKS_PER_SEC-(n-1)*(CLOCKS_PER_SEC/10)
-    int wait_mili = CLOCKS_PER_SEC - (speed) * (CLOCKS_PER_SEC / 10);
-    int temp_score = 10 * speed;
-    int old_direction;
-    bool can_change_direction = true;
-
-    end_wait = clock() + wait_mili;
-
+    // first wait user choose to move snake
+    char key;
     do {
-        if (can_change_direction) {
-            old_direction = direction;
-            direction = snake_check_keys_pressed(direction);
+        key = wait_4_key();
+        switch (key) {
+        case SNAKE_DIR_UP:
+            snake->dir = SNAKE_DIR_UP;
+            break;
+        case SNAKE_DIR_DOWN:
+            snake->dir = SNAKE_DIR_DOWN;
+            break;
+        case SNAKE_DIR_RIGHT:
+            snake->dir = SNAKE_DIR_RIGHT;
+            break;
+        case SNAKE_DIR_LEFT:
+            break;
+        default:
+            break;
         }
+        if (key == SNAKE_DIR_UP || key == SNAKE_DIR_DOWN ||
+            key == SNAKE_DIR_RIGHT)
+            break;
+    } while (1);
 
-        if (old_direction != direction) {
-            can_change_direction = false;
-        }
-
-        if (clock() >= end_wait) {
-            snake_move(snake_xy, snake_length, direction);
-            can_change_direction = true;
-
-            if (snake_is_eat_food(snake_xy, food_xy)) {
-                snake_food(food_xy, consoleWidth, consoleHeight, snake_xy,
-                           snake_length);
-                snake_length++;
-                score += speed;
-                if (score >= 10 * speed + temp_score) {
-                    speed++;
-                    temp_score = score;
-
-                    if (speed <= 9) {
-                        wait_mili = wait_mili - (CLOCKS_PER_SEC / 10);
-                    }
-
-                    else if (wait_mili >= 40) {
-                        wait_mili = wait_mili - (CLOCKS_PER_SEC / 200);
-                    }
-                }
-
-                snake_refresh_info_bar(score, speed);
+    // hide_cursor();
+    do {
+        snake->dir = snake_check_keys_pressed(snake->dir);
+        if (clock() > wait) {
+            snake_move(snake);
+            if (snake_is_eat_food(snake)) {
+                snake->slen++;
+                snake_food(snake);
             }
-
-            end_wait = clock() + wait_mili;
+            wait = clock() + CLOCKS_PER_SEC -
+                   (snake->speed) * (CLOCKS_PER_SEC / 10);
         }
 
-        game_over = collision_detection(snake_xy, consoleWidth, consoleHeight,
-                                        snake_length);
-
-        if (snake_length >= SNAKE_ARRAY_SIZE - 5) {
-            game_over = 2;
-            score += 1500;
+        if (snake_is_kill_by_wall(snake)) {
+            game_over = SNAKE_GAME_OVER_BY_WALL;
         }
-
     } while (!game_over);
+    // show_cursor();
 
     switch (game_over) {
-    case 1:
+    case SNAKE_GAME_OVER_BY_WALL:
+    case SNAKE_GAME_OVER_BY_SNAKE:
         BELL();
         BELL();
-
         snake_game_overs_screen();
-
         break;
-    case 2:
+    case SNAKE_GAME_OVER_BY_YOU_WIN:
         snake_you_win_screen();
         break;
-    }
-
-    if (score >= get_lowest_score() && score != 0) {
-        input_score(score);
-        display_high_scores();
+    default:
+        assert(0);
+        break;
     }
 }
 
 static void snake_load_game(void)
 {
-    int snake_xy[2][SNAKE_ARRAY_SIZE];
-    int food_xy[] = { 5, 5 }; // snake food init position
-    int direction = LEFT_ARROW; // snake init direction
-    int score = 0;
-    int speed = snake_get_game_speed();
-
+    snake_speed_init(&g_snake);
     snake_enviroment_init(SNAKE_CONSOLE_WIDTH, SNAKE_CONSOLE_HEIGHT);
-    snake_position_init(snake_xy);
-    snake_body_init(snake_xy, SNAKE_INIT_LEN);
-    snake_food(food_xy, SNAKE_CONSOLE_WIDTH, SNAKE_CONSOLE_HEIGHT, snake_xy,
-               SNAKE_INIT_LEN);
-    snake_refresh_info_bar(score, speed);
-    snake_start_game(snake_xy, food_xy, SNAKE_CONSOLE_WIDTH,
-                     SNAKE_CONSOLE_HEIGHT, SNAKE_INIT_LEN, direction, score,
-                     speed);
+    snake_len_init(&g_snake);
+    snake_body_init(&g_snake);
+    snake_food_init(&g_snake);
+    snake_start_game(&g_snake);
 }
 
 static void snake_welcome_art(void)

@@ -182,7 +182,7 @@ void tt_dump_bytes(void)
     uint8_t random_numbers[ARRAY_SIZEX];
     int i;
 
-    // 设置随机数种子，使用当前时间作为种子
+    // Set the random number seed, using the current time as the seed
     srand(time(NULL));
 
     for (i = 0; i < ARRAY_SIZEX; i++) {
@@ -246,6 +246,36 @@ void tt_bit(void)
     printf("ctz: %d\n", ctz(num));
 }
 
+void tt_clock(void)
+{
+    clock_t start_time, end_time;
+    double cpu_time_used;
+
+    start_time = clock();
+
+    // The block of code whose execution time is to be measured
+    for (int i = 0; i < 1000000; i++) {
+        // some calculation or operation
+    }
+
+    end_time = clock();
+
+    cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+
+    printf("execute time:%f s\n", cpu_time_used);
+}
+
+void tt_cursor(void)
+{
+    gotoxy(1, 1);
+    set_terminal_attributes();
+    hide_cursor();
+
+    wait_4_key();
+    show_cursor();
+    restore_terminal_attributes();
+}
+
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
@@ -260,7 +290,9 @@ int main(void)
     // tt_dump_bytes();
     // tt_roundx();
     // tt_container_of();
-    tt_bit();
+    // tt_bit();
+    // tt_clock();
+    tt_cursor();
 
     return 0;
 }

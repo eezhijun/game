@@ -244,6 +244,30 @@ int kbhit(void);
  */
 char wait_4_key(void);
 
+/**
+ * @brief
+ *
+ */
+void set_terminal_attributes(void);
+
+/**
+ * @brief
+ *
+ */
+void restore_terminal_attributes(void);
+
+/**
+ * @brief
+ *
+ */
+void show_cursor(void);
+
+/**
+ * @brief
+ *
+ */
+void hide_cursor(void);
+
 /* sort */
 /**
  * @brief
