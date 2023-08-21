@@ -3,9 +3,9 @@
 
 #include "stdio.h"
 
-#define HEX_TRACE_COLOR 1
+#define HEX_TRACE_COLOR
 
-#if HEX_TRACE_COLOR > 0
+#ifdef HEX_TRACE_COLOR
 #define LOG_COLOR_BLACK "\033[40;30m"
 #define LOG_COLOR_RED "\033[40;31m"
 #define LOG_COLOR_GREEN "\033[40;32m"
