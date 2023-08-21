@@ -1,15 +1,10 @@
 # output
 output/
 
-*.vc.db
-*.vc.db-shm
-*.vc.db-wal
+.vscode/
 
 .vs/
 *.sln
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
-
-
-highscores
