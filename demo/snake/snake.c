@@ -51,7 +51,7 @@ static const char *str_tips[] = {
 static const char *str_info_bar[] = {
     "Score: ",
     "Speed: ",
-    "Coder: HZJ",
+    "Coder  : HZJ",
     "Version: 0.5",
 };
 
@@ -132,6 +132,7 @@ typedef struct {
     int fx;
     int fy;
     int speed;
+    int score;
     SNAKE_DIR dir;
 } snake_object_t;
 
@@ -140,8 +141,12 @@ static snake_object_t g_snake = { .sx = { 0 },
                                   .slen = 0,
                                   .fx = 0,
                                   .fy = 0,
-                                  .dir = SNAKE_DIR_NONE};
+                                  .dir = SNAKE_DIR_NONE };
 
+snake_object_t *snake_get_snake_object(void)
+{
+    return &g_snake;
+}
 
 void pause_menu(void)
 {
@@ -152,22 +157,6 @@ void pause_menu(void)
     gotoxy(28, 23);
     printf("            ");
 }
-
-// int collision_detection(int snake_xy[][SNAKE_ARRAY_SIZE], int consoleWidth,
-//                         int consoleHeight, int snake_length)
-// {
-//     int colision = 0;
-//     if ((snake_xy[0][0] == 1) || (snake_xy[1][0] == 1) ||
-//         (snake_xy[0][0] == consoleWidth) ||
-//         (snake_xy[1][0] == consoleHeight - 4)) {
-//         colision = 1;
-//     } else if (collision_snake(snake_xy[0][0], snake_xy[1][0], snake_xy,
-//                                snake_length, 1)) {
-//         colision = 1;
-//     }
-
-//     return colision;
-// }
 
 void create_high_scores(void)
 {
@@ -371,7 +360,6 @@ void snake_game_overs_screen(void)
     int x = 17, y = 3;
     int i;
 
-    clrscr();
     for (i = 0; i < ARRAY_SIZE(str_game_voer_scr); i++) {
         gotoxy(x, y);
         y++;
@@ -381,19 +369,20 @@ void snake_game_overs_screen(void)
     clrscr();
 }
 
-void snake_refresh_info_bar(int score, int speed)
+void snake_refresh_info_bar(snake_object_t *snake)
 {
-    gotoxy(5, 23);
-    printf("%s%d", str_info_bar[0], score);
+    gotoxy(5, SNAKE_CONSOLE_HEIGHT + 2);
+    printf("%s%d", str_info_bar[0], snake->score);
 
-    gotoxy(5, 24);
-    printf("%s%d", str_info_bar[1], speed);
+    gotoxy(5, SNAKE_CONSOLE_HEIGHT + 3);
+    printf("%s%d", str_info_bar[1], snake->speed);
 
-    gotoxy(52, 23);
+    gotoxy(SNAKE_CONSOLE_WIDTH - 15, SNAKE_CONSOLE_HEIGHT + 2);
     printf("%s", str_info_bar[2]);
 
-    gotoxy(52, 24);
+    gotoxy(SNAKE_CONSOLE_WIDTH - 15, SNAKE_CONSOLE_HEIGHT + 3);
     printf("%s", str_info_bar[3]);
+    gotoxy(0, 0);
 }
 
 static void snake_enviroment_init(int console_width, int console_height)
@@ -430,24 +419,30 @@ static void snake_body_init(snake_object_t *snake)
     int i;
     int x, y;
 
+    /*
+        Make sure the snake head is at index 0 of the array
+        3 2 1 0
+        # # # X
+    */
     snake->sx[0] = SNAKE_POS_X;
     snake->sy[0] = SNAKE_POS_Y;
 
     x = snake->sx[0];
     y = snake->sy[0];
 
-    for (i = 0; i <= snake->slen; i++) {
-        snake->sx[i] = x + i;
+    for (i = 1; i < snake->slen; i++) {
+        snake->sx[i] = x - i;
         snake->sy[i] = y;
     }
 
-    for (i = 0; i < snake->slen - 1; i++) {
+    gotoxy(snake->sx[0], snake->sy[0]);
+    printf("%c", SNAKE_HEAD);
+
+    for (i = 1; i < snake->slen; i++) {
         gotoxy(snake->sx[i], snake->sy[i]);
         printf("%c", SNAKE_BODY);
     }
-
-    gotoxy(snake->sx[snake->slen - 1], snake->sy[snake->slen - 1]);
-    printf("%c", SNAKE_HEAD);
+    gotoxy(0, 0);
 }
 
 static void snake_food_init(snake_object_t *snake)
@@ -474,37 +469,37 @@ static void snake_speed_init(snake_object_t *snake)
 void snake_move(snake_object_t *snake)
 {
     // clear snake tail cursor
-    gotoxy(snake->sx[0], snake->sy[0]);
+    gotoxy(snake->sx[snake->slen - 1], snake->sy[snake->slen - 1]);
     printf("%c", SNAKE_BLANK);
 
     // update snake pos
-    for (int i = 0; i < snake->slen - 1; i++) {
-        snake->sx[i] = snake->sx[i + 1];
-        snake->sy[i] = snake->sy[i + 1];
+    for (int i = snake->slen - 1; i > 0; i--) {
+        snake->sx[i] = snake->sx[i - 1];
+        snake->sy[i] = snake->sy[i - 1];
     }
     switch (snake->dir) {
     case SNAKE_DIR_UP:
-        snake->sy[snake->slen - 1]--;
+        snake->sy[0]--;
         break;
     case SNAKE_DIR_DOWN:
-        snake->sy[snake->slen - 1]++;
+        snake->sy[0]++;
         break;
     case SNAKE_DIR_RIGHT:
-        snake->sx[snake->slen - 1]++;
+        snake->sx[0]++;
         break;
     case SNAKE_DIR_LEFT:
-        snake->sx[snake->slen - 1]--;
+        snake->sx[0]--;
         break;
     default:
         break;
     }
 
     // update snake head cursor
-    gotoxy(snake->sx[snake->slen - 1], snake->sy[snake->slen - 1]);
+    gotoxy(snake->sx[0], snake->sy[0]);
     printf("%c", SNAKE_HEAD);
 
     // update snake body cursor
-    for (int i = 0; i < snake->slen - 1; i++) {
+    for (int i = 1; i < snake->slen; i++) {
         gotoxy(snake->sx[i], snake->sy[i]);
         printf("%c", SNAKE_BODY);
     }
@@ -515,8 +510,7 @@ void snake_move(snake_object_t *snake)
 
 bool snake_is_eat_food(snake_object_t *snake)
 {
-    if (snake->sx[snake->slen - 1] == snake->fx &&
-        snake->sy[snake->slen - 1] == snake->fy) {
+    if (snake->sx[0] == snake->fx && snake->sy[0] == snake->fy) {
         snake->fx = 0;
         snake->fy = 0;
         BELL();
@@ -537,9 +531,9 @@ void snake_food(snake_object_t *snake)
 
 static bool snake_is_kill_by_wall(snake_object_t *snake)
 {
-    if (snake->sx[snake->slen - 1] == 0 || snake->sy[snake->slen - 1] == 0 ||
-        snake->sx[snake->slen - 1] == SNAKE_CONSOLE_WIDTH ||
-        snake->sy[snake->slen - 1] == SNAKE_CONSOLE_HEIGHT) {
+    if (snake->sx[0] == 0 || snake->sy[0] == 0 ||
+        snake->sx[0] == SNAKE_CONSOLE_WIDTH ||
+        snake->sy[0] == SNAKE_CONSOLE_HEIGHT) {
         return true;
     }
     return false;
@@ -605,7 +599,9 @@ void snake_start_game(snake_object_t *snake)
             snake_move(snake);
             if (snake_is_eat_food(snake)) {
                 snake->slen++;
+                snake->score += snake->speed;
                 snake_food(snake);
+                snake_refresh_info_bar(snake);
             }
             wait = clock() + CLOCKS_PER_SEC -
                    (snake->speed) * (CLOCKS_PER_SEC / 10);
@@ -614,6 +610,7 @@ void snake_start_game(snake_object_t *snake)
         if (snake_is_kill_by_wall(snake)) {
             game_over = SNAKE_GAME_OVER_BY_WALL;
         }
+
     } while (!game_over);
     // show_cursor();
 
@@ -635,12 +632,14 @@ void snake_start_game(snake_object_t *snake)
 
 static void snake_load_game(void)
 {
-    snake_speed_init(&g_snake);
+    snake_object_t *snake = snake_get_snake_object();
+    snake_speed_init(snake);
     snake_enviroment_init(SNAKE_CONSOLE_WIDTH, SNAKE_CONSOLE_HEIGHT);
-    snake_len_init(&g_snake);
-    snake_body_init(&g_snake);
-    snake_food_init(&g_snake);
-    snake_start_game(&g_snake);
+    snake_len_init(snake);
+    snake_body_init(snake);
+    snake_food_init(snake);
+    snake_refresh_info_bar(snake);
+    snake_start_game(snake);
 }
 
 static void snake_welcome_art(void)
@@ -693,61 +692,57 @@ static void snake_exit_yn(void)
     }
 }
 
-static int snake_menu_selector(int x, int y, int ystart)
+int snake_main_meun(void)
 {
-    int i = 0;
-    char key;
-
-    x -= 2;
-    gotoxy(x, ystart);
-    printf(">");
-    gotoxy(0, 0); // put cursor at the origin
-
-    do {
-        key = wait_4_key();
-        if (key == UP_ARROW) {
-            gotoxy(x, ystart + i);
-            printf(" "); // clear ">" sign
-
-            if (ystart >= ystart + i)
-                i = y - ystart - 2;
-            else
-                i--;
-            gotoxy(x, ystart + i);
-            printf(">");
-        } else if (key == DOWN_ARROW) {
-            gotoxy(x, ystart + i);
-            printf(" "); // clear ">" sign
-
-            if (i + 2 >= y - ystart)
-                i = 0;
-            else
-                i++;
-            gotoxy(x, ystart + i);
-            printf(">");
-        }
-    } while (key != ENTER_KEY);
-
-    return i;
-}
-
-static int snake_main_meun(void)
-{
-    int x = 10, y = 5;
+    #define MAIN_MENU_INIT_X 10
+    #define MAIN_MENU_INIT_Y 5
+    int x = MAIN_MENU_INIT_X, y = MAIN_MENU_INIT_Y;
     int ystart = y;
-    int selected;
-    int i;
+    char key;
+    int selected = 0;
 
     clrscr();
     gotoxy(x, y);
     y++;
-    for (i = 0; i < ARRAY_SIZE(str_menu); i++) {
+    for (int i = 0; i < ARRAY_SIZE(str_menu); i++) {
         printf("%s\n", str_menu[i]);
         gotoxy(x, y);
         y++;
     }
 
-    selected = snake_menu_selector(x, y, ystart);
+    x -= 2;
+    gotoxy(x, ystart);
+    printf(">");
+
+    do {
+        key = wait_4_key();
+        switch (key) {
+        case UP_ARROW:
+            gotoxy(x, ystart + selected);
+            printf(" "); // clear ">" sign
+
+            if (ystart >= ystart + selected)
+                selected = y - ystart - 2;
+            else
+                selected--;
+            gotoxy(x, ystart + selected);
+            printf(">");
+            break;
+        case DOWN_ARROW:
+            gotoxy(x, ystart + selected);
+            printf(" "); // clear ">" sign
+
+            if (selected + 2 >= y - ystart)
+                selected = 0;
+            else
+                selected++;
+            gotoxy(x, ystart + selected);
+            printf(">");
+            break;
+        default:
+            break;
+        }
+    } while (key != ENTER_KEY);
 
     return selected;
 }
