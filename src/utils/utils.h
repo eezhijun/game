@@ -1,3 +1,14 @@
+/**
+ * @file utils.h
+ * @author eehongzhijun (eehongzhijun@outlook.com)
+ * @brief 
+ * @version 0.0.1
+ * @date 2023-08-24
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
 #ifndef _UTILS_H_
 #define _UTILS_H_
 

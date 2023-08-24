@@ -8,3 +8,5 @@ output/
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+
+highscores

@@ -1,3 +1,14 @@
+/**
+ * @file snake.c
+ * @author eehongzhijun (eehongzhijun@outlook.com)
+ * @brief 
+ * @version 0.0.1
+ * @date 2023-08-24
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
 #ifdef SNAKE_DEMO
 
 #include "ctype.h"
@@ -158,64 +169,68 @@ void pause_menu(void)
     printf("            ");
 }
 
-void create_high_scores(void)
+void snake_create_high_scores(void)
 {
-    FILE *file;
+    FILE *fp;
     int i;
 
-    file = fopen("highscores", "w+");
+    fp = fopen("highscores", "w+");
 
-    if (file == NULL) {
-        printf("FAILED TO CREATE HIGHSCORES!!! EXITING!");
+    if (fp == NULL) {
+        perror("failed to create highscores");
         exit(0);
     }
 
     for (i = 0; i < 5; i++) {
-        fprintf(file, "%d", i + 1);
-        fprintf(file, "%s", "\t0\t\t\tEMPTY\n");
+        fprintf(fp, "%d", i + 1);
+        fprintf(fp, "%s", "\t0\t\t\tEMPTY\n");
     }
 
-    fclose(file);
-    return;
+    fclose(fp);
 }
 
-int get_lowest_score(void)
+int snake_get_lowest_score(void)
 {
     FILE *fp;
     char str[128];
-    int lowestScore = 0;
+    int lowest_score = 0;
     int i;
-    int intLength;
+    int len;
 
-    if ((fp = fopen("highscores", "r")) == NULL) {
-        create_high_scores();
-        if ((fp = fopen("highscores", "r")) == NULL) {
-            exit(1);
+    chdir("demo/snake");
+    fp = fopen("highscores", "r");
+    if (fp == NULL) {
+        perror("unable to open ./demo/sanke/highscores");
+        snake_create_high_scores();
+        fp = fopen("highscores", "r");
+        if (fp == NULL) {
+            perror("unable to open ./demo/sanke/highscores");
+            exit(EXIT_FAILURE);
         }
     }
-
+    /* Read data from fp file and save in str */
     while (!feof(fp)) {
         fgets(str, 126, fp);
     }
     fclose(fp);
 
-    i = 0;
+    printf("%s\n", str);
+    wait_4_key();
 
+    i = 0;
     while (str[2 + i] != '\t') {
         i++;
     }
 
-    intLength = i;
-
-    for (i = 0; i < intLength; i++) {
-        lowestScore =
-            lowestScore + ((int)str[2 + i] - 48) * pow(10, intLength - i - 1);
+    len = i;
+    for (i = 0; i < len; i++) {
+        lowest_score += ((int)str[2 + i] - 48) * pow(10, len - i - 1);
     }
 
-    return lowestScore;
+    return lowest_score;
 }
 
-void input_score(int score)
+void snake_input_score(snake_object_t *snake)
 {
     FILE *fp;
     FILE *file;
@@ -235,7 +250,7 @@ void input_score(int score)
     clrscr();
 
     if ((fp = fopen("highscores", "r")) == NULL) {
-        create_high_scores();
+        snake_create_high_scores();
         if ((fp = fopen("highscores", "r")) == NULL) {
             exit(1);
         }
@@ -271,8 +286,8 @@ void input_score(int score)
                 fScore + ((int)str[2 + i] - 48) * pow(10, intLength - i - 1);
         }
 
-        if (score >= fScore && entered != 1) {
-            scores[x] = score;
+        if (snake->score >= fScore && entered != 1) {
+            scores[x] = snake->score;
             strcpy(highScoreNames[x], name);
 
             x++;
@@ -302,7 +317,7 @@ void input_score(int score)
     fclose(file);
 }
 
-void display_high_scores(void)
+void snake_display_high_scores(void)
 {
     FILE *fp;
     char str[128];
@@ -312,7 +327,7 @@ void display_high_scores(void)
     clrscr();
 
     if ((fp = fopen("highscores", "r")) == NULL) {
-        create_high_scores();
+        snake_create_high_scores();
         if ((fp = fopen("highscores", "r")) == NULL) {
             exit(1);
         }
@@ -628,6 +643,11 @@ void snake_start_game(snake_object_t *snake)
         assert(0);
         break;
     }
+
+    if (snake->score >= snake_get_lowest_score() && snake->score != 0) {
+        snake_input_score(snake);
+        snake_display_high_scores();
+    }
 }
 
 static void snake_load_game(void)
@@ -694,8 +714,8 @@ static void snake_exit_yn(void)
 
 int snake_main_meun(void)
 {
-    #define MAIN_MENU_INIT_X 10
-    #define MAIN_MENU_INIT_Y 5
+#define MAIN_MENU_INIT_X 10
+#define MAIN_MENU_INIT_Y 5
     int x = MAIN_MENU_INIT_X, y = MAIN_MENU_INIT_Y;
     int ystart = y;
     char key;
@@ -757,7 +777,7 @@ int main(void)
             snake_load_game();
             break;
         case SNAKE_MENU1:
-            display_high_scores();
+            snake_display_high_scores();
             break;
         case SNAKE_MENU2:
             snake_tips();
