@@ -755,12 +755,6 @@ int main(void)
 {
     snake_welcome_art();
 
-    // ONLYTEST
-    // char str[128] = {'1', '\n', '2', '\n', '3'};
-    // for (int i = 0; i < ARRAY_SIZE(str); i++) {
-    //     printf("%d", str[i]);
-    // }
-    // exit(EXIT_SUCCESS);
     do {
         switch (snake_main_meun()) {
         case SNAKE_MENU0:
