@@ -35,6 +35,8 @@
 #define SNAKE_POS_Y 12
 #define SNAKE_FOOD_POS_X 64
 #define SNAKE_FOOD_POS_Y 12
+#define SNAKE_SCORES_NUM 5
+#define SNAKE_PLAYER_NAME_LEN 20
 
 #define SNAKE_HEAD 'X'
 #define SNAKE_BODY '#'
@@ -144,6 +146,7 @@ typedef struct {
     int fy;
     int speed;
     int score;
+    SNAKE_GAME_OVER game_over;
     SNAKE_DIR dir;
 } snake_object_t;
 
@@ -152,21 +155,14 @@ static snake_object_t g_snake = { .sx = { 0 },
                                   .slen = 0,
                                   .fx = 0,
                                   .fy = 0,
+                                  .speed = 0,
+                                  .score = 0,
+                                  .game_over = SNAKE_GAME_OVER_NONE,
                                   .dir = SNAKE_DIR_NONE };
 
 snake_object_t *snake_get_snake_object(void)
 {
     return &g_snake;
-}
-
-void pause_menu(void)
-{
-    gotoxy(28, 23);
-    printf("**Paused**");
-
-    wait_4_key();
-    gotoxy(28, 23);
-    printf("            ");
 }
 
 void snake_create_high_scores(void)
@@ -178,24 +174,36 @@ void snake_create_high_scores(void)
 
     if (fp == NULL) {
         perror("failed to create highscores");
-        exit(0);
+        exit(EXIT_FAILURE);
     }
 
-    for (i = 0; i < 5; i++) {
+    /*
+        Save the highest 5 scores, discard the lowest
+        1	0			EMPTY
+        2	0			EMPTY
+        3	0			EMPTY
+        4	0			EMPTY
+        5	0			EMPTY
+    */
+    for (i = 0; i < SNAKE_SCORES_NUM; i++) {
         fprintf(fp, "%d", i + 1);
         fprintf(fp, "%s", "\t0\t\t\tEMPTY\n");
     }
-
     fclose(fp);
 }
 
 int snake_get_lowest_score(void)
 {
     FILE *fp;
-    char str[128];
-    int lowest_score = 0;
-    int i;
-    int len;
+    uint16_t lowest_score = 0;
+
+    size_t len = 20;
+    char *buf = (char *)malloc(len * sizeof(char));
+    if (buf == NULL) {
+        printf("buf malloc fail\n");
+        return 0;
+    }
+    memset(buf, 0, len * sizeof(char));
 
     chdir("demo/snake");
     fp = fopen("highscores", "r");
@@ -208,24 +216,17 @@ int snake_get_lowest_score(void)
             exit(EXIT_FAILURE);
         }
     }
-    /* Read data from fp file and save in str */
+
+    // find last row to get lowest scores
     while (!feof(fp)) {
-        fgets(str, 126, fp);
+        fgets(buf, len, fp);
     }
     fclose(fp);
 
-    printf("%s\n", str);
-    wait_4_key();
+    lowest_score = buf[2] - 48;
 
-    i = 0;
-    while (str[2 + i] != '\t') {
-        i++;
-    }
-
-    len = i;
-    for (i = 0; i < len; i++) {
-        lowest_score += ((int)str[2 + i] - 48) * pow(10, len - i - 1);
-    }
+    buf = NULL;
+    free(buf);
 
     return lowest_score;
 }
@@ -233,88 +234,57 @@ int snake_get_lowest_score(void)
 void snake_input_score(snake_object_t *snake)
 {
     FILE *fp;
-    FILE *file;
-    char str[20];
-    int fScore;
-    int i, s, y;
-    int intLength;
-    int scores[5];
-    int x;
-    char highScoreName[20];
-    char highScoreNames[5][20];
+    char name[SNAKE_PLAYER_NAME_LEN] = { 0 };
+    char score[SNAKE_SCORES_NUM] = { 0 };
+    char high_score_name[SNAKE_SCORES_NUM][SNAKE_PLAYER_NAME_LEN] = { 0 };
+    uint32_t idx = 0;
 
-    char name[20];
-
-    int entered = 0;
+    size_t len = 20;
+    char *buf = (char *)malloc(len * sizeof(char));
+    if (buf == NULL) {
+        printf("buf malloc fail\n");
+        return;
+    }
+    memset(buf, 0, len * sizeof(char));
 
     clrscr();
 
     if ((fp = fopen("highscores", "r")) == NULL) {
         snake_create_high_scores();
         if ((fp = fopen("highscores", "r")) == NULL) {
-            exit(1);
+            exit(EXIT_FAILURE);
         }
     }
     gotoxy(10, 5);
     printf("Your Score made it into the top 5!!!");
     gotoxy(10, 6);
     printf("Please enter your name: ");
-    fgets(name, 20, stdin);
+    fgets(name, ARRAY_SIZE(name), stdin);
 
-    x = 0;
+    // ONLYTEST
+    /*
+        1	0			EMPTY
+        2	0			EMPTY
+        3	0			EMPTY
+        4	0			EMPTY
+        5	0			EMPTY
+    */
+
     while (!feof(fp)) {
-        fgets(str, 126, fp);
-
-        i = 0;
-
-        while (str[2 + i] != '\t') {
-            i++;
-        }
-
-        s = i;
-        intLength = i;
-        i = 0;
-        while (str[5 + s] != '\n') {
-            highScoreName[i] = str[5 + s];
-            s++;
-            i++;
-        }
-
-        fScore = 0;
-        for (i = 0; i < intLength; i++) {
-            fScore =
-                fScore + ((int)str[2 + i] - 48) * pow(10, intLength - i - 1);
-        }
-
-        if (snake->score >= fScore && entered != 1) {
-            scores[x] = snake->score;
-            strcpy(highScoreNames[x], name);
-
-            x++;
-            entered = 1;
-        }
-
-        strcpy(highScoreNames[x], highScoreName);
-        scores[x] = fScore;
-
-        for (y = 0; y < 20; y++) {
-            highScoreName[y] = '\0';
-        }
-
-        x++;
-        if (x >= 5)
+        fgets(buf, len, fp);
+        if (strcmp(&buf[6], "EMPTY\n") == 0) {
+            strncpy(high_score_name[idx], name, sizeof(high_score_name) - 1);
+            high_score_name[idx][sizeof(high_score_name) - 1] = '\0';
+            score[idx] = snake->score;
             break;
+        }
+        idx++;
     }
-
     fclose(fp);
 
-    file = fopen("highscores", "w+");
-
-    for (i = 0; i < 5; i++) {
-        fprintf(file, "%d\t%d\t\t\t%s\n", i + 1, scores[i], highScoreNames[i]);
-    }
-
-    fclose(file);
+    fp = fopen("highscores", "w+");
+    fprintf(fp, "%d\t%d\t\t\t%s\n", idx + 1, score[idx], high_score_name[idx]);
+    fclose(fp);
 }
 
 void snake_display_high_scores(void)
@@ -329,7 +299,7 @@ void snake_display_high_scores(void)
     if ((fp = fopen("highscores", "r")) == NULL) {
         snake_create_high_scores();
         if ((fp = fopen("highscores", "r")) == NULL) {
-            exit(1);
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -400,7 +370,17 @@ void snake_refresh_info_bar(snake_object_t *snake)
     gotoxy(0, 0);
 }
 
-static void snake_enviroment_init(int console_width, int console_height)
+void snake_pause_menu(void)
+{
+    gotoxy(SNAKE_CONSOLE_WIDTH / 2, SNAKE_CONSOLE_HEIGHT / 2);
+    printf("PAUSE");
+
+    wait_4_key();
+    gotoxy(SNAKE_CONSOLE_WIDTH / 2, SNAKE_CONSOLE_HEIGHT / 2);
+    printf("            ");
+}
+
+void snake_enviroment_init(int console_width, int console_height)
 {
     int x = 1, y = 1;
 
@@ -424,12 +404,12 @@ static void snake_enviroment_init(int console_width, int console_height)
     }
 }
 
-static void snake_len_init(snake_object_t *snake)
+void snake_len_init(snake_object_t *snake)
 {
     snake->slen = SNAKE_LEN_INIT;
 }
 
-static void snake_body_init(snake_object_t *snake)
+void snake_body_init(snake_object_t *snake)
 {
     int i;
     int x, y;
@@ -460,7 +440,7 @@ static void snake_body_init(snake_object_t *snake)
     gotoxy(0, 0);
 }
 
-static void snake_food_init(snake_object_t *snake)
+void snake_food_init(snake_object_t *snake)
 {
     snake->fx = SNAKE_FOOD_POS_X;
     snake->fy = SNAKE_FOOD_POS_Y;
@@ -468,14 +448,14 @@ static void snake_food_init(snake_object_t *snake)
     printf("%c", SNAKE_FOOD);
 }
 
-static void snake_speed_init(snake_object_t *snake)
+void snake_speed_init(snake_object_t *snake)
 {
     int speed;
     clrscr();
 
     do {
         gotoxy(10, 5);
-        printf("Select The game speed between 1 and 9.");
+        printf("Select the game speed between 1 and 9.");
         speed = wait_4_key() - '0';
     } while (speed < 1 || speed > 9);
     snake->speed = speed;
@@ -544,7 +524,7 @@ void snake_food(snake_object_t *snake)
     printf("%c", SNAKE_FOOD);
 }
 
-static bool snake_is_kill_by_wall(snake_object_t *snake)
+bool snake_is_kill_by_wall(snake_object_t *snake)
 {
     if (snake->sx[0] == 0 || snake->sy[0] == 0 ||
         snake->sx[0] == SNAKE_CONSOLE_WIDTH ||
@@ -554,35 +534,34 @@ static bool snake_is_kill_by_wall(snake_object_t *snake)
     return false;
 }
 
-SNAKE_DIR snake_check_keys_pressed(SNAKE_DIR direction)
+SNAKE_DIR snake_check_keys_pressed(SNAKE_DIR dir)
 {
-    char pressed;
+    char press;
 
     if (kbhit()) {
-        pressed = getch();
-        if (direction != pressed) {
-            if (pressed == DOWN_ARROW && direction != UP_ARROW) {
-                direction = pressed;
-            } else if (pressed == UP_ARROW && direction != DOWN_ARROW) {
-                direction = pressed;
-            } else if (pressed == LEFT_ARROW && direction != RIGHT_ARROW) {
-                direction = pressed;
-            } else if (pressed == RIGHT_ARROW && direction != LEFT_ARROW) {
-                direction = pressed;
-            } else if (pressed == EXIT_BUTTON || pressed == PAUSE_BUTTON) {
-                pause_menu();
+        press = getch();
+        if (dir != press) {
+            if (press == DOWN_ARROW && dir != UP_ARROW) {
+                dir = press;
+            } else if (press == UP_ARROW && dir != DOWN_ARROW) {
+                dir = press;
+            } else if (press == LEFT_ARROW && dir != RIGHT_ARROW) {
+                dir = press;
+            } else if (press == RIGHT_ARROW && dir != LEFT_ARROW) {
+                dir = press;
+            } else if (press == EXIT_BUTTON || press == PAUSE_BUTTON) {
+                snake_pause_menu();
             }
         }
     }
-    return direction;
+    return dir;
 }
 
 void snake_start_game(snake_object_t *snake)
 {
-    SNAKE_GAME_OVER game_over = SNAKE_GAME_OVER_NONE;
-    int wait =
-        clock() + CLOCKS_PER_SEC - (snake->speed) * (CLOCKS_PER_SEC / 10);
+    snake->game_over = SNAKE_GAME_OVER_NONE;
 
+    int wait = clock() + CLOCKS_PER_SEC - (snake->speed) * (CLOCKS_PER_SEC / 5);
     // first wait user choose to move snake
     char key;
     do {
@@ -619,17 +598,20 @@ void snake_start_game(snake_object_t *snake)
                 snake_refresh_info_bar(snake);
             }
             wait = clock() + CLOCKS_PER_SEC -
-                   (snake->speed) * (CLOCKS_PER_SEC / 10);
+                   (snake->speed) * (CLOCKS_PER_SEC / 5);
         }
 
         if (snake_is_kill_by_wall(snake)) {
-            game_over = SNAKE_GAME_OVER_BY_WALL;
+            snake->game_over = SNAKE_GAME_OVER_BY_WALL;
         }
 
-    } while (!game_over);
+    } while (!snake->game_over);
     // show_cursor();
+}
 
-    switch (game_over) {
+void snake_game_over(snake_object_t *snake)
+{
+    switch (snake->game_over) {
     case SNAKE_GAME_OVER_BY_WALL:
     case SNAKE_GAME_OVER_BY_SNAKE:
         BELL();
@@ -643,14 +625,15 @@ void snake_start_game(snake_object_t *snake)
         assert(0);
         break;
     }
+    snake->game_over = SNAKE_GAME_OVER_NONE;
 
-    if (snake->score >= snake_get_lowest_score() && snake->score != 0) {
+    if (snake->score > snake_get_lowest_score()) {
         snake_input_score(snake);
         snake_display_high_scores();
     }
 }
 
-static void snake_load_game(void)
+void snake_load_game(void)
 {
     snake_object_t *snake = snake_get_snake_object();
     snake_speed_init(snake);
@@ -660,9 +643,10 @@ static void snake_load_game(void)
     snake_food_init(snake);
     snake_refresh_info_bar(snake);
     snake_start_game(snake);
+    snake_game_over(snake);
 }
 
-static void snake_welcome_art(void)
+void snake_welcome_art(void)
 {
     int i;
 
@@ -673,7 +657,7 @@ static void snake_welcome_art(void)
     wait_4_key();
 }
 
-static void snake_tips(void)
+void snake_tips(void)
 {
     int x = 10, y = 5;
     int i;
@@ -687,26 +671,26 @@ static void snake_tips(void)
     wait_4_key();
 }
 
-static void snake_exit_yn(void)
+void snake_exit_yn(void)
 {
-    char pressed;
+    char press;
 
     clrscr();
     gotoxy(9, 8);
     printf("Are you sure you want to exit(Y/N)\n");
 
     do {
-        pressed = wait_4_key();
-        pressed = tolower(pressed);
-    } while (!(pressed == 'y' || pressed == 'n'));
+        press = wait_4_key();
+        press = tolower(press);
+    } while (!(press == 'y' || press == 'n'));
 
-    printf("%c", pressed);
+    printf("%c", press);
 
-    if (pressed == 'y') {
+    if (press == 'y') {
         printf("\t      Press Enter To End...            \n");
         do {
-            pressed = wait_4_key();
-        } while (pressed != ENTER_KEY);
+            press = wait_4_key();
+        } while (press != ENTER_KEY);
         clrscr();
         exit(1);
     }
@@ -771,6 +755,12 @@ int main(void)
 {
     snake_welcome_art();
 
+    // ONLYTEST
+    // char str[128] = {'1', '\n', '2', '\n', '3'};
+    // for (int i = 0; i < ARRAY_SIZE(str); i++) {
+    //     printf("%d", str[i]);
+    // }
+    // exit(EXIT_SUCCESS);
     do {
         switch (snake_main_meun()) {
         case SNAKE_MENU0:
