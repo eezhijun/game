@@ -24,15 +24,12 @@
 
 #include "utils.h"
 
-
 /* function template */
 // #define MAXT(T) T max_##T(T a, T b) {return (a > b) ? a : b;}
 
 // MAXT(int)
 // MAXT(float)
 // MAXT(double)
-
-
 
 int max(int a, int b)
 {
@@ -262,25 +259,28 @@ void dump_x(const uint8_t *data, size_t len)
             offset += snprintf(dump_buffer + offset,
                                sizeof(dump_buffer) - offset, "%02X ", data[j]);
         }
-        offset += snprintf(dump_buffer + offset, sizeof(dump_buffer) - offset, "\n");
-
+        offset +=
+            snprintf(dump_buffer + offset, sizeof(dump_buffer) - offset, "\n");
     }
 
     if (len > line * DUMP_BYTES) {
-        for (int i = line * DUMP_BYTES; i < DUMP_BYTES + line * DUMP_BYTES; i++) {
+        for (int i = line * DUMP_BYTES; i < DUMP_BYTES + line * DUMP_BYTES;
+             i++) {
             if (((int)sizeof(dump_buffer) - offset) < 0) {
                 break;
             }
 
             if (i < len) {
                 offset += snprintf(dump_buffer + offset,
-                                sizeof(dump_buffer) - offset, "%02X ", data[i]);
+                                   sizeof(dump_buffer) - offset, "%02X ",
+                                   data[i]);
             } else {
                 offset += snprintf(dump_buffer + offset,
-                                sizeof(dump_buffer) - offset, "%02X ", 0);
+                                   sizeof(dump_buffer) - offset, "%02X ", 0);
             }
         }
-        offset += snprintf(dump_buffer + offset, sizeof(dump_buffer) - offset, "\n");
+        offset +=
+            snprintf(dump_buffer + offset, sizeof(dump_buffer) - offset, "\n");
     }
     printf("date len: %d\n", len);
     printf("%s", dump_buffer);
@@ -304,7 +304,8 @@ void print_string(void *elem)
     printf("%s\n", *str);
 }
 
-void print_arr(void *arr, size_t size, size_t elem_size, void (*print_elem(void *)))
+void print_arr(void *arr, size_t size, size_t elem_size,
+               void(*print_elem(void *)))
 {
     for (size_t i = 0; i < size; i++) {
         print_elem(arr + i * elem_size);
@@ -312,5 +313,25 @@ void print_arr(void *arr, size_t size, size_t elem_size, void (*print_elem(void 
     printf("\n");
 }
 
+char *int2string(int num, char *str)
+{
+    sprintf(str, "%d", num);
+    return str;
+}
 
+int string2int(char *str)
+{
+    char flag = '+';
+    long res = 0;
 
+    if (*str == '-') {
+        ++str;
+        flag = '-';
+    }
+
+    sscanf(str, "%ld", &res);
+    if (flag == '-') {
+        res = -res;
+    }
+    return (int)res;
+}

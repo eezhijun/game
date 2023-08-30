@@ -20,6 +20,7 @@
 #include "string.h"
 #include "assert.h"
 #include "unistd.h"
+#include "stdint.h"
 
 #include "utils.h"
 
@@ -36,7 +37,9 @@
 #define SNAKE_FOOD_POS_X 64
 #define SNAKE_FOOD_POS_Y 12
 #define SNAKE_SCORES_NUM 6
-#define SNAKE_PLAYER_NAME_LEN 20
+#define SNAKE_PLAYER_NAME_LEN 21
+#define SNAKE_SPEED_CLOCK(x) \
+    clock() + CLOCKS_PER_SEC - (x) * (CLOCKS_PER_SEC / 10)
 
 #define SNAKE_HEAD 'X'
 #define SNAKE_BODY '#'
@@ -116,14 +119,21 @@ static const char *str_you_win_scr[] = {
     "....##.....#######...#######......###..###..####.##....##.####\n",
 };
 
+typedef struct {
+    char str[SNAKE_PLAYER_NAME_LEN];
+    uint8_t len_score;
+    uint8_t len_name;
+} file_score_t;
+
 // offset score_idx:2 name_idx:6
-static char arr_score_file[SNAKE_SCORES_NUM][SNAKE_PLAYER_NAME_LEN] = {
-    "Rank\tScore\t\t\tName\n",
-    "1\t0\t\t\tEMPTY\n",
-    "2\t0\t\t\tEMPTY\n",
-    "3\t0\t\t\tEMPTY\n",
-    "4\t0\t\t\tEMPTY\n",
-    "5\t0\t\t\tEMPTY\n"
+static file_score_t arr_score_file[SNAKE_SCORES_NUM] = {
+
+    { "Rank\tScore\t\t\tName\n", 0, 0 },
+    { "1\t0   \t\t\tEMPTY     \n", 4, 10 },
+    { "2\t0   \t\t\tEMPTY     \n", 4, 10 },
+    { "3\t0   \t\t\tEMPTY     \n", 4, 10 },
+    { "4\t0   \t\t\tEMPTY     \n", 4, 10 },
+    { "5\t0   \t\t\tEMPTY     \n", 4, 10 },
 };
 
 typedef enum {
@@ -149,14 +159,27 @@ typedef enum {
 } SNAKE_GAME_OVER;
 
 typedef struct {
-    int sx[SNAKE_LEN_MAX];
-    int sy[SNAKE_LEN_MAX];
-    int slen;
-    int fx;
-    int fy;
-    int speed;
-    int score;
+    /* snake x y*/
+    int32_t sx[SNAKE_LEN_MAX];
+    int32_t sy[SNAKE_LEN_MAX];
+
+    /* snake len */
+    uint16_t slen;
+
+    /* food x y*/
+    int32_t fx;
+    int32_t fy;
+
+    /* snake move speed */
+    uint16_t speed;
+
+    /* snake win score */
+    uint16_t score;
+
+    /* game is over */
     SNAKE_GAME_OVER game_over;
+
+    /* snake dir */
     SNAKE_DIR dir;
 } snake_object_t;
 
@@ -178,7 +201,7 @@ snake_object_t *snake_get_snake_object(void)
 void snake_create_high_scores(void)
 {
     FILE *fp = NULL;
-    int i;
+    uint32_t i;
 
     fp = fopen("highscores", "w+");
     if (fp == NULL) {
@@ -196,12 +219,12 @@ void snake_create_high_scores(void)
     */
 
     for (i = 0; i < ARRAY_SIZE(arr_score_file); i++) {
-        fprintf(fp, "%s", arr_score_file[i]);
+        fprintf(fp, "%s", arr_score_file[i].str);
     }
     fclose(fp);
 }
 
-FILE* snake_open_high_scores(FILE *fp)
+FILE *snake_open_high_scores(FILE *fp)
 {
     fp = fopen("highscores", "r");
     if (fp == NULL) {
@@ -220,20 +243,20 @@ int snake_get_lowest_score(void)
     FILE *fp = NULL;
     uint16_t lowest_score = 0;
 
-    size_t len = 20;
-    char *buf = (char *)malloc(len * sizeof(char));
+    size_t len_buf = 20;
+    char *buf = (char *)malloc(len_buf * sizeof(char));
     if (buf == NULL) {
         printf("buf malloc fail\n");
         return 0;
     }
-    memset(buf, 0, len * sizeof(char));
+    memset(buf, 0, len_buf * sizeof(char));
 
     chdir("demo/snake");
     fp = snake_open_high_scores(fp);
 
     // find last row to get lowest scores
     while (!feof(fp)) {
-        fgets(buf, len, fp);
+        fgets(buf, len_buf, fp);
     }
     fclose(fp);
 
@@ -248,36 +271,23 @@ int snake_get_lowest_score(void)
 void snake_input_score(snake_object_t *snake)
 {
     FILE *fp = NULL;
-    char name[SNAKE_PLAYER_NAME_LEN] = { 0 };
-    uint32_t offset = 0;
-    uint32_t len[SNAKE_SCORES_NUM] = {0};
+    char user_name[SNAKE_PLAYER_NAME_LEN] = { 0 };
     uint32_t i = 0;
-    int tmp;
 
-    size_t la = 128;
-    char *pa = (char *)malloc(la * sizeof(char));
-    if (pa == NULL) {
-        printf("pba malloc fail\n");
+    size_t buf_len = SNAKE_PLAYER_NAME_LEN;
+    char *buf = (char *)malloc(buf_len * sizeof(char));
+    if (buf == NULL) {
+        printf("buf malloc failed\n");
         return;
     }
-    memset(pa, 0, la * sizeof(char));
-
-    size_t lb = 20;
-    char *pb = (char *)malloc(lb * sizeof(char));
-    if (pb == NULL) {
-        printf("buf malloc fail\n");
-        return;
-    }
-    memset(pb, 0, lb * sizeof(char));
+    memset(buf, 0, buf_len * sizeof(char));
 
     clrscr();
-
-    fp = snake_open_high_scores(fp);
     gotoxy(10, 5);
     printf("Your Score made it into the top 5!!!");
     gotoxy(10, 6);
     printf("Please enter your name: ");
-    fgets(name, ARRAY_SIZE(name), stdin);
+    fgets(user_name, ARRAY_SIZE(user_name), stdin);
 
     // ONLYTEST
     /*
@@ -288,45 +298,24 @@ void snake_input_score(snake_object_t *snake)
         5	0			EMPTY
     */
 
-    // fix feof cause array out of bounds
-    while (fgets(pb, lb, fp) != NULL) {
-        len[i] = strlen(pb);
-        strncpy(pa + offset, pb, len[i]);
-        offset += len[i];
-        i++;
+    fp = snake_open_high_scores(fp);
+    while (fgets(buf, buf_len, fp) != NULL) {
     }
     fclose(fp);
-
-
-    if (pa[len[0] + 2] == '0') {
-        pa[len[0] + 2] = snake->score + '0';
-        memset(&pa[len[0] + 6], '\0', 6);
-        strncpy(&pa[len[0] + 6], name, strlen(name));
-    }
-
-    strncpy(arr_score_file[0], &pa[0], len[0]);
-    offset = len[0];
-    for (i = 1; i < SNAKE_SCORES_NUM; i++) {
-        strncpy(arr_score_file[i], &pa[offset], len[i]);
-        offset += len[i];
-    }
 
     fp = fopen("highscores", "w+");
     for (i = 0; i < ARRAY_SIZE(arr_score_file); i++) {
-        fprintf(fp, "%s", arr_score_file[i]);
+        fprintf(fp, "%s", arr_score_file[i].str);
     }
     fclose(fp);
-
-    free(pa);
-    free(pb);
 }
 
 void snake_display_high_scores(void)
 {
     FILE *fp = NULL;
     char str[128];
-    int x = 10;
-    int y = 5;
+    int32_t x = 10;
+    int32_t y = 5;
 
     clrscr();
 
@@ -350,8 +339,8 @@ void snake_display_high_scores(void)
 
 void snake_you_win_screen(void)
 {
-    int x = 6, y = 7;
-    int i;
+    int32_t x = 6, y = 7;
+    int32_t i;
 
     for (i = 0; i < ARRAY_SIZE(str_you_win_scr); i++) {
         gotoxy(x, y);
@@ -365,8 +354,8 @@ void snake_you_win_screen(void)
 
 void snake_game_overs_screen(void)
 {
-    int x = 17, y = 3;
-    int i;
+    int32_t x = 17, y = 3;
+    int32_t i;
 
     for (i = 0; i < ARRAY_SIZE(str_game_voer_scr); i++) {
         gotoxy(x, y);
@@ -405,7 +394,7 @@ void snake_pause_menu(void)
 
 void snake_enviroment_init(int console_width, int console_height)
 {
-    int x = 1, y = 1;
+    int32_t x = 1, y = 1;
 
     clrscr();
 
@@ -434,8 +423,8 @@ void snake_len_init(snake_object_t *snake)
 
 void snake_body_init(snake_object_t *snake)
 {
-    int i;
-    int x, y;
+    int32_t i;
+    int32_t x, y;
 
     /*
         Make sure the snake head is at index 0 of the array
@@ -473,7 +462,7 @@ void snake_food_init(snake_object_t *snake)
 
 void snake_speed_init(snake_object_t *snake)
 {
-    int speed;
+    uint16_t speed;
     clrscr();
 
     do {
@@ -584,7 +573,7 @@ void snake_start_game(snake_object_t *snake)
 {
     snake->game_over = SNAKE_GAME_OVER_NONE;
 
-    int wait = clock() + CLOCKS_PER_SEC - (snake->speed) * (CLOCKS_PER_SEC / 5);
+    int32_t wait = SNAKE_SPEED_CLOCK(snake->speed);
     // first wait user choose to move snake
     char key;
     do {
@@ -620,8 +609,7 @@ void snake_start_game(snake_object_t *snake)
                 snake_food(snake);
                 snake_refresh_info_bar(snake);
             }
-            wait = clock() + CLOCKS_PER_SEC -
-                   (snake->speed) * (CLOCKS_PER_SEC / 5);
+            wait = SNAKE_SPEED_CLOCK(snake->speed);
         }
 
         if (snake_is_kill_by_wall(snake)) {
@@ -700,7 +688,7 @@ void snake_exit_yn(void)
 
     clrscr();
     gotoxy(9, 8);
-    printf("Are you sure you want to exit(Y/N)\n");
+    printf("Are you sure you want to exit Y/N\n");
 
     do {
         press = wait_4_key();
@@ -709,24 +697,18 @@ void snake_exit_yn(void)
 
     printf("%c", press);
 
-    if (press == 'y') {
-        printf("\t      Press Enter To End...            \n");
-        do {
-            press = wait_4_key();
-        } while (press != ENTER_KEY);
-        clrscr();
-        exit(1);
-    }
+    clrscr();
+    exit(1);
 }
 
-int snake_main_meun(void)
+int32_t snake_main_meun(void)
 {
 #define MAIN_MENU_INIT_X 10
 #define MAIN_MENU_INIT_Y 5
-    int x = MAIN_MENU_INIT_X, y = MAIN_MENU_INIT_Y;
-    int ystart = y;
+    int32_t x = MAIN_MENU_INIT_X, y = MAIN_MENU_INIT_Y;
+    int32_t ystart = y;
     char key;
-    int selected = 0;
+    int32_t selected = 0;
 
     clrscr();
     gotoxy(x, y);

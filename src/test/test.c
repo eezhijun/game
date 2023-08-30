@@ -276,6 +276,14 @@ void tt_cursor(void)
     restore_terminal_attributes();
 }
 
+void tt_string2int(void)
+{
+    char str[10] = {'a', 'b', 'c', '1', '2', '3', '\0', 'x', 'y'};
+
+    int num = string2int(&str[3]);
+    printf("num=%d\n", num);
+}
+
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
@@ -292,7 +300,9 @@ int main(void)
     // tt_container_of();
     // tt_bit();
     // tt_clock();
-    tt_cursor();
+    // tt_cursor();
+    tt_string2int();
+
 
     return 0;
 }
