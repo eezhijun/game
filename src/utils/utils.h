@@ -323,7 +323,8 @@ void dump_x(const uint8_t *data, size_t len);
 void print_int(void *elem);
 void print_float(void *elem);
 void print_string(void *elem);
-void print_arr(void *arr, size_t size, size_t elem_size, void (*print_elem(void *)));
+void print_arr(void *arr, size_t size, size_t elem_size,
+               void(*print_elem(void *)));
 
 /**
  * @brief Find First One, used to find the position (index) of
@@ -362,5 +363,22 @@ int clz(int x);
  * @return int
  */
 int ctz(int x);
+
+/**
+ * @brief 
+ * 
+ * @param num 
+ * @param str 
+ * @return char* 
+ */
+char *int2string(int num, char *str);
+
+/**
+ * @brief 
+ * 
+ * @param str 
+ * @return int 
+ */
+int string2int(char *str);
 
 #endif
