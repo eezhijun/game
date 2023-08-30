@@ -25,7 +25,7 @@ typedef uint16_t U_RESULT;
 
 
 #ifdef __cplusplus
-}
+};
 #endif
 
 
