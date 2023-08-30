@@ -22,6 +22,7 @@
 #include "fcntl.h"
 #include "termios.h"
 
+#include "utils.h"
 
 
 /* function template */
@@ -30,6 +31,8 @@
 // MAXT(int)
 // MAXT(float)
 // MAXT(double)
+
+
 
 int max(int a, int b)
 {
@@ -246,13 +249,6 @@ int ctz(int x)
 #define DUMP_BUFFER_SIZE 512
 
 static char dump_buffer[DUMP_BUFFER_SIZE] = { 0 };
-
-/**
- * @brief
- *
- * @param data
- * @param len
- */
 void dump_x(const uint8_t *data, size_t len)
 {
     size_t line = len / DUMP_BYTES;
@@ -289,3 +285,32 @@ void dump_x(const uint8_t *data, size_t len)
     printf("date len: %d\n", len);
     printf("%s", dump_buffer);
 }
+
+void print_int(void *elem)
+{
+    int *num = (int *)elem;
+    printf("%d ", *num);
+}
+
+void print_float(void *elem)
+{
+    float *num = (float *)elem;
+    printf("%f ", *num);
+}
+
+void print_string(void *elem)
+{
+    char **str = (char **)elem;
+    printf("%s\n", *str);
+}
+
+void print_arr(void *arr, size_t size, size_t elem_size, void (*print_elem(void *)))
+{
+    for (size_t i = 0; i < size; i++) {
+        print_elem(arr + i * elem_size);
+    }
+    printf("\n");
+}
+
+
+

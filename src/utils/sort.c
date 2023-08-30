@@ -12,14 +12,6 @@
 #include "stdio.h"
 #include "stdbool.h"
 
-void print_array(int arr[], int len)
-{
-    for (int i = 0; i < len; i++) {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
-}
-
 void bubble_sort(int arr[], int len)
 {
     int i, j, temp;

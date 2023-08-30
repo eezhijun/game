@@ -51,6 +51,16 @@
 #define ARRAY_SIZE(a) sizeof(a) / sizeof(a[0])
 #endif
 
+#ifndef PRINT_ARRAY
+#define PRINT_ARRAY(arr, size, format)      \
+    do {                                    \
+        for (size_t i = 0; i < size; i++) { \
+            printf(format, arr[i]);         \
+        }                                   \
+        printf("\n");                       \
+    } while (0)
+#endif
+
 #ifndef CLAMP
 #define CLAMP(value, min, max)                                  \
     ({                                                          \
@@ -300,18 +310,20 @@ int cmp(const void *pa, const void *pb);
 /**
  * @brief
  *
- * @param arr
- * @param len
- */
-void print_array(int arr[], int len);
-
-/**
- * @brief
- *
  * @param data
  * @param len
  */
 void dump_x(const uint8_t *data, size_t len);
+
+/**
+ * @brief 
+ * 
+ * @param elem 
+ */
+void print_int(void *elem);
+void print_float(void *elem);
+void print_string(void *elem);
+void print_arr(void *arr, size_t size, size_t elem_size, void (*print_elem(void *)));
 
 /**
  * @brief Find First One, used to find the position (index) of

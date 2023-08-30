@@ -35,7 +35,7 @@
 #define SNAKE_POS_Y 12
 #define SNAKE_FOOD_POS_X 64
 #define SNAKE_FOOD_POS_Y 12
-#define SNAKE_SCORES_NUM 5
+#define SNAKE_SCORES_NUM 6
 #define SNAKE_PLAYER_NAME_LEN 20
 
 #define SNAKE_HEAD 'X'
@@ -116,6 +116,16 @@ static const char *str_you_win_scr[] = {
     "....##.....#######...#######......###..###..####.##....##.####\n",
 };
 
+// offset score_idx:2 name_idx:6
+static char arr_score_file[SNAKE_SCORES_NUM][SNAKE_PLAYER_NAME_LEN] = {
+    "Rank\tScore\t\t\tName\n",
+    "1\t0\t\t\tEMPTY\n",
+    "2\t0\t\t\tEMPTY\n",
+    "3\t0\t\t\tEMPTY\n",
+    "4\t0\t\t\tEMPTY\n",
+    "5\t0\t\t\tEMPTY\n"
+};
+
 typedef enum {
     SNAKE_MENU0,
     SNAKE_MENU1,
@@ -167,11 +177,10 @@ snake_object_t *snake_get_snake_object(void)
 
 void snake_create_high_scores(void)
 {
-    FILE *fp;
+    FILE *fp = NULL;
     int i;
 
     fp = fopen("highscores", "w+");
-
     if (fp == NULL) {
         perror("failed to create highscores");
         exit(EXIT_FAILURE);
@@ -185,16 +194,30 @@ void snake_create_high_scores(void)
         4	0			EMPTY
         5	0			EMPTY
     */
-    for (i = 0; i < SNAKE_SCORES_NUM; i++) {
-        fprintf(fp, "%d", i + 1);
-        fprintf(fp, "%s", "\t0\t\t\tEMPTY\n");
+
+    for (i = 0; i < ARRAY_SIZE(arr_score_file); i++) {
+        fprintf(fp, "%s", arr_score_file[i]);
     }
     fclose(fp);
 }
 
+FILE* snake_open_high_scores(FILE *fp)
+{
+    fp = fopen("highscores", "r");
+    if (fp == NULL) {
+        snake_create_high_scores();
+        fp = fopen("highscores", "r");
+        if (fp == NULL) {
+            perror("failed to pen highscores");
+            exit(EXIT_FAILURE);
+        }
+    }
+    return fp;
+}
+
 int snake_get_lowest_score(void)
 {
-    FILE *fp;
+    FILE *fp = NULL;
     uint16_t lowest_score = 0;
 
     size_t len = 20;
@@ -206,16 +229,7 @@ int snake_get_lowest_score(void)
     memset(buf, 0, len * sizeof(char));
 
     chdir("demo/snake");
-    fp = fopen("highscores", "r");
-    if (fp == NULL) {
-        perror("unable to open ./demo/sanke/highscores");
-        snake_create_high_scores();
-        fp = fopen("highscores", "r");
-        if (fp == NULL) {
-            perror("unable to open ./demo/sanke/highscores");
-            exit(EXIT_FAILURE);
-        }
-    }
+    fp = snake_open_high_scores(fp);
 
     // find last row to get lowest scores
     while (!feof(fp)) {
@@ -233,28 +247,32 @@ int snake_get_lowest_score(void)
 
 void snake_input_score(snake_object_t *snake)
 {
-    FILE *fp;
+    FILE *fp = NULL;
     char name[SNAKE_PLAYER_NAME_LEN] = { 0 };
-    char score[SNAKE_SCORES_NUM] = { 0 };
-    char high_score_name[SNAKE_SCORES_NUM][SNAKE_PLAYER_NAME_LEN] = { 0 };
-    uint32_t idx = 0;
+    uint32_t offset = 0;
+    uint32_t len[SNAKE_SCORES_NUM] = {0};
+    uint32_t i = 0;
+    int tmp;
 
-    size_t len = 20;
-    char *buf = (char *)malloc(len * sizeof(char));
-    if (buf == NULL) {
+    size_t la = 128;
+    char *pa = (char *)malloc(la * sizeof(char));
+    if (pa == NULL) {
+        printf("pba malloc fail\n");
+        return;
+    }
+    memset(pa, 0, la * sizeof(char));
+
+    size_t lb = 20;
+    char *pb = (char *)malloc(lb * sizeof(char));
+    if (pb == NULL) {
         printf("buf malloc fail\n");
         return;
     }
-    memset(buf, 0, len * sizeof(char));
+    memset(pb, 0, lb * sizeof(char));
 
     clrscr();
 
-    if ((fp = fopen("highscores", "r")) == NULL) {
-        snake_create_high_scores();
-        if ((fp = fopen("highscores", "r")) == NULL) {
-            exit(EXIT_FAILURE);
-        }
-    }
+    fp = snake_open_high_scores(fp);
     gotoxy(10, 5);
     printf("Your Score made it into the top 5!!!");
     gotoxy(10, 6);
@@ -270,45 +288,50 @@ void snake_input_score(snake_object_t *snake)
         5	0			EMPTY
     */
 
-    while (!feof(fp)) {
-        fgets(buf, len, fp);
-        if (strcmp(&buf[6], "EMPTY\n") == 0) {
-            strncpy(high_score_name[idx], name, sizeof(high_score_name) - 1);
-            high_score_name[idx][sizeof(high_score_name) - 1] = '\0';
-            score[idx] = snake->score;
-            break;
-        }
-        idx++;
+    // fix feof cause array out of bounds
+    while (fgets(pb, lb, fp) != NULL) {
+        len[i] = strlen(pb);
+        strncpy(pa + offset, pb, len[i]);
+        offset += len[i];
+        i++;
     }
     fclose(fp);
 
+
+    if (pa[len[0] + 2] == '0') {
+        pa[len[0] + 2] = snake->score + '0';
+        memset(&pa[len[0] + 6], '\0', 6);
+        strncpy(&pa[len[0] + 6], name, strlen(name));
+    }
+
+    strncpy(arr_score_file[0], &pa[0], len[0]);
+    offset = len[0];
+    for (i = 1; i < SNAKE_SCORES_NUM; i++) {
+        strncpy(arr_score_file[i], &pa[offset], len[i]);
+        offset += len[i];
+    }
+
     fp = fopen("highscores", "w+");
-    fprintf(fp, "%d\t%d\t\t\t%s\n", idx + 1, score[idx], high_score_name[idx]);
+    for (i = 0; i < ARRAY_SIZE(arr_score_file); i++) {
+        fprintf(fp, "%s", arr_score_file[i]);
+    }
     fclose(fp);
+
+    free(pa);
+    free(pb);
 }
 
 void snake_display_high_scores(void)
 {
-    FILE *fp;
+    FILE *fp = NULL;
     char str[128];
     int x = 10;
     int y = 5;
 
     clrscr();
 
-    if ((fp = fopen("highscores", "r")) == NULL) {
-        snake_create_high_scores();
-        if ((fp = fopen("highscores", "r")) == NULL) {
-            exit(EXIT_FAILURE);
-        }
-    }
+    fp = snake_open_high_scores(fp);
 
-    gotoxy(x, y);
-    y++;
-    printf("High Scores");
-    gotoxy(x, y);
-    y++;
-    printf("Rank\tScore\t\t\tName");
     while (!feof(fp)) {
         gotoxy(x, y);
         y++;
@@ -629,7 +652,7 @@ void snake_game_over(snake_object_t *snake)
 
     if (snake->score > snake_get_lowest_score()) {
         snake_input_score(snake);
-        snake_display_high_scores();
+        // snake_display_high_scores();
     }
 }
 
