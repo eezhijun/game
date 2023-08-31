@@ -47,11 +47,11 @@
 #define SNAKE_FOOD '*'
 #define SNAKE_BLANK ' '
 
-static const char *str_menu[] = {
+static const char *menu_str[] = {
     "New Game", "High Scores", "Tips", "Exit", "Test",
 };
 
-static const char *str_tips[] = {
+static const char *tips_str[] = {
     "Tips",
     "",
     "Use the following arrow keys to direct the snake to the food: ",
@@ -64,7 +64,7 @@ static const char *str_tips[] = {
     "Press any key to continue...",
 };
 
-static const char *str_info_bar[] = {
+static const char *info_bar_str[] = {
     "Score: ",
     "Speed: ",
     "Coder  : HZJ",
@@ -73,7 +73,7 @@ static const char *str_info_bar[] = {
 
 // Ascii art reference:
 // http://www.chris.com/ascii/index.php?art=animals/reptiles/snakes
-static const char *str_wel_art[] = {
+static const char *wel_art_str[] = {
     "\n",
     "\t\t    _________         _________                 \n",
     "\t\t   /         \\       /         \\              \n",
@@ -92,7 +92,7 @@ static const char *str_wel_art[] = {
 };
 
 // http://www.network-science.de/ascii/ <- Ascii Art Gen
-static const char *str_game_voer_scr[] = {
+static const char *game_over_scr_str[] = {
     "..######......###....##.....##.########\n",
     ".##....##....##.##...###...###.##......\n",
     ".##.........##...##..####.####.##......\n",
@@ -109,7 +109,7 @@ static const char *str_game_voer_scr[] = {
     "..#######.....###....########.##.....##.####\n",
 };
 
-static const char *str_you_win_scr[] = {
+static const char *you_win_scr_str[] = {
     ".##....##..#######..##.....##....##......##.####.##....##.####\n",
     "..##..##..##.....##.##.....##....##..##..##..##..###...##.####\n",
     "...####...##.....##.##.....##....##..##..##..##..####..##.####\n",
@@ -121,12 +121,12 @@ static const char *str_you_win_scr[] = {
 
 typedef struct {
     char str[SNAKE_PLAYER_NAME_LEN];
-    uint8_t len_score;
-    uint8_t len_name;
-} file_score_t;
+    uint8_t score_len;
+    uint8_t name_len;
+} snake_score_file_t;
 
 // offset score_idx:2 name_idx:6
-static file_score_t arr_score_file[SNAKE_SCORES_NUM] = {
+static snake_score_file_t score_file_arr[SNAKE_SCORES_NUM] = {
 
     { "Rank\tScore\t\t\tName\n", 0, 0 },
     { "1\t0   \t\t\tEMPTY     \n", 4, 10 },
@@ -218,8 +218,8 @@ void snake_create_high_scores(void)
         5	0			EMPTY
     */
 
-    for (i = 0; i < ARRAY_SIZE(arr_score_file); i++) {
-        fprintf(fp, "%s", arr_score_file[i].str);
+    for (i = 0; i < ARRAY_SIZE(score_file_arr); i++) {
+        fprintf(fp, "%s", score_file_arr[i].str);
     }
     fclose(fp);
 }
@@ -304,8 +304,8 @@ void snake_input_score(snake_object_t *snake)
     fclose(fp);
 
     fp = fopen("highscores", "w+");
-    for (i = 0; i < ARRAY_SIZE(arr_score_file); i++) {
-        fprintf(fp, "%s", arr_score_file[i].str);
+    for (i = 0; i < ARRAY_SIZE(score_file_arr); i++) {
+        fprintf(fp, "%s", score_file_arr[i].str);
     }
     fclose(fp);
 }
@@ -342,10 +342,10 @@ void snake_you_win_screen(void)
     int32_t x = 6, y = 7;
     int32_t i;
 
-    for (i = 0; i < ARRAY_SIZE(str_you_win_scr); i++) {
+    for (i = 0; i < ARRAY_SIZE(you_win_scr_str); i++) {
         gotoxy(x, y);
         y++;
-        printf("%s", str_you_win_scr[i]);
+        printf("%s", you_win_scr_str[i]);
     }
 
     wait_4_key();
@@ -357,10 +357,10 @@ void snake_game_overs_screen(void)
     int32_t x = 17, y = 3;
     int32_t i;
 
-    for (i = 0; i < ARRAY_SIZE(str_game_voer_scr); i++) {
+    for (i = 0; i < ARRAY_SIZE(game_over_scr_str); i++) {
         gotoxy(x, y);
         y++;
-        printf("%s", str_game_voer_scr[i]);
+        printf("%s", game_over_scr_str[i]);
     }
     wait_4_key();
     clrscr();
@@ -369,16 +369,16 @@ void snake_game_overs_screen(void)
 void snake_refresh_info_bar(snake_object_t *snake)
 {
     gotoxy(5, SNAKE_CONSOLE_HEIGHT + 2);
-    printf("%s%d", str_info_bar[0], snake->score);
+    printf("%s%d", info_bar_str[0], snake->score);
 
     gotoxy(5, SNAKE_CONSOLE_HEIGHT + 3);
-    printf("%s%d", str_info_bar[1], snake->speed);
+    printf("%s%d", info_bar_str[1], snake->speed);
 
     gotoxy(SNAKE_CONSOLE_WIDTH - 15, SNAKE_CONSOLE_HEIGHT + 2);
-    printf("%s", str_info_bar[2]);
+    printf("%s", info_bar_str[2]);
 
     gotoxy(SNAKE_CONSOLE_WIDTH - 15, SNAKE_CONSOLE_HEIGHT + 3);
-    printf("%s", str_info_bar[3]);
+    printf("%s", info_bar_str[3]);
     gotoxy(0, 0);
 }
 
@@ -662,8 +662,8 @@ void snake_welcome_art(void)
     int i;
 
     clrscr();
-    for (i = 0; i < ARRAY_SIZE(str_wel_art); i++) {
-        printf("%s", str_wel_art[i]);
+    for (i = 0; i < ARRAY_SIZE(wel_art_str); i++) {
+        printf("%s", wel_art_str[i]);
     }
     wait_4_key();
 }
@@ -674,10 +674,10 @@ void snake_tips(void)
     int i;
 
     clrscr();
-    for (i = 0; i < ARRAY_SIZE(str_tips); i++) {
+    for (i = 0; i < ARRAY_SIZE(tips_str); i++) {
         gotoxy(x, y);
         y++;
-        printf("%s", str_tips[i]);
+        printf("%s", tips_str[i]);
     }
     wait_4_key();
 }
@@ -713,8 +713,8 @@ int32_t snake_main_meun(void)
     clrscr();
     gotoxy(x, y);
     y++;
-    for (int i = 0; i < ARRAY_SIZE(str_menu); i++) {
-        printf("%s\n", str_menu[i]);
+    for (int i = 0; i < ARRAY_SIZE(menu_str); i++) {
+        printf("%s\n", menu_str[i]);
         gotoxy(x, y);
         y++;
     }
