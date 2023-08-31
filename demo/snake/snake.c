@@ -37,7 +37,7 @@
 #define SNAKE_FOOD_POS_X 64
 #define SNAKE_FOOD_POS_Y 12
 #define SNAKE_SCORES_NUM 6
-#define SNAKE_PLAYER_NAME_LEN 21
+#define SNAKE_PLAYER_NAME_LEN 30
 #define SNAKE_SPEED_CLOCK(x) \
     clock() + CLOCKS_PER_SEC - (x) * (CLOCKS_PER_SEC / 10)
 
@@ -128,12 +128,12 @@ typedef struct {
 // offset score_idx:2 name_idx:6
 static snake_score_file_t score_file_arr[SNAKE_SCORES_NUM] = {
 
-    { "Rank\tScore\t\t\tName\n", 0, 0 },
-    { "1\t0   \t\t\tEMPTY     \n", 4, 10 },
-    { "2\t0   \t\t\tEMPTY     \n", 4, 10 },
-    { "3\t0   \t\t\tEMPTY     \n", 4, 10 },
-    { "4\t0   \t\t\tEMPTY     \n", 4, 10 },
-    { "5\t0   \t\t\tEMPTY     \n", 4, 10 },
+    { "Rank   Score     Name      \n", 0, 0 },
+    { "1      0         EMPTY     \n", 4, 10 },
+    { "2      0         EMPTY     \n", 4, 10 },
+    { "3      0         EMPTY     \n", 4, 10 },
+    { "4      0         EMPTY     \n", 4, 10 },
+    { "5      0         EMPTY     \n", 4, 10 },
 };
 
 typedef enum {
