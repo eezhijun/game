@@ -41,6 +41,10 @@
 #define SNAKE_SPEED_CLOCK(x) \
     clock() + CLOCKS_PER_SEC - (x) * (CLOCKS_PER_SEC / 10)
 
+/* score file array str offset*/
+#define SNAKE_SCORE_OFFSET 7
+#define SNAKE_NAME_OFFSET 16
+
 #define SNAKE_HEAD 'X'
 #define SNAKE_BODY '#'
 #define SNAKE_WALL '#'
@@ -125,15 +129,15 @@ typedef struct {
     uint8_t name_len;
 } snake_score_file_t;
 
-// offset score_idx:2 name_idx:6
+
 static snake_score_file_t score_file_arr[SNAKE_SCORES_NUM] = {
 
     { "Rank   Score     Name      \n", 0, 0 },
-    { "1      0         EMPTY     \n", 4, 10 },
-    { "2      0         EMPTY     \n", 4, 10 },
-    { "3      0         EMPTY     \n", 4, 10 },
-    { "4      0         EMPTY     \n", 4, 10 },
-    { "5      0         EMPTY     \n", 4, 10 },
+    { "1      0         EMPTY     \n", 5, 10 },
+    { "2      0         EMPTY     \n", 5, 10 },
+    { "3      0         EMPTY     \n", 5, 10 },
+    { "4      0         EMPTY     \n", 5, 10 },
+    { "5      0         EMPTY     \n", 5, 10 },
 };
 
 typedef enum {
@@ -210,12 +214,12 @@ void snake_create_high_scores(void)
     }
 
     /*
-        Save the highest 5 scores, discard the lowest
-        1	0			EMPTY
-        2	0			EMPTY
-        3	0			EMPTY
-        4	0			EMPTY
-        5	0			EMPTY
+        Rank   Score     Name      
+        1      0         EMPTY     
+        2      0         EMPTY     
+        3      0         EMPTY     
+        4      0         EMPTY     
+        5      0         EMPTY     
     */
 
     for (i = 0; i < ARRAY_SIZE(score_file_arr); i++) {
@@ -243,27 +247,11 @@ int snake_get_lowest_score(void)
     FILE *fp = NULL;
     uint16_t lowest_score = 0;
 
-    size_t len_buf = 20;
-    char *buf = (char *)malloc(len_buf * sizeof(char));
-    if (buf == NULL) {
-        printf("buf malloc fail\n");
-        return 0;
-    }
-    memset(buf, 0, len_buf * sizeof(char));
-
     chdir("demo/snake");
     fp = snake_open_high_scores(fp);
-
-    // find last row to get lowest scores
-    while (!feof(fp)) {
-        fgets(buf, len_buf, fp);
-    }
     fclose(fp);
 
-    lowest_score = buf[2] - 48;
-
-    buf = NULL;
-    free(buf);
+    lowest_score = string2int(&score_file_arr[SNAKE_SCORES_NUM - 1].str[SNAKE_SCORE_OFFSET]);
 
     return lowest_score;
 }
@@ -272,6 +260,7 @@ void snake_input_score(snake_object_t *snake)
 {
     FILE *fp = NULL;
     char user_name[SNAKE_PLAYER_NAME_LEN] = { 0 };
+    uint32_t score = 0;
     uint32_t i = 0;
 
     size_t buf_len = SNAKE_PLAYER_NAME_LEN;
@@ -289,19 +278,23 @@ void snake_input_score(snake_object_t *snake)
     printf("Please enter your name: ");
     fgets(user_name, ARRAY_SIZE(user_name), stdin);
 
-    // ONLYTEST
     /*
-        1	0			EMPTY
-        2	0			EMPTY
-        3	0			EMPTY
-        4	0			EMPTY
-        5	0			EMPTY
+        Rank   Score     Name      
+        1      0         EMPTY     
+        2      0         EMPTY     
+        3      0         EMPTY     
+        4      0         EMPTY     
+        5      0         EMPTY     
     */
 
-    fp = snake_open_high_scores(fp);
-    while (fgets(buf, buf_len, fp) != NULL) {
+    for (i = 1; i < ARRAY_SIZE(score_file_arr); i++) {
+        score = (uint32_t)string2int(&score_file_arr[i].str[SNAKE_SCORE_OFFSET]);
+        if (score == 0) {
+            // strncpy(&score_file_arr[i].str[SNAKE_SCORE_OFFSET],);
+            strncpy(&score_file_arr[i].str[SNAKE_NAME_OFFSET], user_name, strlen(user_name));
+        }
     }
-    fclose(fp);
+
 
     fp = fopen("highscores", "w+");
     for (i = 0; i < ARRAY_SIZE(score_file_arr); i++) {
