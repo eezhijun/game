@@ -36,14 +36,21 @@
 #define SNAKE_POS_Y 12
 #define SNAKE_FOOD_POS_X 64
 #define SNAKE_FOOD_POS_Y 12
-#define SNAKE_SCORES_NUM 6
-#define SNAKE_PLAYER_NAME_LEN 30
+
 #define SNAKE_SPEED_CLOCK(x) \
     clock() + CLOCKS_PER_SEC - (x) * (CLOCKS_PER_SEC / 10)
 
+/* score file array size */
+#define SNAKE_SCORE_FILE_ROW_LEN 6
+#define SNAKE_SCORE_FILE_COL_LEN 30
+
 /* score file array str offset*/
-#define SNAKE_SCORE_OFFSET 7
-#define SNAKE_NAME_OFFSET 16
+#define SNAKE_SCORE_FILE_SCORE_OFFSET 7
+#define SNAKE_SCORE_FILE_NAME_OFFSET 17
+
+/* score file array score len && name len*/
+#define SNAKE_SCORE_FILE_SCORE_LEN 5
+#define SNAKE_SCORE_FILE_NAME_LEN 10
 
 #define SNAKE_HEAD 'X'
 #define SNAKE_BODY '#'
@@ -123,21 +130,13 @@ static const char *you_win_scr_str[] = {
     "....##.....#######...#######......###..###..####.##....##.####\n",
 };
 
-typedef struct {
-    char str[SNAKE_PLAYER_NAME_LEN];
-    uint8_t score_len;
-    uint8_t name_len;
-} snake_score_file_t;
-
-
-static snake_score_file_t score_file_arr[SNAKE_SCORES_NUM] = {
-
-    { "Rank   Score     Name      \n", 0, 0 },
-    { "1      0         EMPTY     \n", 5, 10 },
-    { "2      0         EMPTY     \n", 5, 10 },
-    { "3      0         EMPTY     \n", 5, 10 },
-    { "4      0         EMPTY     \n", 5, 10 },
-    { "5      0         EMPTY     \n", 5, 10 },
+static char score_file_arr[SNAKE_SCORE_FILE_ROW_LEN][SNAKE_SCORE_FILE_COL_LEN] = {
+    { "Rank   Score     Name      \n"},
+    { "1      0         EMPTY     \n"},
+    { "2      0         EMPTY     \n"},
+    { "3      0         EMPTY     \n"},
+    { "4      0         EMPTY     \n"},
+    { "5      0         EMPTY     \n"},
 };
 
 typedef enum {
@@ -223,7 +222,7 @@ void snake_create_high_scores(void)
     */
 
     for (i = 0; i < ARRAY_SIZE(score_file_arr); i++) {
-        fprintf(fp, "%s", score_file_arr[i].str);
+        fprintf(fp, "%s", score_file_arr[i]);
     }
     fclose(fp);
 }
@@ -251,7 +250,7 @@ int snake_get_lowest_score(void)
     fp = snake_open_high_scores(fp);
     fclose(fp);
 
-    lowest_score = string2int(&score_file_arr[SNAKE_SCORES_NUM - 1].str[SNAKE_SCORE_OFFSET]);
+    lowest_score = string2int(&score_file_arr[SNAKE_SCORE_FILE_ROW_LEN - 1][SNAKE_SCORE_FILE_SCORE_OFFSET]);
 
     return lowest_score;
 }
@@ -259,17 +258,10 @@ int snake_get_lowest_score(void)
 void snake_input_score(snake_object_t *snake)
 {
     FILE *fp = NULL;
-    char user_name[SNAKE_PLAYER_NAME_LEN] = { 0 };
-    uint32_t score = 0;
+    char user_name[SNAKE_SCORE_FILE_NAME_LEN] = { 0 };
+    char score[SNAKE_SCORE_FILE_SCORE_LEN] = { 0 };
+    uint16_t score_int = 0;
     uint32_t i = 0;
-
-    size_t buf_len = SNAKE_PLAYER_NAME_LEN;
-    char *buf = (char *)malloc(buf_len * sizeof(char));
-    if (buf == NULL) {
-        printf("buf malloc failed\n");
-        return;
-    }
-    memset(buf, 0, buf_len * sizeof(char));
 
     clrscr();
     gotoxy(10, 5);
@@ -288,17 +280,19 @@ void snake_input_score(snake_object_t *snake)
     */
 
     for (i = 1; i < ARRAY_SIZE(score_file_arr); i++) {
-        score = (uint32_t)string2int(&score_file_arr[i].str[SNAKE_SCORE_OFFSET]);
-        if (score == 0) {
-            // strncpy(&score_file_arr[i].str[SNAKE_SCORE_OFFSET],);
-            strncpy(&score_file_arr[i].str[SNAKE_NAME_OFFSET], user_name, strlen(user_name));
+        score_int = (uint16_t)string2int(&score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET]);
+        if (score_int == 0) {
+            sprintf(score, "%d", snake->score);
+            strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET], score, strlen(score));
+            memset(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], ' ', SNAKE_SCORE_FILE_NAME_LEN);
+            strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], user_name, strlen(user_name) - 1);
+            break;
         }
     }
 
-
     fp = fopen("highscores", "w+");
     for (i = 0; i < ARRAY_SIZE(score_file_arr); i++) {
-        fprintf(fp, "%s", score_file_arr[i].str);
+        fprintf(fp, "%s", score_file_arr[i]);
     }
     fclose(fp);
 }
@@ -531,7 +525,7 @@ void snake_food(snake_object_t *snake)
 
 bool snake_is_kill_by_wall(snake_object_t *snake)
 {
-    if (snake->sx[0] == 0 || snake->sy[0] == 0 ||
+    if (snake->sx[0] == 1 || snake->sy[0] == 1 ||
         snake->sx[0] == SNAKE_CONSOLE_WIDTH ||
         snake->sy[0] == SNAKE_CONSOLE_HEIGHT) {
         return true;
