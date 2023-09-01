@@ -259,13 +259,13 @@ void snake_input_score(snake_object_t *snake)
 {
     FILE *fp = NULL;
     char user_name[SNAKE_SCORE_FILE_NAME_LEN] = { 0 };
-    char score[SNAKE_SCORE_FILE_SCORE_LEN] = { 0 };
+    char score_str[SNAKE_SCORE_FILE_SCORE_LEN] = { 0 };
     uint16_t score_int = 0;
-    uint32_t i = 0;
+    uint32_t i;
 
     clrscr();
     gotoxy(10, 5);
-    printf("Your Score made it into the top 5!!!");
+    printf("Only maintain the 5 top score rankings");
     gotoxy(10, 6);
     printf("Please enter your name: ");
     fgets(user_name, ARRAY_SIZE(user_name), stdin);
@@ -279,16 +279,30 @@ void snake_input_score(snake_object_t *snake)
         5      0         EMPTY     
     */
 
-    for (i = 1; i < ARRAY_SIZE(score_file_arr); i++) {
+   /* only maintain the 5 top score rankings */
+   for (i = 1; i < ARRAY_SIZE(score_file_arr); i++) {
         score_int = (uint16_t)string2int(&score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET]);
-        if (score_int == 0) {
-            sprintf(score, "%d", snake->score);
-            strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET], score, strlen(score));
+        if (snake->score > score_int) {
+            if (i + 1 == ARRAY_SIZE(score_file_arr)) {
+                sprintf(score_str, "%d", snake->score);
+                strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET], score_str, strlen(score_str));
+                memset(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], ' ', SNAKE_SCORE_FILE_NAME_LEN);
+                strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], user_name, strlen(user_name) - 1);
+            }
+
+            strncpy(&score_file_arr[i + 1][SNAKE_SCORE_FILE_SCORE_OFFSET],
+                &score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET], SNAKE_SCORE_FILE_SCORE_LEN);
+            memset(&score_file_arr[i + 1][SNAKE_SCORE_FILE_NAME_OFFSET], ' ', SNAKE_SCORE_FILE_NAME_LEN);
+            strncpy(&score_file_arr[i + 1][SNAKE_SCORE_FILE_NAME_OFFSET],
+                &score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], SNAKE_SCORE_FILE_NAME_LEN);
+
+            sprintf(score_str, "%d", snake->score);
+            strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET], score_str, strlen(score_str));
             memset(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], ' ', SNAKE_SCORE_FILE_NAME_LEN);
             strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], user_name, strlen(user_name) - 1);
             break;
         }
-    }
+   }
 
     fp = fopen("highscores", "w+");
     for (i = 0; i < ARRAY_SIZE(score_file_arr); i++) {
@@ -515,10 +529,13 @@ bool snake_is_eat_food(snake_object_t *snake)
 
 void snake_food(snake_object_t *snake)
 {
+    /* 2 ~ 79 */
     srand(time(NULL));
-    snake->fx = rand() % SNAKE_CONSOLE_WIDTH + 1;
+    snake->fx = rand() % (SNAKE_CONSOLE_WIDTH - 2) + 2;
+
+    /* 2 ~ 23 */
     srand(time(NULL));
-    snake->fy = rand() % SNAKE_CONSOLE_HEIGHT + 1;
+    snake->fy = rand() % (SNAKE_CONSOLE_HEIGHT - 2) + 2;
     gotoxy(snake->fx, snake->fy);
     printf("%c", SNAKE_FOOD);
 }
