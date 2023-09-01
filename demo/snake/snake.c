@@ -58,10 +58,6 @@
 #define SNAKE_FOOD '*'
 #define SNAKE_BLANK ' '
 
-static const char *menu_str[] = {
-    "New Game", "High Scores", "Tips", "Exit", "Test",
-};
-
 static const char *tips_str[] = {
     "Tips",
     "",
@@ -131,21 +127,22 @@ static const char *you_win_scr_str[] = {
 };
 
 static char score_file_arr[SNAKE_SCORE_FILE_ROW_LEN][SNAKE_SCORE_FILE_COL_LEN] = {
-    { "Rank   Score     Name      \n"},
-    { "1      0         EMPTY     \n"},
-    { "2      0         EMPTY     \n"},
-    { "3      0         EMPTY     \n"},
-    { "4      0         EMPTY     \n"},
-    { "5      0         EMPTY     \n"},
+    { "Rank   Score     Name      \n" }, { "1      0         EMPTY     \n" },
+    { "2      0         EMPTY     \n" }, { "3      0         EMPTY     \n" },
+    { "4      0         EMPTY     \n" }, { "5      0         EMPTY     \n" },
 };
 
-typedef enum {
-    SNAKE_MENU0,
-    SNAKE_MENU1,
-    SNAKE_MENU2,
-    SNAKE_MENU3,
-} SNAKE_MENU;
+typedef struct {
+    uint8_t index;
+    char str[255];
+} snake_menu_t;
 
+static const snake_menu_t menu[] = {
+    {.index = 0, .str = {"New Game"}},
+    {.index = 1, .str = {"Tips"}},
+    {.index = 2, .str = {"Exit"}},
+    {.index = 3, .str = {"Test"}},
+};
 typedef enum {
     SNAKE_DIR_NONE,
     SNAKE_DIR_UP = UP_ARROW,
@@ -229,6 +226,9 @@ void snake_create_high_scores(void)
 
 FILE *snake_open_high_scores(FILE *fp)
 {
+    char buf[30] = { 0 };
+    uint32_t i = 0;
+
     fp = fopen("highscores", "r");
     if (fp == NULL) {
         snake_create_high_scores();
@@ -236,6 +236,11 @@ FILE *snake_open_high_scores(FILE *fp)
         if (fp == NULL) {
             perror("failed to pen highscores");
             exit(EXIT_FAILURE);
+        }
+    } else {
+        while (fgets(buf, ARRAY_SIZE(buf), fp) != NULL) {
+            memcpy(score_file_arr[i], buf, ARRAY_SIZE(buf));
+            i++;
         }
     }
     return fp;
@@ -250,7 +255,8 @@ int snake_get_lowest_score(void)
     fp = snake_open_high_scores(fp);
     fclose(fp);
 
-    lowest_score = string2int(&score_file_arr[SNAKE_SCORE_FILE_ROW_LEN - 1][SNAKE_SCORE_FILE_SCORE_OFFSET]);
+    lowest_score = string2int(&score_file_arr[SNAKE_SCORE_FILE_ROW_LEN - 1]
+                                             [SNAKE_SCORE_FILE_SCORE_OFFSET]);
 
     return lowest_score;
 }
@@ -261,7 +267,7 @@ void snake_input_score(snake_object_t *snake)
     char user_name[SNAKE_SCORE_FILE_NAME_LEN] = { 0 };
     char score_str[SNAKE_SCORE_FILE_SCORE_LEN] = { 0 };
     uint16_t score_int = 0;
-    uint32_t i;
+    uint32_t i, j;
 
     clrscr();
     gotoxy(10, 5);
@@ -279,63 +285,34 @@ void snake_input_score(snake_object_t *snake)
         5      0         EMPTY     
     */
 
-   /* only maintain the 5 top score rankings */
-   for (i = 1; i < ARRAY_SIZE(score_file_arr); i++) {
-        score_int = (uint16_t)string2int(&score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET]);
+    /* only maintain the 5 top score rankings */
+    for (i = 1; i < ARRAY_SIZE(score_file_arr); i++) {
+        score_int = (uint16_t)string2int(
+            &score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET]);
         if (snake->score > score_int) {
-            if (i + 1 == ARRAY_SIZE(score_file_arr)) {
-                sprintf(score_str, "%d", snake->score);
-                strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET], score_str, strlen(score_str));
-                memset(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], ' ', SNAKE_SCORE_FILE_NAME_LEN);
-                strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], user_name, strlen(user_name) - 1);
+            for (j = ARRAY_SIZE(score_file_arr) - 1; j > i; j--) {
+                memcpy(&score_file_arr[j][SNAKE_SCORE_FILE_SCORE_OFFSET],
+                       &score_file_arr[j - 1][SNAKE_SCORE_FILE_SCORE_OFFSET],
+                       SNAKE_SCORE_FILE_COL_LEN -
+                           SNAKE_SCORE_FILE_SCORE_OFFSET);
             }
 
-            strncpy(&score_file_arr[i + 1][SNAKE_SCORE_FILE_SCORE_OFFSET],
-                &score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET], SNAKE_SCORE_FILE_SCORE_LEN);
-            memset(&score_file_arr[i + 1][SNAKE_SCORE_FILE_NAME_OFFSET], ' ', SNAKE_SCORE_FILE_NAME_LEN);
-            strncpy(&score_file_arr[i + 1][SNAKE_SCORE_FILE_NAME_OFFSET],
-                &score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], SNAKE_SCORE_FILE_NAME_LEN);
-
             sprintf(score_str, "%d", snake->score);
-            strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET], score_str, strlen(score_str));
-            memset(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], ' ', SNAKE_SCORE_FILE_NAME_LEN);
-            strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], user_name, strlen(user_name) - 1);
+            strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_SCORE_OFFSET],
+                    score_str, strlen(score_str));
+            memset(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], ' ',
+                   SNAKE_SCORE_FILE_NAME_LEN);
+            strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], user_name,
+                    strlen(user_name) - 1);
             break;
         }
-   }
+    }
 
     fp = fopen("highscores", "w+");
     for (i = 0; i < ARRAY_SIZE(score_file_arr); i++) {
         fprintf(fp, "%s", score_file_arr[i]);
     }
     fclose(fp);
-}
-
-void snake_display_high_scores(void)
-{
-    FILE *fp = NULL;
-    char str[128];
-    int32_t x = 10;
-    int32_t y = 5;
-
-    clrscr();
-
-    fp = snake_open_high_scores(fp);
-
-    while (!feof(fp)) {
-        gotoxy(x, y);
-        y++;
-        if (fgets(str, 126, fp)) {
-            printf("%s", str);
-        }
-    }
-
-    fclose(fp);
-    gotoxy(x, y);
-    y++;
-
-    printf("Press any key to continue...");
-    wait_4_key();
 }
 
 void snake_you_win_screen(void)
@@ -644,8 +621,9 @@ void snake_game_over(snake_object_t *snake)
 
     if (snake->score > snake_get_lowest_score()) {
         snake_input_score(snake);
-        // snake_display_high_scores();
     }
+
+    snake->score = 0;
 }
 
 void snake_load_game(void)
@@ -717,8 +695,8 @@ int32_t snake_main_meun(void)
     clrscr();
     gotoxy(x, y);
     y++;
-    for (int i = 0; i < ARRAY_SIZE(menu_str); i++) {
-        printf("%s\n", menu_str[i]);
+    for (int i = 0; i < ARRAY_SIZE(menu); i++) {
+        printf("%s\n", menu[i].str);
         gotoxy(x, y);
         y++;
     }
@@ -766,17 +744,16 @@ int main(void)
 
     do {
         switch (snake_main_meun()) {
-        case SNAKE_MENU0:
+        case 0:
             snake_load_game();
             break;
-        case SNAKE_MENU1:
-            snake_display_high_scores();
-            break;
-        case SNAKE_MENU2:
+        case 1:
             snake_tips();
             break;
-        case SNAKE_MENU3:
+        case 2:
             snake_exit_yn();
+            break;
+        case 3:
             break;
         default:
             break;
