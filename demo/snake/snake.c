@@ -24,6 +24,8 @@
 
 #include "utils.h"
 
+#define SANKE_VERSION "v0.0.2"
+
 #define SNAKE_ARRAY_SIZE 310
 
 #define SNAKE_CONSOLE_WIDTH 80
@@ -50,13 +52,24 @@
 
 /* score file array score len && name len*/
 #define SNAKE_SCORE_FILE_SCORE_LEN 5
-#define SNAKE_SCORE_FILE_NAME_LEN 10
+#define SNAKE_SCORE_FILE_NAME_LEN 8
+
+/* info bar string */
+#define SNAKE_INFO_BAR_STR_ROW_LEN 4
+#define SNAKE_INFO_BAR_STR_COL_LEN 20
 
 #define SNAKE_HEAD 'X'
 #define SNAKE_BODY '#'
 #define SNAKE_WALL '#'
 #define SNAKE_FOOD '*'
 #define SNAKE_BLANK ' '
+
+static const char *menu_str[] = {
+    "New Game",
+    "Tips",
+    "Exit",
+    "Test",
+};
 
 static const char *tips_str[] = {
     "Tips",
@@ -71,12 +84,13 @@ static const char *tips_str[] = {
     "Press any key to continue...",
 };
 
-static const char *info_bar_str[] = {
-    "Score: ",
-    "Speed: ",
-    "Coder  : HZJ",
-    "Version: 0.5",
-};
+static char info_bar_str[SNAKE_INFO_BAR_STR_ROW_LEN]
+                        [SNAKE_INFO_BAR_STR_COL_LEN] = {
+                            "Score: ",
+                            "Speed: ",
+                            "Coder  : HZJ",
+                            "Version: ",
+                        };
 
 // Ascii art reference:
 // http://www.chris.com/ascii/index.php?art=animals/reptiles/snakes
@@ -131,18 +145,6 @@ static char score_file_arr[SNAKE_SCORE_FILE_ROW_LEN][SNAKE_SCORE_FILE_COL_LEN] =
     { "2      0         EMPTY     \n" }, { "3      0         EMPTY     \n" },
     { "4      0         EMPTY     \n" }, { "5      0         EMPTY     \n" },
 };
-
-typedef struct {
-    uint8_t index;
-    char str[255];
-} snake_menu_t;
-
-static const snake_menu_t menu[] = {
-    {.index = 0, .str = {"New Game"}},
-    {.index = 1, .str = {"Tips"}},
-    {.index = 2, .str = {"Exit"}},
-    {.index = 3, .str = {"Test"}},
-};
 typedef enum {
     SNAKE_DIR_NONE,
     SNAKE_DIR_UP = UP_ARROW,
@@ -181,6 +183,9 @@ typedef struct {
 
     /* snake dir */
     SNAKE_DIR dir;
+
+    /* snake game version */
+    char version[10];
 } snake_object_t;
 
 static snake_object_t g_snake = { .sx = { 0 },
@@ -276,6 +281,16 @@ void snake_input_score(snake_object_t *snake)
     printf("Please enter your name: ");
     fgets(user_name, ARRAY_SIZE(user_name), stdin);
 
+    if (user_name[strlen(user_name) - 1] != '\n') {
+        /* Clear input stdin buffer */
+        int c;
+        while((c = getchar()) != '\n' && c != EOF);
+    } else {
+        /* clear '\n', set '\0' */
+        user_name[strlen(user_name) - 1] = '\0';
+    }
+
+
     /*
         Rank   Score     Name      
         1      0         EMPTY     
@@ -303,7 +318,7 @@ void snake_input_score(snake_object_t *snake)
             memset(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], ' ',
                    SNAKE_SCORE_FILE_NAME_LEN);
             strncpy(&score_file_arr[i][SNAKE_SCORE_FILE_NAME_OFFSET], user_name,
-                    strlen(user_name) - 1);
+                    strlen(user_name));
             break;
         }
     }
@@ -346,6 +361,8 @@ void snake_game_overs_screen(void)
 
 void snake_refresh_info_bar(snake_object_t *snake)
 {
+    static uint8_t first_init = 1;
+
     gotoxy(5, SNAKE_CONSOLE_HEIGHT + 2);
     printf("%s%d", info_bar_str[0], snake->score);
 
@@ -355,6 +372,10 @@ void snake_refresh_info_bar(snake_object_t *snake)
     gotoxy(SNAKE_CONSOLE_WIDTH - 15, SNAKE_CONSOLE_HEIGHT + 2);
     printf("%s", info_bar_str[2]);
 
+    if (first_init) {
+        first_init = 0;
+        strncat(info_bar_str[3], snake->version, ARRAY_SIZE(snake->version));
+    }
     gotoxy(SNAKE_CONSOLE_WIDTH - 15, SNAKE_CONSOLE_HEIGHT + 3);
     printf("%s", info_bar_str[3]);
     gotoxy(0, 0);
@@ -579,7 +600,7 @@ void snake_start_game(snake_object_t *snake)
             break;
     } while (1);
 
-    // hide_cursor();
+    hide_cursor();
     do {
         snake->dir = snake_check_keys_pressed(snake->dir);
         if (clock() > wait) {
@@ -598,7 +619,7 @@ void snake_start_game(snake_object_t *snake)
         }
 
     } while (!snake->game_over);
-    // show_cursor();
+    show_cursor();
 }
 
 void snake_game_over(snake_object_t *snake)
@@ -626,9 +647,15 @@ void snake_game_over(snake_object_t *snake)
     snake->score = 0;
 }
 
+void snake_set_version(snake_object_t *snake)
+{
+    strncpy(snake->version, SANKE_VERSION, ARRAY_SIZE(snake->version));
+}
+
 void snake_load_game(void)
 {
     snake_object_t *snake = snake_get_snake_object();
+    snake_set_version(snake);
     snake_speed_init(snake);
     snake_enviroment_init(SNAKE_CONSOLE_WIDTH, SNAKE_CONSOLE_HEIGHT);
     snake_len_init(snake);
@@ -683,7 +710,7 @@ void snake_exit_yn(void)
     exit(1);
 }
 
-int32_t snake_main_meun(void)
+uint16_t snake_main_meun(void)
 {
 #define MAIN_MENU_INIT_X 10
 #define MAIN_MENU_INIT_Y 5
@@ -695,8 +722,8 @@ int32_t snake_main_meun(void)
     clrscr();
     gotoxy(x, y);
     y++;
-    for (int i = 0; i < ARRAY_SIZE(menu); i++) {
-        printf("%s\n", menu[i].str);
+    for (int i = 0; i < ARRAY_SIZE(menu_str); i++) {
+        printf("%s\n", menu_str[i]);
         gotoxy(x, y);
         y++;
     }
@@ -734,14 +761,11 @@ int32_t snake_main_meun(void)
             break;
         }
     } while (key != ENTER_KEY);
-
     return selected;
 }
 
-int main(void)
+void snake_menu_select(void)
 {
-    snake_welcome_art();
-
     do {
         switch (snake_main_meun()) {
         case 0:
@@ -759,7 +783,12 @@ int main(void)
             break;
         }
     } while (1);
+}
 
+int main(void)
+{
+    snake_welcome_art();
+    snake_menu_select();
     return 0;
 }
 #endif
