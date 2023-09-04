@@ -1,12 +1,12 @@
 /**
  * @file utils.h
  * @author eehongzhijun (eehongzhijun@outlook.com)
- * @brief 
+ * @brief
  * @version 0.0.1
  * @date 2023-08-24
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 
 #ifndef _UTILS_H_
@@ -140,7 +140,8 @@ int max(int a, int b);
 int min(int a, int b);
 
 /**
- * @brief
+ * @brief round up
+ * roundup(5.3) = 6
  *
  * @param num
  * @return double
@@ -148,7 +149,8 @@ int min(int a, int b);
 double roundup(double num);
 
 /**
- * @brief
+ * @brief round down
+ * rounddown(5.3) 5
  *
  * @param num
  * @return double
@@ -159,6 +161,9 @@ double rounddown(double num);
  * @brief Limit a value between an upper and lower limit,
  * when the value exceeds the range of the minimum and maximum values,
  * choose a value between the minimum and maximum values to use
+ * min=1, max=5
+ * value=2, clamp(2, 1, 5)=2
+ * value=6, clamp(6, 1, 5)=5
  *
  * @param value
  * @param min
@@ -180,33 +185,33 @@ int clamp(int value, int min, int max);
 /**
  * @brief
  *
- * @param lhs
- * @param rhs
- * @param size
+ * @param lhs left hand side
+ * @param rhs right hand side
+ * @param size need to malloc swap value type size
  */
 void swap(void *lhs, void *rhs, size_t size);
 
 /**
  * @brief
  *
- * @param lhs
- * @param rhs
+ * @param lhs left hand side
+ * @param rhs right hand side
  */
 void swap_by_temp(int *lhs, int *rhs);
 
 /**
  * @brief
  *
- * @param lhs
- * @param rhs
+ * @param lhs left hand side
+ * @param rhs right hand side
  */
 void swap_by_sum(int *lhs, int *rhs);
 
 /**
- * @brief
+ * @brief xor means logical operation
  *
- * @param lhs
- * @param rhs
+ * @param lhs left hand side
+ * @param rhs right hand side
  */
 void swap_by_xor(int *lhs, int *rhs);
 
@@ -259,39 +264,27 @@ void clrscr(void);
 int kbhit(void);
 
 /**
- * @brief
+ * @brief wait key check
  *
  * @return char
  */
 char wait_4_key(void);
 
 /**
- * @brief
- *
- */
-void set_terminal_attributes(void);
-
-/**
- * @brief
- *
- */
-void restore_terminal_attributes(void);
-
-/**
- * @brief
+ * @brief show cursor
  *
  */
 void show_cursor(void);
 
 /**
- * @brief
+ * @brief hide cursor
  *
  */
 void hide_cursor(void);
 
 /* sort */
 /**
- * @brief
+ * @brief bubble sort
  *
  * @param arr
  * @param len
@@ -299,7 +292,7 @@ void hide_cursor(void);
 void bubble_sort(int arr[], int len);
 
 /**
- * @brief
+ * @brief quick sort
  *
  * @param pa
  * @param pb
@@ -316,9 +309,9 @@ int cmp(const void *pa, const void *pb);
 void dump_x(const uint8_t *data, size_t len);
 
 /**
- * @brief 
- * 
- * @param elem 
+ * @brief
+ *
+ * @param elem
  */
 void print_int(void *elem);
 void print_float(void *elem);
@@ -365,19 +358,19 @@ int clz(int x);
 int ctz(int x);
 
 /**
- * @brief 
- * 
- * @param num 
- * @param str 
- * @return char* 
+ * @brief int to string
+ *
+ * @param num
+ * @param str
+ * @return char*
  */
 char *int2string(int num, char *str);
 
 /**
- * @brief 
- * 
- * @param str 
- * @return int 
+ * @brief string to int
+ *
+ * @param str
+ * @return int
  */
 int string2int(char *str);
 

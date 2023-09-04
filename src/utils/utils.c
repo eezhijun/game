@@ -1,12 +1,12 @@
 /**
  * @file utils.c
  * @author eehongzhijun (eehongzhijun@outlook.com)
- * @brief 
+ * @brief
  * @version 0.0.1
  * @date 2023-08-24
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 
 #include "stdio.h"
@@ -167,22 +167,6 @@ char wait_4_key(void)
     pressed = getch();
     //pressed = tolower(pressed);
     return (char)pressed;
-}
-
-void set_terminal_attributes(void)
-{
-    struct termios term;
-    tcgetattr(STDOUT_FILENO, &term);
-    term.c_lflag &= ~ECHO;
-    tcsetattr(STDOUT_FILENO, TCSANOW, &term);
-}
-
-void restore_terminal_attributes(void)
-{
-    struct termios term;
-    tcgetattr(STDOUT_FILENO, &term);
-    term.c_lflag |= ECHO;
-    tcsetattr(STDOUT_FILENO, TCSANOW, &term);
 }
 
 void hide_cursor(void)
