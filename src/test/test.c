@@ -177,12 +177,10 @@ void tt_clock(void)
 void tt_cursor(void)
 {
     gotoxy(1, 1);
-    set_terminal_attributes();
     hide_cursor();
 
     wait_4_key();
     show_cursor();
-    restore_terminal_attributes();
 }
 
 void tt_string2int(void)
