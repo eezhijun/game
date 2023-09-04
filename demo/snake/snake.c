@@ -1,15 +1,13 @@
 /**
  * @file snake.c
  * @author eehongzhijun (eehongzhijun@outlook.com)
- * @brief 
+ * @brief
  * @version 0.0.1
  * @date 2023-08-24
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
-
-#ifdef SNAKE_DEMO
 
 #include "ctype.h"
 #include "math.h"
@@ -23,6 +21,8 @@
 #include "stdint.h"
 
 #include "utils.h"
+
+#ifdef SNAKE_DEMO
 
 #define SANKE_VERSION "v0.0.2"
 
@@ -215,12 +215,12 @@ void snake_create_high_scores(void)
     }
 
     /*
-        Rank   Score     Name      
-        1      0         EMPTY     
-        2      0         EMPTY     
-        3      0         EMPTY     
-        4      0         EMPTY     
-        5      0         EMPTY     
+        Rank   Score     Name
+        1      0         EMPTY
+        2      0         EMPTY
+        3      0         EMPTY
+        4      0         EMPTY
+        5      0         EMPTY
     */
 
     for (i = 0; i < ARRAY_SIZE(score_file_arr); i++) {
@@ -292,12 +292,12 @@ void snake_input_score(snake_object_t *snake)
 
 
     /*
-        Rank   Score     Name      
-        1      0         EMPTY     
-        2      0         EMPTY     
-        3      0         EMPTY     
-        4      0         EMPTY     
-        5      0         EMPTY     
+        Rank   Score     Name
+        1      0         EMPTY
+        2      0         EMPTY
+        3      0         EMPTY
+        4      0         EMPTY
+        5      0         EMPTY
     */
 
     /* only maintain the 5 top score rankings */

@@ -11,6 +11,8 @@
 #include "game.h"
 #include "ui.h"
 
+#ifdef DR_DEMO
+
 #ifdef DBG
 #include <assert.h>
 #endif
@@ -30,3 +32,5 @@ int main(int argc, char** args) {
   }
   cleanup();
 }
+
+#endif
