@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include "SDL.h"
 #include <math.h>
 #include <stdbool.h>
 #include <unistd.h>
@@ -533,7 +533,7 @@ void destroyGame(int status) {
   bullets = NULL;
 
   blackout();
-  char* msg; 
+  char* msg;
   if (status == 0) msg = "Stage Clear";
   else msg = "Game Over";
   extern SDL_Color WHITE;
@@ -942,7 +942,7 @@ bool isWin() {
   return spriteSnake[0]->num >= GAME_WIN_NUM;
 }
 void setTerm(int s) {
-  stopBgm(); 
+  stopBgm();
   if (s == 0) playAudio(AUDIO_WIN);
   else playAudio(AUDIO_LOSE);
   status = s;

@@ -1,6 +1,6 @@
 #include <stdbool.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
+#include "SDL.h"
+// #include <SDL2/SDL_mixer.h>
 
 #include "game.h"
 #include "helper.h"
@@ -179,7 +179,7 @@ void mainUi() {
                          &textures[RES_SWAMPY], NULL, LOOP_INFI,
                          SPRITE_ANIMATION_DURATION, startX + UI_MAIN_GAP,
                          startY, SDL_FLIP_HORIZONTAL, 0, AT_BOTTOM_CENTER);
- /* 
+ /*
   startX = SCREEN_WIDTH/3*2;
   startY = SCREEN_HEIGHT/3 + 10;
   int colNum = 8;

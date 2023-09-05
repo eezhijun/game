@@ -1,5 +1,5 @@
 #include "types.h"
-#include <SDL2/SDL_ttf.h>
+// #include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 #include "helper.h"
 #include "render.h"

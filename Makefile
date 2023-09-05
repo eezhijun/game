@@ -15,15 +15,18 @@ INCLUDE_DIRS          += -I$(ROOT_DIR)/demo
 INCLUDE_DIRS          += -I$(ROOT_DIR)/src
 INCLUDE_DIRS          += -I$(ROOT_DIR)/src/utils
 INCLUDE_DIRS          += -I$(ROOT_DIR)/src/test
+INCLUDE_DIRS          += -I$(ROOT_DIR)/demo/dungeon_rush
+INCLUDE_DIRS          += -I$(ROOT_DIR)/src/lib/SDL-release-2.28.3/include
+INCLUDE_DIRS          += -I$(ROOT_DIR)/src/lib/SDL-release-2.28.3/src
+
 
 # src
 SOURCE_FILES          := $(wildcard *.c)
 SOURCE_FILES          += $(wildcard src/utils/*.c)
-SOURCE_FILES          += $(wildcard src/test/*.c)
 
 
-CPPFLAGS              += -Wall
-CPPFLAGS              := $(INCLUDE_DIRS)
+CPPFLAGS              := -Wall
+CPPFLAGS              += $(INCLUDE_DIRS)
 CPPFLAGS              += -D_WINDOWS_
 
 
@@ -33,9 +36,7 @@ CFLAGS                += -m32 # gcc 32bit
 LDFLAGS               := -pthread
 LDFLAGS               += -m32 # gcc 32bit
 LDFLAGS               += -lm # to link againt the math library (libm)
-LDFLAGS               += -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
-
-
+# LDFLAGS               += -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 # user choose demo
 ifeq ($(demo),?)
@@ -44,18 +45,17 @@ run:
 	@echo "sn"
 endif
 
-ifeq ($(demo),tt)
-    CPPFLAGS                += -DTEST_DEMO=1
-else ifeq ($(demo),sn)
+ifeq ($(demo),sn)
     CPPFLAGS                += -DSNAKE_DEMO=1
     SOURCE_FILES            += $(wildcard demo/snake/*.c)
 else ifeq ($(demo),dr)
     CPPFLAGS                += -DDR_DEMO=1
-    INCLUDE_DIRS            += -I$(ROOT_DIR)/demo/dungeon_rush
-    SOURCE_FILES            += $(wildcard demo/dungeon_rush/*.c)
+    SOURCE_FILES            += $(wildcard demo/dungeon_rush/snake.c)
+    SOURCE_FILES            += $(wildcard src/lib/SDL-release-2.28.3/src/*.c)
+else
+    CPPFLAGS                += -DTEST_DEMO=1
+    SOURCE_FILES            += $(wildcard src/test/*.c)
 endif
-
-
 
 OBJ_FILES             = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 DEP_FILE              = $(OBJ_FILES:%.o=%.d)

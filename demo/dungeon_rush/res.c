@@ -1,93 +1,94 @@
 #include "res.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_mixer.h>
+#include "SDL.h"
+// #include <SDL2/SDL_image.h>
+// #include <SDL2/SDL_ttf.h>
+// #include <SDL2/SDL_mixer.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "types.h"
-#include "render.h"
-#include "weapon.h"
+// #include "types.h"
+// #include "render.h"
+// #include "weapon.h"
 
 // Constants
-const int SCREEN_FPS = 60;
-const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
-const int n = SCREEN_WIDTH/UNIT;
-const int m = SCREEN_HEIGHT/UNIT;
+// const int SCREEN_FPS = 60;
+// const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
+// const int n = SCREEN_WIDTH/UNIT;
+// const int m = SCREEN_HEIGHT/UNIT;
 
-const char tilesetPath[TILESET_SIZE][PATH_LEN] = {
-    "res/drawable/0x72_DungeonTilesetII_v1_3",
-    "res/drawable/fireball_explosion1",
-    "res/drawable/halo_explosion1",
-    "res/drawable/halo_explosion2",
-    "res/drawable/fireball",
-    "res/drawable/floor_spike",
-    "res/drawable/floor_exit",
-    "res/drawable/HpMed",
-    "res/drawable/SwordFx",
-    "res/drawable/ClawFx",
-    "res/drawable/Shine",
-    "res/drawable/Thunder",
-    "res/drawable/BloodBound",
-    "res/drawable/arrow",
-    "res/drawable/explosion-2",
-    "res/drawable/ClawFx2",
-    "res/drawable/Axe",
-    "res/drawable/cross_hit",
-    "res/drawable/blood",
-    "res/drawable/SolidFx",
-    "res/drawable/IcePick",
-    "res/drawable/IceShatter",
-    "res/drawable/Ice",
-    "res/drawable/SwordPack",
-    "res/drawable/HolyShield",
-    "res/drawable/golden_cross_hit",
-    "res/drawable/ui",
-    "res/drawable/title",
-    "res/drawable/purple_ball",
-    "res/drawable/purple_exp",
-    "res/drawable/staff",
-    "res/drawable/Thunder_Yellow",
-    "res/drawable/attack_up",
-    "res/drawable/powerful_bow"};
-const char fontPath[] = "res/font/m5x7.ttf";
-const char textsetPath[] = "res/text.txt";
+// const char tilesetPath[TILESET_SIZE][PATH_LEN] = {
+//     "res/drawable/0x72_DungeonTilesetII_v1_3",
+//     "res/drawable/fireball_explosion1",
+//     "res/drawable/halo_explosion1",
+//     "res/drawable/halo_explosion2",
+//     "res/drawable/fireball",
+//     "res/drawable/floor_spike",
+//     "res/drawable/floor_exit",
+//     "res/drawable/HpMed",
+//     "res/drawable/SwordFx",
+//     "res/drawable/ClawFx",
+//     "res/drawable/Shine",
+//     "res/drawable/Thunder",
+//     "res/drawable/BloodBound",
+//     "res/drawable/arrow",
+//     "res/drawable/explosion-2",
+//     "res/drawable/ClawFx2",
+//     "res/drawable/Axe",
+//     "res/drawable/cross_hit",
+//     "res/drawable/blood",
+//     "res/drawable/SolidFx",
+//     "res/drawable/IcePick",
+//     "res/drawable/IceShatter",
+//     "res/drawable/Ice",
+//     "res/drawable/SwordPack",
+//     "res/drawable/HolyShield",
+//     "res/drawable/golden_cross_hit",
+//     "res/drawable/ui",
+//     "res/drawable/title",
+//     "res/drawable/purple_ball",
+//     "res/drawable/purple_exp",
+//     "res/drawable/staff",
+//     "res/drawable/Thunder_Yellow",
+//     "res/drawable/attack_up",
+//     "res/drawable/powerful_bow"};
+// const char fontPath[] = "res/font/m5x7.ttf";
+// const char textsetPath[] = "res/text.txt";
 
-const int bgmNums = 4;
-const char bgmsPath[AUDIO_BGM_SIZE][PATH_LEN] = {
-  "res/audio/main_title.ogg",
-  "res/audio/bg1.ogg",
-  "res/audio/bg2.ogg",
-  "res/audio/bg3.ogg"
-};
-const char soundsPath[PATH_LEN] = "res/audio/sounds";
-const char soundsPathPrefix[PATH_LEN] = "res/audio/";
-// Gloabls
-int texturesCount;
-Texture textures[TEXTURES_SIZE];
-int textsCount;
-Text texts[TEXTSET_SIZE];
+// const int bgmNums = 4;
+// const char bgmsPath[AUDIO_BGM_SIZE][PATH_LEN] = {
+//   "res/audio/main_title.ogg",
+//   "res/audio/bg1.ogg",
+//   "res/audio/bg2.ogg",
+//   "res/audio/bg3.ogg"
+// };
+// const char soundsPath[PATH_LEN] = "res/audio/sounds";
+// const char soundsPathPrefix[PATH_LEN] = "res/audio/";
+// // Gloabls
+// int texturesCount;
+// Texture textures[TEXTURES_SIZE];
+// int textsCount;
+// Text texts[TEXTSET_SIZE];
 
-extern SDL_Color BLACK;
-extern SDL_Color WHITE;
-extern SDL_Renderer* renderer;
-extern Weapon weapons[WEAPONS_SIZE];
+// extern SDL_Color BLACK;
+// extern SDL_Color WHITE;
+// extern SDL_Renderer* renderer;
+// extern Weapon weapons[WEAPONS_SIZE];
 
-SDL_Window* window;
-SDL_Texture* originTextures[TILESET_SIZE];
-TTF_Font* font;
+// SDL_Window* window;
+// SDL_Texture* originTextures[TILESET_SIZE];
+// TTF_Font* font;
 
-Effect effects[EFFECTS_SIZE];
+// Effect effects[EFFECTS_SIZE];
 
-Sprite commonSprites[COMMON_SPRITE_SIZE];
+// Sprite commonSprites[COMMON_SPRITE_SIZE];
 
-Mix_Music *mainTitle;
-Mix_Music *bgms[AUDIO_BGM_SIZE];
-int soundsCount;
-Mix_Chunk *sounds[AUDIO_SOUND_SIZE];
+// Mix_Music *mainTitle;
+// Mix_Music *bgms[AUDIO_BGM_SIZE];
+// int soundsCount;
+// Mix_Chunk *sounds[AUDIO_SOUND_SIZE];
 
-bool init() {
-  // Initialization flag
+bool init(void)
+{
+  Initialization flag
   bool success = true;
 
   // Initialize SDL
@@ -103,10 +104,10 @@ bool init() {
       printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
       success = false;
     } else {
-      // Software Render
+      Software Render
 #ifndef SOFTWARE_ACC
-      renderer = SDL_CreateRenderer(
-          window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        renderer = SDL_CreateRenderer(
+        window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 #endif
 #ifdef SOFTWARE_ACC
       printf("define software acc\n");
@@ -142,7 +143,9 @@ bool init() {
   }
   return success;
 }
-SDL_Texture* loadSDLTexture(const char* path) {
+
+SDL_Texture* loadSDLTexture(const char* path)
+{
   // The final texture
   SDL_Texture* newTexture = NULL;
 
@@ -165,7 +168,9 @@ SDL_Texture* loadSDLTexture(const char* path) {
 
   return newTexture;
 }
-bool loadTextset() {
+
+bool loadTextset(void)
+{
   bool success = true;
   FILE* file = fopen(textsetPath, "r");
   char str[TEXT_LEN];
@@ -183,7 +188,9 @@ bool loadTextset() {
   fclose(file);
   return success;
 }
-bool loadTileset(const char* path, SDL_Texture* origin) {
+
+bool loadTileset(const char* path, SDL_Texture* origin)
+{
   FILE* file = fopen(path, "r");
   int x, y, w, h, f;
   char resName[256];
@@ -204,7 +211,9 @@ bool loadTileset(const char* path, SDL_Texture* origin) {
   fclose(file);
   return true;
 }
-bool loadAudio() {
+
+bool loadAudio(void)
+{
   bool success = true;
   for (int i = 0; i < bgmNums; i++) {
     bgms[i] = Mix_LoadMUS(bgmsPath[i]);
@@ -229,7 +238,9 @@ bool loadAudio() {
   fclose(f);
   return success;
 }
-bool loadMedia() {
+
+bool loadMedia(void)
+{
   // Loading success flag
   bool success = true;
   // load effects
@@ -265,7 +276,9 @@ bool loadMedia() {
 
   return success;
 }
-void cleanup() {
+
+void cleanup(void)
+{
   // Deallocate surface
   for (int i = 0; i < TILESET_SIZE; i++) {
     SDL_DestroyTexture(originTextures[i]);
@@ -283,7 +296,9 @@ void cleanup() {
   Mix_CloseAudio();
   SDL_Quit();
 }
-void initCommonEffects() {
+
+void initCommonEffects(void)
+{
   // Effect #0: Death
   initEffect(&effects[0], 30, 4, SDL_BLENDMODE_BLEND);
   SDL_Color death = {255, 255, 255, 255};
@@ -327,7 +342,9 @@ void initCommonSprite(Sprite* sprite, Weapon* weapon, int res_id, int hp) {
   sprite->lastAttack = 0;
   sprite->dropRate = 1;
 }
-void initCommonSprites() {
+
+void initCommonSprites(void)
+{
   initCommonSprite(&commonSprites[SPRITE_KNIGHT], &weapons[WEAPON_SWORD], RES_KNIGHT_M, 150);
   initCommonSprite(&commonSprites[SPRITE_ELF], &weapons[WEAPON_ARROW],RES_ELF_M, 100);
   initCommonSprite(&commonSprites[SPRITE_WIZZARD], &weapons[WEAPON_FIREBALL],RES_WIZZARD_M, 95);

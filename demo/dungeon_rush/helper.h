@@ -1,6 +1,6 @@
 #ifndef SNAKE_HELPER_H
 #define SNAKE_HELPER_H
-#include <SDL2/SDL.h>
+#include "SDL.h"
 #include <stdbool.h>
 #include <math.h>
 #include "types.h"

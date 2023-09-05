@@ -2,6 +2,7 @@
 #include "game.h"
 #include "res.h"
 #include "types.h"
+#include "stdio.h"
 
 #include <stdlib.h>
 

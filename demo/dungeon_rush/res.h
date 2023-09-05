@@ -1,7 +1,7 @@
 #ifndef SNAKE_RES_H_
 #define SNAKE_RES_H_
 
-#include <SDL2/SDL.h>
+#include "SDL.h"
 #include "types.h"
 
 #define PATH_LEN 1024
@@ -19,8 +19,8 @@
 #define RES_WALL_TOP_MID 1
 #define RES_WALL_TOP_RIGHT 2
 #define RES_WALL_MID 4
-#define RES_WALL_HOLE_1 11 
-#define RES_WALL_HOLE_2 12 
+#define RES_WALL_HOLE_1 11
+#define RES_WALL_HOLE_2 12
 #define RES_WALL_SIDE_TOP_LEFT 35
 #define RES_WALL_SIDE_TOP_RIGHT 36
 #define RES_WALL_SIDE_MID_LEFT 37
@@ -170,12 +170,12 @@
 #define AUDIO_MED 17
 
 bool init();
-void cleanup();
-bool loadMedia();
-SDL_Texture* loadSDLTexture(const char* path);
-bool loadTileset(const char* path, SDL_Texture* origin);
-bool loadTextset();
-void initCommonEffects();
-void initCommonAnimations();
-void initCommonSprites();
+// void cleanup();
+// bool loadMedia();
+// SDL_Texture* loadSDLTexture(const char* path);
+// bool loadTileset(const char* path, SDL_Texture* origin);
+// bool loadTextset();
+// void initCommonEffects();
+// void initCommonAnimations();
+// void initCommonSprites();
 #endif
