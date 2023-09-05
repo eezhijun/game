@@ -8,49 +8,34 @@ MAKEFIILE_PATH                        := $(abspath $(lastword $(MAKEFILE_LIST)))
 ROOT_DIR                              := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 BUILD_DIR                             := $(ROOT_DIR)/output
 BUILD_ABS_DIR                         := $(abspath $(BUILD_DIR))
-DEMO_DIR                              := $(ROOT_DIR)/demo
-SRC_DIR                               := $(ROOT_DIR)/src
-SRC_UTILS_DIR                         := $(SRC_DIR)/utils
-SRC_TEST_DIR                          := $(SRC_DIR)/test
 
-
+# include
 INCLUDE_DIRS          := -I.
-INCLUDE_DIRS          += -I$(DEMO_DIR)
-INCLUDE_DIRS          += -I$(SRC_DIR)
-INCLUDE_DIRS          += -I$(SRC_UTILS_DIR)
-INCLUDE_DIRS          += -I$(SRC_TEST_DIR)
+INCLUDE_DIRS          += -I$(ROOT_DIR)/demo
+INCLUDE_DIRS          += -I$(ROOT_DIR)/src
+INCLUDE_DIRS          += -I$(ROOT_DIR)/src/utils
+INCLUDE_DIRS          += -I$(ROOT_DIR)/src/test
 
-
+# src
 SOURCE_FILES          := $(wildcard *.c)
-SOURCE_FILES          += $(wildcard demo/snake/*.c)
 SOURCE_FILES          += $(wildcard src/utils/*.c)
 SOURCE_FILES          += $(wildcard src/test/*.c)
 
 
-
-CFLAGS                := -ggdb3
-LDFLAGS               := -ggdb3 -pthread
-CPPFLAGS              := $(INCLUDE_DIRS) -DBUILD_DIR=\"$(BUILD_ABS_DIR)\"
+CPPFLAGS              += -Wall
+CPPFLAGS              := $(INCLUDE_DIRS)
 CPPFLAGS              += -D_WINDOWS_
 
 
 CFLAGS                += -m32 # gcc 32bit
-LDFLAGS               += -m32
 
+
+LDFLAGS               := -pthread
+LDFLAGS               += -m32 # gcc 32bit
 LDFLAGS               += -lm # to link againt the math library (libm)
-CPPFLAGS              += -Wall
-
-CPPFLAGS              += -lcurses  # graph lib
+LDFLAGS               += -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 
-ifdef SANITIZE_ADDRESS
-  CFLAGS              += -fsanitize=address -fsanitize=alignment
-  LDFLAGS             += -fsanitize=address -fsanitize=alignment
-endif
-
-ifdef SANITIZE_LEAK
-  LDFLAGS             += -fsanitize=leak
-endif
 
 # user choose demo
 ifeq ($(demo),?)
@@ -60,11 +45,14 @@ run:
 endif
 
 ifeq ($(demo),tt)
-  CPPFLAGS            += -DTEST_DEMO=1
-endif
-
-ifeq ($(demo),sn)
-  CPPFLAGS            += -DSNAKE_DEMO=1
+    CPPFLAGS                += -DTEST_DEMO=1
+else ifeq ($(demo),sn)
+    CPPFLAGS                += -DSNAKE_DEMO=1
+    SOURCE_FILES            += $(wildcard demo/snake/*.c)
+else ifeq ($(demo),dr)
+    CPPFLAGS                += -DDR_DEMO=1
+    INCLUDE_DIRS            += -I$(ROOT_DIR)/demo/dungeon_rush
+    SOURCE_FILES            += $(wildcard demo/dungeon_rush/*.c)
 endif
 
 
