@@ -15,9 +15,6 @@ INCLUDE_DIRS          += -I$(ROOT_DIR)/demo
 INCLUDE_DIRS          += -I$(ROOT_DIR)/src
 INCLUDE_DIRS          += -I$(ROOT_DIR)/src/utils
 INCLUDE_DIRS          += -I$(ROOT_DIR)/src/test
-INCLUDE_DIRS          += -I$(ROOT_DIR)/demo/dungeon_rush
-INCLUDE_DIRS          += -I$(ROOT_DIR)/src/lib/SDL-release-2.28.3/include
-INCLUDE_DIRS          += -I$(ROOT_DIR)/src/lib/SDL-release-2.28.3/src
 
 
 # src
@@ -50,8 +47,6 @@ ifeq ($(demo),sn)
     SOURCE_FILES            += $(wildcard demo/snake/*.c)
 else ifeq ($(demo),dr)
     CPPFLAGS                += -DDR_DEMO=1
-    SOURCE_FILES            += $(wildcard demo/dungeon_rush/snake.c)
-    SOURCE_FILES            += $(wildcard src/lib/SDL-release-2.28.3/src/*.c)
 else
     CPPFLAGS                += -DTEST_DEMO=1
     SOURCE_FILES            += $(wildcard src/test/*.c)
