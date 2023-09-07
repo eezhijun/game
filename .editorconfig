@@ -1,0 +1,23 @@
+#editorconfig.org
+root = true
+
+
+[*.{c,cpp,h,java,m,py,txt}]
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[{Makefile,Makefile.*,*.mk}]
+indent_size = 4
+indent_style = tab
+tab_width = 4
+
+[*.{markdown,md}]
+indent_size = 4
+indent_style = space
+# Markdown syntax treats tabs as 4 spaces
+tab_width = 4
+
+[{*.bat,*.rc}]
+end_of_line = crlf

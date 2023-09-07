@@ -43,13 +43,13 @@ run:
 endif
 
 ifeq ($(demo),sn)
-    CPPFLAGS                += -DSNAKE_DEMO=1
-    SOURCE_FILES            += $(wildcard demo/snake/*.c)
+  CPPFLAGS                += -DSNAKE_DEMO=1
+  SOURCE_FILES            += $(wildcard demo/snake/*.c)
 else ifeq ($(demo),dr)
-    CPPFLAGS                += -DDR_DEMO=1
+  CPPFLAGS                += -DDR_DEMO=1
 else
-    CPPFLAGS                += -DTEST_DEMO=1
-    SOURCE_FILES            += $(wildcard src/test/*.c)
+  CPPFLAGS                += -DTEST_DEMO=1
+  SOURCE_FILES            += $(wildcard src/test/*.c)
 endif
 
 OBJ_FILES             = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
