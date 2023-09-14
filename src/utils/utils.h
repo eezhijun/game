@@ -20,6 +20,26 @@
 #define UNUSED(x) (void)(x)
 #endif
 
+#define STR(s) #s
+
+// Check windows
+#if _WIN32 || _WIN64
+#if _WIN64
+#define ENVIRONMENT "_WIN32"
+#else
+#define ENVIRONMENT "_WIN64"
+#endif
+#endif
+
+// Check GCC
+#if __GNUC__
+#if __x86_64__ || __ppc64__
+#define ENVIRONMENT "__GNUC__64"
+#else
+#define ENVIRONMENT "__GNUC__32"
+#endif
+#endif
+
 #ifndef FFS
 #define FFS(x) ((x) ? __builtin_ffs(x) : 0)
 #endif
@@ -176,9 +196,9 @@ int clamp(int value, int min, int max);
 #ifndef SWAP
 #define SWAP(type, lhs, rhs) \
     do {                     \
-        type temp = lhs;     \
-        lhs = rhs;           \
-        rhs = temp;          \
+        type temp = *lhs;    \
+        *lhs = *rhs;         \
+        *rhs = temp;         \
     } while (0)
 #endif
 
