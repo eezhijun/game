@@ -12,7 +12,7 @@
 #include "render.h"
 #include "weapon.h"
 
-#define DBG
+
 
 // Constants
 const int n = SCREEN_WIDTH/UNIT;
@@ -216,7 +216,6 @@ bool loadAudio() {
   for (int i = 0; i < bgmNums; i++) {
     bgms[i] = Mix_LoadMUS(bgmsPath[i]);
     success &= bgms[i] != NULL;
-    printf(">>>line=%d\n", __LINE__);
     if (!bgms[i]) printf("Failed to load %s: SDL_mixer Error: %s\n", bgmsPath[i], Mix_GetError());
     #ifdef DBG
     else printf("BGM %s loaded\n", bgmsPath[i]);
