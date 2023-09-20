@@ -4,10 +4,10 @@ $(info MAKE START)
 CC                := gcc
 BIN               := main
 
-MAKEFIILE_PATH                        := $(abspath $(lastword $(MAKEFILE_LIST)))
-ROOT_DIR                              := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-BUILD_DIR                             := $(ROOT_DIR)/output
-BUILD_ABS_DIR                         := $(abspath $(BUILD_DIR))
+MK_PATH               := $(abspath $(lastword $(MAKEFILE_LIST)))
+ROOT_DIR              := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+BUILD_DIR             := $(ROOT_DIR)/output
+BUILD_ABS_DIR         := $(abspath $(BUILD_DIR))
 
 # include
 INCLUDE_DIRS          := -I.
