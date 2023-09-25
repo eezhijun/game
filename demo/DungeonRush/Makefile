@@ -5,7 +5,7 @@ BIN             := main
 
 MK_PATH         := $(abspath $(lastword $(MAKEFILE_LIST)))
 ROOT_DIR        := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-BUILD_DIR       := $(ROOT_DIR)/output
+BUILD_DIR       := $(ROOT_DIR)/out
 
 
 # $(info $(MK_PATH), $(ROOT_DIR), $(BUILD_DIR))
