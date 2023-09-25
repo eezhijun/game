@@ -9,7 +9,6 @@
 
 #include "utils.h"
 
-
 /* keyboard test */
 void tt_fgets(void)
 {
@@ -80,7 +79,6 @@ void tt_hton(void)
     printf("Original 16-bit value: 0x%04X\n", original16);
     printf("Network 16-bit value: 0x%04X\n", network16);
     printf("Host 16-bit value: 0x%04X\n", host16);
-
 }
 
 #define ARRAY_SIZEX 300
@@ -140,7 +138,8 @@ void tt_container_of(void)
     person_ptr->age = 30;
 
     // Using the CONTAINER_OF macro to get the address of the whole struct
-    struct Person *recovered_person_ptr = CONTAINER_OF(&person_ptr->age, struct Person, age);
+    struct Person *recovered_person_ptr =
+        CONTAINER_OF(&person_ptr->age, struct Person, age);
 
     printf("Recovered person's age: %d\n", recovered_person_ptr->age);
 }
@@ -169,7 +168,7 @@ void tt_clock(void)
 
     end_time = clock();
 
-    cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+    cpu_time_used = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
 
     printf("execute time:%f s\n", cpu_time_used);
 }
@@ -185,7 +184,7 @@ void tt_cursor(void)
 
 void tt_string2int(void)
 {
-    char str[10] = {'a', 'b', 'c', '1', '2', '3', '\0', 'x', 'y'};
+    char str[10] = { 'a', 'b', 'c', '1', '2', '3', '\0', 'x', 'y' };
 
     int num = string2int(&str[3]);
     printf("num=%d\n", num);

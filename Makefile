@@ -1,8 +1,7 @@
-# only test demo
 $(info MAKE START)
 
-CC                := gcc
-BIN               := main
+CC                    := gcc
+EXEC                  := main
 
 MK_PATH               := $(abspath $(lastword $(MAKEFILE_LIST)))
 ROOT_DIR              := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -55,12 +54,12 @@ endif
 OBJ_FILES             = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 DEP_FILE              = $(OBJ_FILES:%.o=%.d)
 
-$(BIN) : $(BUILD_DIR)/$(BIN)
+$(EXEC) : $(BUILD_DIR)/$(EXEC)
 
-$(BUILD_DIR)/$(BIN) : $(OBJ_FILES)
+$(BUILD_DIR)/$(EXEC) : $(OBJ_FILES)
 	@-mkdir -p $(@D)
 	@$(CC) $^ $(LDFLAGS) -o $@
-	@echo "BIN $@"
+	@echo "EXEC $@"
 	@echo "+--------------------------------------------+"
 	@echo "|            Finish Compilation              |"
 	@echo "+--------------------------------------------+"
@@ -76,3 +75,21 @@ $(BUILD_DIR)/%.o : %.c Makefile
 
 clean:
 	-rm -rf $(BUILD_DIR)
+
+# Run clang-format on source code
+.PHONY: format
+format:
+	@echo "Running clang-format"
+	@clang-format -i \
+	$(wildcard demo/sanke/*.c) \
+	$(wildcard src/test/*.c) \
+	$(wildcard src/utils/*.c)
+
+.PHONY: all
+all: $(BUILD_DIR)/$(EXEC)
+
+# Build and run
+.PHONY: run
+run: all
+	@echo "Starting program: $(BUILD_DIR)/$(EXEC)"
+	@cd $(BUILD_DIR) && ./$(EXEC)
