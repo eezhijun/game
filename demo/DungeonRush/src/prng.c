@@ -4,8 +4,9 @@
 
 static unsigned int nSeed = 5323;
 
-void prngSrand(unsigned seed) {
-  nSeed = seed;
+void prngSrand(unsigned seed)
+{
+    nSeed = seed;
 }
 
 unsigned int prngRand()
@@ -16,8 +17,8 @@ unsigned int prngRand()
     // Due to our use of large constants and overflow, it would be
     // very hard for someone to predict what the next number is
     // going to be from the previous one.
-    nSeed = (8253729 * nSeed + 2396403); 
+    nSeed = (8253729 * nSeed + 2396403);
 
     // Take the seed and return a value between 0 and 32767
-    return nSeed  % PRNG_MAX;
+    return nSeed % PRNG_MAX;
 }

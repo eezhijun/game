@@ -230,6 +230,7 @@ int ctz(int x)
 #define DUMP_BUFFER_SIZE 512
 
 static char dump_buffer[DUMP_BUFFER_SIZE] = { 0 };
+
 void dump_x(const uint8_t *data, size_t len)
 {
     size_t line = len / DUMP_BYTES;

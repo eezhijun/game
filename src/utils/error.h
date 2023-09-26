@@ -19,14 +19,10 @@ typedef uint16_t U_RESULT;
 #endif
 #define U_FAILURE 0xFFFF
 
-
 #define ERR_ID 0x0000
-
-
 
 #ifdef __cplusplus
 };
 #endif
-
 
 #endif

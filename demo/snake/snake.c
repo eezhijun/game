@@ -145,6 +145,7 @@ static char score_file_arr[SNAKE_SCORE_FILE_ROW_LEN][SNAKE_SCORE_FILE_COL_LEN] =
     { "2      0         EMPTY     \n" }, { "3      0         EMPTY     \n" },
     { "4      0         EMPTY     \n" }, { "5      0         EMPTY     \n" },
 };
+
 typedef enum {
     SNAKE_DIR_NONE,
     SNAKE_DIR_UP = UP_ARROW,
@@ -284,12 +285,12 @@ void snake_input_score(snake_object_t *snake)
     if (user_name[strlen(user_name) - 1] != '\n') {
         /* Clear input stdin buffer */
         int c;
-        while((c = getchar()) != '\n' && c != EOF);
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
     } else {
         /* clear '\n', set '\0' */
         user_name[strlen(user_name) - 1] = '\0';
     }
-
 
     /*
         Rank   Score     Name

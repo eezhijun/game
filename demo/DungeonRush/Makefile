@@ -1,7 +1,7 @@
 $(info "DungeoRush Start")
 
 CC              := gcc
-BIN             := main
+EXEC            := main
 
 MK_PATH         := $(abspath $(lastword $(MAKEFILE_LIST)))
 ROOT_DIR        := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -36,10 +36,10 @@ OBJ_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 
 $(info $(LDFLAGS))
 
-$(BUILD_DIR)/$(BIN) : $(OBJ_FILES)
+$(BUILD_DIR)/$(EXEC) : $(OBJ_FILES)
 	@-mkdir -p $(@D)
 	@$(CC) $^ $(LDFLAGS) -o $@
-	@echo "BIN $@"
+	@echo "EXEC $@"
 
 
 ${BUILD_DIR}/%.o : %.c

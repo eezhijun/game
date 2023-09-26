@@ -84,6 +84,7 @@ void tt_hton(void)
 #define ARRAY_SIZEX 300
 #define MIN_VALUE 1
 #define MAX_VALUE 100
+
 void tt_dump_bytes(void)
 {
     uint8_t random_numbers[ARRAY_SIZEX];

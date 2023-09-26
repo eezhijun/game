@@ -105,7 +105,6 @@ SpaceAfterTemplateKeyword: true
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
-# SpaceBeforeParens: ControlStatementsExceptForEachMacros
 SpaceBeforeRangeBasedForLoopColon: true
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
@@ -114,6 +113,10 @@ SpacesInContainerLiterals: false
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
+
+SpaceBeforeParens: ControlStatementsExceptForEachMacros
+SeparateDefinitionBlocks: Always
+
 Standard: Cpp03
 TabWidth: 4
 UseTab: Never

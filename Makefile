@@ -81,9 +81,9 @@ clean:
 format:
 	@echo "Running clang-format"
 	@clang-format -i \
-	$(wildcard demo/sanke/*.c) \
-	$(wildcard src/test/*.c) \
-	$(wildcard src/utils/*.c)
+	$(shell find demo -name "*.c") \
+	$(shell find src/test -name "*.c") \
+	$(shell find src/utils -name "*.c")
 
 .PHONY: all
 all: $(BUILD_DIR)/$(EXEC)
