@@ -11,7 +11,8 @@ BUILD_DIR       := $(ROOT_DIR)/out
 # $(info $(MK_PATH), $(ROOT_DIR), $(BUILD_DIR))
 
 INCLUDE_DIRS := -I.
-INCLUDE_DIRS += -I/usr/local/include/SDL2/
+INCLUDE_DIRS += -I/usr/local/include/SDL2
+INCLUDE_DIRS += -I/usr/include/SDL2
 INCLUDE_DIRS += -I$(ROOT_DIR)/src
 
 LIB_DIRS := -L.
