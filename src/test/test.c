@@ -1,5 +1,3 @@
-#ifdef TEST_DEMO
-
 #include "stdio.h"
 #include "unistd.h"
 #include "assert.h"
@@ -191,11 +189,11 @@ void tt_string2int(void)
     printf("num=%d\n", num);
 }
 
+#ifdef TEST_DEMO
 int main(void)
 {
     printf("TEST MAIN ENTRY\n");
 
     return 0;
 }
-
 #endif

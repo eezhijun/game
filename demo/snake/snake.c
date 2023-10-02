@@ -22,8 +22,6 @@
 
 #include "utils.h"
 
-#ifdef SNAKE_DEMO
-
 #define SANKE_VERSION "v0.0.2"
 
 #define SNAKE_ARRAY_SIZE 310
@@ -786,6 +784,7 @@ void snake_menu_select(void)
     } while (1);
 }
 
+#ifdef SNAKE_DEMO
 int main(void)
 {
     snake_welcome_art();

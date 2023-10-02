@@ -18,7 +18,12 @@ INCLUDE_DIRS += -I$(ROOT_DIR)/src
 LIB_DIRS := -L.
 LIB_DIRS := -L/usr/local/lib/
 
+TEST = 
+ifdef TEST
+SOURCE_FILES := $(wildcard test/*.c)
+else
 SOURCE_FILES := $(wildcard src/*.c)
+endif
 
 CPPFLAGS := $(INCLUDE_DIRS)
 CPPFLAGS += $(LIB_DIRS)

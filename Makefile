@@ -19,6 +19,8 @@ INCLUDE_DIRS          += -I$(ROOT_DIR)/src/test
 # src
 SOURCE_FILES          := $(wildcard *.c)
 SOURCE_FILES          += $(wildcard src/utils/*.c)
+SOURCE_FILES          += $(wildcard src/test/*.c)
+SOURCE_FILES          += $(wildcard demo/snake/*.c)
 
 
 CPPFLAGS              := -Wall
@@ -32,27 +34,17 @@ CFLAGS                += -m32 # gcc 32bit
 LDFLAGS               := -pthread
 LDFLAGS               += -m32 # gcc 32bit
 LDFLAGS               += -lm # to link againt the math library (libm)
-# LDFLAGS               += -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
-# user choose demo
-ifeq ($(demo),?)
-run:
-	@echo "tt"
-	@echo "sn"
-endif
+OBJ_FILES             = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
+DEP_FILE              = $(OBJ_FILES:%.o=%.d)
 
 ifeq ($(demo),sn)
   CPPFLAGS                += -DSNAKE_DEMO=1
-  SOURCE_FILES            += $(wildcard demo/snake/*.c)
 else ifeq ($(demo),dr)
   CPPFLAGS                += -DDR_DEMO=1
 else
   CPPFLAGS                += -DTEST_DEMO=1
-  SOURCE_FILES            += $(wildcard src/test/*.c)
 endif
-
-OBJ_FILES             = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
-DEP_FILE              = $(OBJ_FILES:%.o=%.d)
 
 $(EXEC) : $(BUILD_DIR)/$(EXEC)
 
@@ -71,11 +63,6 @@ $(BUILD_DIR)/%.o : %.c Makefile
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -MMD -c $< -o $@
 	@echo "CC $<"
 
-.PHONY : clean
-
-clean:
-	-rm -rf $(BUILD_DIR)
-
 # Run clang-format on source code
 .PHONY: format
 format:
@@ -93,3 +80,7 @@ all: $(BUILD_DIR)/$(EXEC)
 run: all
 	@echo "Starting program: $(BUILD_DIR)/$(EXEC)"
 	@cd $(BUILD_DIR) && ./$(EXEC)
+
+.PHONY : clean
+clean:
+	-rm -rf $(BUILD_DIR)

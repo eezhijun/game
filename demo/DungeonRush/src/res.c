@@ -12,6 +12,8 @@
 #include "render.h"
 #include "weapon.h"
 
+#define SOFTWARE_ACC
+
 // Constants
 const int n = SCREEN_WIDTH / UNIT;
 const int m = SCREEN_HEIGHT / UNIT;
@@ -108,7 +110,7 @@ bool init()
         } else {
             // Software Render
 #ifndef SOFTWARE_ACC
-            renderer = SDL_CreateRenderer(window, -1,
+            renderer = SDL_CreateRenderer(window, 1,
                                           SDL_RENDERER_ACCELERATED |
                                               SDL_RENDERER_PRESENTVSYNC);
 #endif
