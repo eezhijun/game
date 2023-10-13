@@ -487,22 +487,6 @@ char *dec2hex(int dec);
 int count_digits(int num);
 
 /**
- * @brief Create a 2darray object, but memory addresses are not consecutive
- *
- * @param row
- * @param col
- * @return int**
- */
-int **create_2darray(int row, int col);
-
-/**
- * @brief destroy a 2darray object
- *
- * @param a
- */
-void destroy_2darray(int **a);
-
-/**
  * @brief
  *
  * @param num

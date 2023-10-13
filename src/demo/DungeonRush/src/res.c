@@ -52,16 +52,15 @@ const char tilesetPath[TILESET_SIZE][PATH_LEN] = {
     "res/drawable/staff",
     "res/drawable/Thunder_Yellow",
     "res/drawable/attack_up",
-    "res/drawable/powerful_bow"
-};
+    "res/drawable/powerful_bow"};
 const char fontPath[] = "res/font/m5x7.ttf";
 const char textsetPath[] = "res/text.txt";
 
 const int bgmNums = 4;
-const char bgmsPath[AUDIO_BGM_SIZE][PATH_LEN] = { "res/audio/main_title.ogg",
-                                                  "res/audio/bg1.ogg",
-                                                  "res/audio/bg2.ogg",
-                                                  "res/audio/bg3.ogg" };
+const char bgmsPath[AUDIO_BGM_SIZE][PATH_LEN] = {"res/audio/main_title.ogg",
+                                                 "res/audio/bg1.ogg",
+                                                 "res/audio/bg2.ogg",
+                                                 "res/audio/bg3.ogg"};
 const char soundsPath[PATH_LEN] = "res/audio/sounds";
 const char soundsPathPrefix[PATH_LEN] = "res/audio/";
 // Gloabls
@@ -324,7 +323,7 @@ void initCommonEffects()
 {
     // Effect #0: Death
     initEffect(&effects[0], 30, 4, SDL_BLENDMODE_BLEND);
-    SDL_Color death = { 255, 255, 255, 255 };
+    SDL_Color death = {255, 255, 255, 255};
     effects[0].keys[0] = death;
     death.g = death.b = 0;
     death.r = 168;
@@ -339,7 +338,7 @@ void initCommonEffects()
 
     // Effect #1: Blink ( white )
     initEffect(&effects[1], 30, 3, SDL_BLENDMODE_ADD);
-    SDL_Color blink = { 0, 0, 0, 255 };
+    SDL_Color blink = {0, 0, 0, 255};
     effects[1].keys[0] = blink;
     blink.r = blink.g = blink.b = 200;
     effects[1].keys[1] = blink;
@@ -349,7 +348,7 @@ void initCommonEffects()
     puts("Effect #1: Blink (white) loaded");
 #endif
     initEffect(&effects[2], 30, 2, SDL_BLENDMODE_BLEND);
-    SDL_Color vanish = { 255, 255, 255, 255 };
+    SDL_Color vanish = {255, 255, 255, 255};
     effects[2].keys[0] = vanish;
     vanish.a = 0;
     effects[2].keys[1] = vanish;
@@ -363,7 +362,7 @@ void initCommonSprite(Sprite *sprite, Weapon *weapon, int res_id, int hp)
     Animation *ani = createAnimation(&textures[res_id], NULL, LOOP_INFI,
                                      SPRITE_ANIMATION_DURATION, 0, 0,
                                      SDL_FLIP_NONE, 0, AT_BOTTOM_CENTER);
-    *sprite = (Sprite){ 0, 0, hp, hp, weapon, ani, RIGHT, RIGHT };
+    *sprite = (Sprite){0, 0, hp, hp, weapon, ani, RIGHT, RIGHT};
     sprite->lastAttack = 0;
     sprite->dropRate = 1;
 }

@@ -40,7 +40,7 @@ Animation *countDownBar;
 void blacken(int duration)
 {
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-    SDL_Rect rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+    SDL_Rect rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_SetRenderDrawColor(renderer, RENDER_BG_COLOR, 85);
     for (int i = 0; i < duration; i++) {
         SDL_RenderFillRect(renderer, &rect);
@@ -130,8 +130,8 @@ void renderCstrText(const char *str, int x, int y, double scale)
 
 void renderText(const Text *text, int x, int y, double scale)
 {
-    SDL_Rect dst = { x, y, (int)(text->width * scale + 0.5),
-                     (int)(text->height * scale + 0.5) };
+    SDL_Rect dst = {x, y, (int)(text->width * scale + 0.5),
+                    (int)(text->height * scale + 0.5)};
     SDL_RenderCopy(renderer, text->origin, NULL, &dst);
 }
 
@@ -139,9 +139,9 @@ SDL_Point renderCenteredText(const Text *text, int x, int y, double scale)
 {
     int width = text->width * scale + 0.5;
     int height = text->height * scale + 0.5;
-    SDL_Rect dst = { x - width / 2, y - height / 2, width, height };
+    SDL_Rect dst = {x - width / 2, y - height / 2, width, height};
     SDL_RenderCopy(renderer, text->origin, NULL, &dst);
-    return (SDL_Point){ x - width / 2, y - height / 2 };
+    return (SDL_Point){x - width / 2, y - height / 2};
 }
 
 void unsetEffect(Texture *texture)
@@ -248,12 +248,12 @@ void renderAnimation(Animation *ani)
     updateAnimationFromBind(ani);
     int width = ani->origin->width;
     int height = ani->origin->height;
-    SDL_Point poi = { ani->origin->width, ani->origin->height / 2 };
+    SDL_Point poi = {ani->origin->width, ani->origin->height / 2};
     if (ani->scaled) {
         width *= SCALE_FACTOR;
         height *= SCALE_FACTOR;
     }
-    SDL_Rect dst = { ani->x - width / 2, ani->y - height, width, height };
+    SDL_Rect dst = {ani->x - width / 2, ani->y - height, width, height};
     if (ani->at == AT_TOP_LEFT) {
         dst.x = ani->x;
         dst.y = ani->y;
@@ -400,10 +400,10 @@ void renderSnakeHp(Snake *snake)
             SDL_SetRenderDrawColor(renderer, r, g, b, 255);
             int width = RENDER_HP_BAR_WIDTH;
             int spriteHeight = sprite->ani->origin->height * SCALE_FACTOR;
-            SDL_Rect bar = { sprite->x - UNIT / 2 + (UNIT - width) / 2,
-                             sprite->y - spriteHeight -
-                                 RENDER_HP_BAR_HEIGHT * (i + 1),
-                             width * MIN(1, percent), RENDER_HP_BAR_HEIGHT };
+            SDL_Rect bar = {sprite->x - UNIT / 2 + (UNIT - width) / 2,
+                            sprite->y - spriteHeight -
+                                RENDER_HP_BAR_HEIGHT * (i + 1),
+                            width * MIN(1, percent), RENDER_HP_BAR_HEIGHT};
             SDL_RenderDrawRect(renderer, &bar);
         }
     }
@@ -419,7 +419,7 @@ void renderCenteredTextBackground(Text *text, int x, int y, double scale)
 {
     int width = text->width * scale + 0.5;
     int height = text->height * scale + 0.5;
-    SDL_Rect dst = { x - width / 2, y - height / 2, width, height };
+    SDL_Rect dst = {x - width / 2, y - height / 2, width, height};
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 200);
     SDL_RenderFillRect(renderer, &dst);

@@ -181,7 +181,7 @@ void generateHeroItem(int x, int y)
 {
     int heroId = randInt(SPRITE_KNIGHT, SPRITE_LIZARD);
     Animation *ani = malloc(sizeof(Animation));
-    itemMap[x][y] = (Item){ ITEM_HERO, heroId, 0, ani };
+    itemMap[x][y] = (Item){ITEM_HERO, heroId, 0, ani};
     copyAnimation(commonSprites[heroId].ani, ani);
     x *= UNIT, y *= UNIT;
     // TODO:Dangerous
@@ -229,7 +229,7 @@ void generateItem(int x, int y, ItemType type)
     Animation *ani = createAndPushAnimation(
         &animationsList[RENDER_LIST_MAP_ITEMS_ID], &textures[textureId], NULL,
         LOOP_INFI, 3, x * UNIT, y * UNIT, SDL_FLIP_NONE, 0, AT_BOTTOM_LEFT);
-    itemMap[x][y] = (Item){ type, id, belong, ani };
+    itemMap[x][y] = (Item){type, id, belong, ani};
 }
 
 void takeHpMedcine(Snake *snake, int delta, bool extra)
@@ -378,7 +378,7 @@ Point getAvaliablePos()
              !hasMap[x - 1][y] + !hasMap[x + 1][y] + !hasMap[x][y + 1] +
                      !hasMap[x][y - 1] >=
                  1);
-    return (Point){ x, y };
+    return (Point){x, y};
 }
 
 void initEnemies(int enemiesCount)
@@ -732,7 +732,7 @@ bool makeSnakeCross(Snake *snake)
     for (int i = 0; i < SCREEN_WIDTH / UNIT; i++)
         for (int j = 0; j < SCREEN_HEIGHT / UNIT; j++)
             if (hasMap[i][j]) {
-                SDL_Rect block = { i * UNIT, j * UNIT, UNIT, UNIT };
+                SDL_Rect block = {i * UNIT, j * UNIT, UNIT, UNIT};
                 if (map[i][j].bp == BLOCK_TRAP && map[i][j].enable) {
                     for (LinkNode *p = snake->sprites->head; p; p = p->nxt) {
                         Sprite *sprite = p->element;
@@ -862,8 +862,8 @@ bool makeBulletCross(Bullet *bullet)
     bool hit = false;
     int width = MIN(bullet->ani->origin->width, bullet->ani->origin->height) *
                 (bullet->ani->scaled ? SCALE_FACTOR : 1) * 0.8;
-    SDL_Rect bulletBox = { bullet->x - width / 2, bullet->y - width / 2, width,
-                           width };
+    SDL_Rect bulletBox = {bullet->x - width / 2, bullet->y - width / 2, width,
+                          width};
     if (!hasMap[bullet->x / UNIT][bullet->y / UNIT]) {
         Animation *ani = malloc(sizeof(Animation));
         copyAnimation(weapon->deathAni, ani);
@@ -905,8 +905,8 @@ bool makeBulletCross(Bullet *bullet)
                 for (LinkNode *p = spriteSnake[i]->sprites->head; p;
                      p = p->nxt) {
                     Sprite *target = p->element;
-                    if (distance((Point){ target->x, target->y },
-                                 (Point){ bullet->x, bullet->y }) <=
+                    if (distance((Point){target->x, target->y},
+                                 (Point){bullet->x, bullet->y}) <=
                         weapon->effectRange) {
                         dealDamage(bullet->owner, spriteSnake[i], target,
                                    weapon->damage);
@@ -1024,8 +1024,8 @@ void makeSpriteAttack(Sprite *sprite, Snake *snake)
         if (snake->team != spriteSnake[i]->team) {
             for (LinkNode *p = spriteSnake[i]->sprites->head; p; p = p->nxt) {
                 Sprite *target = p->element;
-                if (distance((Point){ sprite->x, sprite->y },
-                             (Point){ target->x, target->y }) >
+                if (distance((Point){sprite->x, sprite->y},
+                             (Point){target->x, target->y}) >
                     weapon->shootRange)
                     continue;
                 double rad =

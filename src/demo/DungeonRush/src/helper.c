@@ -79,20 +79,20 @@ bool RectCirCross(SDL_Rect *a, int x, int y, int r)
 SDL_Rect getSpriteAnimationBox(Sprite *sprite)
 {
     Animation *ani = sprite->ani;
-    SDL_Rect dst = { ani->x - ani->origin->width * SCALE_FACTOR / 2,
-                     ani->y - ani->origin->height * SCALE_FACTOR,
-                     ani->origin->width * SCALE_FACTOR,
-                     ani->origin->height * SCALE_FACTOR };
+    SDL_Rect dst = {ani->x - ani->origin->width * SCALE_FACTOR / 2,
+                    ani->y - ani->origin->height * SCALE_FACTOR,
+                    ani->origin->width * SCALE_FACTOR,
+                    ani->origin->height * SCALE_FACTOR};
     return dst;
 }
 
 SDL_Rect getSpriteBoundBox(Sprite *sprite)
 {
     Animation *ani = sprite->ani;
-    SDL_Rect dst = { ani->x - ani->origin->width * SCALE_FACTOR / 2,
-                     ani->y - ani->origin->height * SCALE_FACTOR,
-                     ani->origin->width * SCALE_FACTOR,
-                     ani->origin->height * SCALE_FACTOR };
+    SDL_Rect dst = {ani->x - ani->origin->width * SCALE_FACTOR / 2,
+                    ani->y - ani->origin->height * SCALE_FACTOR,
+                    ani->origin->width * SCALE_FACTOR,
+                    ani->origin->height * SCALE_FACTOR};
     bool big = false;
     if (ani->origin == &textures[RES_BIG_DEMON])
         big = true;
@@ -125,7 +125,7 @@ SDL_Rect getSpriteFeetBox(Sprite *sprite)
 
 SDL_Rect getMapRect(int x, int y)
 {
-    SDL_Rect ret = { x * UNIT, y * UNIT, UNIT, UNIT };
+    SDL_Rect ret = {x * UNIT, y * UNIT, UNIT, UNIT};
     return ret;
 }
 

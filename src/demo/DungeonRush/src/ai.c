@@ -116,7 +116,7 @@ void AiInput(Snake *snake)
             if (i != currentDirection && (i ^ 1) != currentDirection) {
                 int value = testOneMove(snake, i);
                 if (value >= originValue)
-                    choices[count++] = (Choice){ value, i };
+                    choices[count++] = (Choice){value, i};
             }
         if (count) {
             int maxValue = choices[0].value;

@@ -10,8 +10,8 @@ BUILD_ABS_DIR         := $(abspath $(BUILD_DIR))
 
 # include
 INCLUDE_DIRS          := -I.
-INCLUDE_DIRS          += -I$(ROOT_DIR)/demo
 INCLUDE_DIRS          += -I$(ROOT_DIR)/src
+INCLUDE_DIRS          += -I$(ROOT_DIR)/src/demo
 INCLUDE_DIRS          += -I$(ROOT_DIR)/src/utils
 INCLUDE_DIRS          += -I$(ROOT_DIR)/src/test
 
@@ -20,7 +20,7 @@ INCLUDE_DIRS          += -I$(ROOT_DIR)/src/test
 SOURCE_FILES          := $(wildcard *.c)
 SOURCE_FILES          += $(wildcard src/utils/*.c)
 SOURCE_FILES          += $(wildcard src/test/*.c)
-SOURCE_FILES          += $(wildcard demo/snake/*.c)
+SOURCE_FILES          += $(wildcard src/demo/snake/*.c)
 
 
 CPPFLAGS              := -Wall
@@ -38,13 +38,6 @@ LDFLAGS               += -lm # to link againt the math library (libm)
 OBJ_FILES             = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 DEP_FILE              = $(OBJ_FILES:%.o=%.d)
 
-ifeq ($(demo),sn)
-  CPPFLAGS                += -DSNAKE_DEMO=1
-else ifeq ($(demo),dr)
-  CPPFLAGS                += -DDR_DEMO=1
-else
-  CPPFLAGS                += -DTEST_DEMO=1
-endif
 
 $(EXEC) : $(BUILD_DIR)/$(EXEC)
 
@@ -68,7 +61,7 @@ $(BUILD_DIR)/%.o : %.c Makefile
 format:
 	@echo "Running clang-format"
 	@clang-format -i \
-	$(shell find demo -name "*.c") \
+	$(shell find src/demo -name "*.c") \
 	$(shell find src/test -name "*.c") \
 	$(shell find src/utils -name "*.c")
 

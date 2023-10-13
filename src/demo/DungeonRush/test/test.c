@@ -59,7 +59,8 @@ void sdl_test1(void)
         ++index;
     }
 
-    printf("index=%d, nbRenderDrivers=%d, rendererFlags=%d", index, nbRenderDrivers, rendererFlags);
+    printf("index=%d, nbRenderDrivers=%d, rendererFlags=%d", index,
+           nbRenderDrivers, rendererFlags);
     if (index == nbRenderDrivers) {
         // Let SDL use the first render driver supporting software fallback
         rendererFlags |= SDL_RENDERER_SOFTWARE;
@@ -69,7 +70,6 @@ void sdl_test1(void)
     // Create renderer
     renderer = SDL_CreateRenderer(window, index, rendererFlags);
 }
-
 
 int main(void)
 {

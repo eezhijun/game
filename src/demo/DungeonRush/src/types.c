@@ -16,8 +16,8 @@
 extern LinkList animationsList[];
 extern TTF_Font *font;
 extern SDL_Renderer *renderer;
-SDL_Color BLACK = { 0, 0, 0, 255 };
-SDL_Color WHITE = { 255, 255, 255, 255 };
+SDL_Color BLACK = {0, 0, 0, 255};
+SDL_Color WHITE = {255, 255, 255, 255};
 
 void initTexture(Texture *self, SDL_Texture *origin, int width, int height,
                  int frames)
@@ -264,7 +264,7 @@ void changeSpriteDirection(LinkNode *self, Direction newDirection)
         sprite->face = newDirection;
     if (self->nxt) {
         Sprite *nextSprite = self->nxt->element;
-        PositionBufferSlot slot = { sprite->x, sprite->y, sprite->direction };
+        PositionBufferSlot slot = {sprite->x, sprite->y, sprite->direction};
         pushToPositionBuffer(&nextSprite->posBuffer, slot);
     }
 }

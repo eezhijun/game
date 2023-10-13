@@ -88,7 +88,7 @@ static char info_bar_str[SNAKE_INFO_BAR_STR_ROW_LEN]
                             "Speed: ",
                             "Coder  : HZJ",
                             "Version: ",
-                        };
+};
 
 // Ascii art reference:
 // http://www.chris.com/ascii/index.php?art=animals/reptiles/snakes
@@ -138,10 +138,11 @@ static const char *you_win_scr_str[] = {
     "....##.....#######...#######......###..###..####.##....##.####\n",
 };
 
-static char score_file_arr[SNAKE_SCORE_FILE_ROW_LEN][SNAKE_SCORE_FILE_COL_LEN] = {
-    { "Rank   Score     Name      \n" }, { "1      0         EMPTY     \n" },
-    { "2      0         EMPTY     \n" }, { "3      0         EMPTY     \n" },
-    { "4      0         EMPTY     \n" }, { "5      0         EMPTY     \n" },
+static char score_file_arr[SNAKE_SCORE_FILE_ROW_LEN][SNAKE_SCORE_FILE_COL_LEN] =
+    {
+        {"Rank   Score     Name      \n"}, {"1      0         EMPTY     \n"},
+        {"2      0         EMPTY     \n"}, {"3      0         EMPTY     \n"},
+        {"4      0         EMPTY     \n"}, {"5      0         EMPTY     \n"},
 };
 
 typedef enum {
@@ -187,15 +188,15 @@ typedef struct {
     char version[10];
 } snake_object_t;
 
-static snake_object_t g_snake = { .sx = { 0 },
-                                  .sy = { 0 },
-                                  .slen = 0,
-                                  .fx = 0,
-                                  .fy = 0,
-                                  .speed = 0,
-                                  .score = 0,
-                                  .game_over = SNAKE_GAME_OVER_NONE,
-                                  .dir = SNAKE_DIR_NONE };
+static snake_object_t g_snake = {.sx = {0},
+                                 .sy = {0},
+                                 .slen = 0,
+                                 .fx = 0,
+                                 .fy = 0,
+                                 .speed = 0,
+                                 .score = 0,
+                                 .game_over = SNAKE_GAME_OVER_NONE,
+                                 .dir = SNAKE_DIR_NONE};
 
 snake_object_t *snake_get_snake_object(void)
 {
@@ -230,7 +231,7 @@ void snake_create_high_scores(void)
 
 FILE *snake_open_high_scores(FILE *fp)
 {
-    char buf[30] = { 0 };
+    char buf[30] = {0};
     uint32_t i = 0;
 
     fp = fopen("highscores", "r");
@@ -268,8 +269,8 @@ int snake_get_lowest_score(void)
 void snake_input_score(snake_object_t *snake)
 {
     FILE *fp = NULL;
-    char user_name[SNAKE_SCORE_FILE_NAME_LEN] = { 0 };
-    char score_str[SNAKE_SCORE_FILE_SCORE_LEN] = { 0 };
+    char user_name[SNAKE_SCORE_FILE_NAME_LEN] = {0};
+    char score_str[SNAKE_SCORE_FILE_SCORE_LEN] = {0};
     uint16_t score_int = 0;
     uint32_t i, j;
 
@@ -784,11 +785,9 @@ void snake_menu_select(void)
     } while (1);
 }
 
-#ifdef SNAKE_DEMO
 int main(void)
 {
     snake_welcome_art();
     snake_menu_select();
     return 0;
 }
-#endif

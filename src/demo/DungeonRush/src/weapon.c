@@ -32,17 +32,17 @@ void initWeapon(Weapon *self, int birthTextureId, int deathTextureId,
                                  SPRITE_ANIMATION_DURATION, 0, 0, SDL_FLIP_NONE,
                                  0, AT_CENTER);
     }
-    *self = (Weapon){ WEAPON_SWORD_POINT,
-                      32 * 2,
-                      40,
-                      10,
-                      60,
-                      6,
-                      birthAni,
-                      deathAni,
-                      flyAni,
-                      -1,
-                      AUDIO_CLAW_HIT };
+    *self = (Weapon){WEAPON_SWORD_POINT,
+                     32 * 2,
+                     40,
+                     10,
+                     60,
+                     6,
+                     birthAni,
+                     deathAni,
+                     flyAni,
+                     -1,
+                     AUDIO_CLAW_HIT};
 }
 
 void initWeapons()
@@ -121,7 +121,7 @@ void initWeapons()
     now->deathAni->at = AT_CENTER;
     now->birthAudio = AUDIO_LIGHT_SHOOT;
     now->deathAudio = AUDIO_ARROW_HIT;
-    now->effects[BUFF_ATTACK] = (WeaponBuff){ 0.5, 240 };
+    now->effects[BUFF_ATTACK] = (WeaponBuff){0.5, 240};
 
     initWeapon(now = &weapons[WEAPON_MONSTER_CLAW2], -1, RES_CLAWFX, -1);
 
@@ -154,13 +154,13 @@ void initWeapons()
     initWeapon(now = &weapons[WEAPON_SOLID], -1, RES_SOLIDFX, -1);
     now->deathAni->scaled = false;
     now->deathAni->angle = -1;
-    now->effects[BUFF_SLOWDOWN] = (WeaponBuff){ 0.3, 180 };
+    now->effects[BUFF_SLOWDOWN] = (WeaponBuff){0.3, 180};
 
     initWeapon(now = &weapons[WEAPON_SOLID_GREEN], -1, RES_SOLID_GREENFX, -1);
     now->shootRange = 96;
     now->deathAni->scaled = false;
     now->deathAni->angle = -1;
-    now->effects[BUFF_SLOWDOWN] = (WeaponBuff){ 0.3, 180 };
+    now->effects[BUFF_SLOWDOWN] = (WeaponBuff){0.3, 180};
 
     initWeapon(now = &weapons[WEAPON_SOLID_CLAW], -1, RES_SOLID_GREENFX, -1);
     now->wp = WEAPON_SWORD_RANGE;
@@ -169,7 +169,7 @@ void initWeapons()
     now->deathAni->scaled = false;
     now->deathAni->angle = -1;
     now->deathAudio = AUDIO_CLAW_HIT_HEAVY;
-    now->effects[BUFF_SLOWDOWN] = (WeaponBuff){ 0.7, 60 };
+    now->effects[BUFF_SLOWDOWN] = (WeaponBuff){0.7, 60};
 
     initWeapon(now = &weapons[WEAPON_ICEPICK], -1, RES_ICESHATTER, RES_ICEPICK);
     now->wp = WEAPON_GUN_RANGE;
@@ -181,7 +181,7 @@ void initWeapons()
     now->deathAni->angle = -1;
     now->flyAni->scaled = false;
     now->deathAni->at = AT_CENTER;
-    now->effects[BUFF_FROZEN] = (WeaponBuff){ 0.2, 60 };
+    now->effects[BUFF_FROZEN] = (WeaponBuff){0.2, 60};
     now->birthAudio = AUDIO_ICE_SHOOT;
 
     initWeapon(now = &weapons[WEAPON_PURPLE_BALL], -1, RES_PURPLE_EXP,
@@ -218,7 +218,7 @@ void initWeapons()
     now->wp = WEAPON_SWORD_RANGE;
     now->damage = 30;
     now->shootRange = 32 * 4;
-    now->effects[BUFF_DEFFENCE] = (WeaponBuff){ 0.6, 180 };
+    now->effects[BUFF_DEFFENCE] = (WeaponBuff){0.6, 180};
 
     initWeapon(now = &weapons[WEAPON_ICE_SWORD], -1, RES_ICESHATTER, -1);
     now->wp = WEAPON_SWORD_RANGE;
@@ -227,7 +227,7 @@ void initWeapons()
     now->gap = 30;
     now->deathAni->angle = -1;
     now->deathAni->at = AT_CENTER;
-    now->effects[BUFF_FROZEN] = (WeaponBuff){ 0.6, 80 };
+    now->effects[BUFF_FROZEN] = (WeaponBuff){0.6, 80};
     now->deathAudio = AUDIO_SWORD_HIT;
 
 #ifdef DBG

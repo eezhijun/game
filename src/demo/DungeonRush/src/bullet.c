@@ -7,7 +7,7 @@ Bullet *createBullet(Snake *owner, Weapon *parent, int x, int y, double rad,
 {
     Bullet *bullet = malloc(sizeof(Bullet));
     *bullet =
-        (Bullet){ parent, x, y, team, owner, rad, malloc(sizeof(Animation)) };
+        (Bullet){parent, x, y, team, owner, rad, malloc(sizeof(Animation))};
     copyAnimation(ani, bullet->ani);
     bullet->ani->x = x;
     bullet->ani->y = y;
