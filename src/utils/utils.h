@@ -1,8 +1,8 @@
 /**
  * @file utils.h
- * @author eehongzhijun (eehongzhijun@outlook.com)
+ * @author hongzhijun (eehongzhijun@outlook.com)
  * @brief
- * @version 0.0.1
+ * @version 0.1
  * @date 2023-08-24
  *
  * @copyright Copyright (c) 2023
@@ -15,6 +15,12 @@
 #include "stdint.h"
 #include "stddef.h"
 #include "limits.h"
+#include "stdbool.h"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
@@ -39,6 +45,21 @@
 #define ENVIRONMENT "__GNUC__32"
 #endif
 #endif
+
+#define COUNT_DIGITS(num)       \
+    ({                          \
+        int count = 0;          \
+        int temp = num;         \
+        if (temp == 0) {        \
+            count = 1;          \
+        } else {                \
+            while (temp != 0) { \
+                temp /= 10;     \
+                count++;        \
+            }                   \
+        }                       \
+        count;                  \
+    })
 
 #ifndef FFS
 #define FFS(x) ((x) ? __builtin_ffs(x) : 0)
@@ -67,8 +88,24 @@
 #define BIT64(x) ((uint64_t)1u << (x))
 #endif
 
+// calculate the total size of the array
 #ifndef ARRAY_SIZE
 #define ARRAY_SIZE(a) sizeof(a) / sizeof(a[0])
+#endif
+
+// calculate the total size of the 2D array
+#ifndef XARRAY_SIZE
+#define XARRAY_SIZE(a) (sizeof(a) / sizeof(a[0][0]))
+#endif
+
+// calculate the number of rows in the 2D array
+#ifndef ROW_SIZE
+#define ROW_SIZE(a) (sizeof(a) / sizeof(a[0]))
+#endif
+
+// calculate the number of columns in the 2D array
+#ifndef COL_SIZE
+#define COL_SIZE(a) (sizeof(a[0]) / sizeof(a[0][0]))
 #endif
 
 #ifndef PRINT_ARRAY
@@ -77,10 +114,26 @@
         for (size_t i = 0; i < size; i++) { \
             printf(format, arr[i]);         \
         }                                   \
-        printf("\n");                       \
     } while (0)
 #endif
 
+#ifndef PRINT_2DARRAY
+#define PRINT_2DARRAY(arr, row, col, format)   \
+    do {                                       \
+        for (size_t i = 0; i < row; i++) {     \
+            for (size_t j = 0; j < col; j++) { \
+                printf(format, arr[i][j]);     \
+            }                                  \
+            printf("\n");                      \
+        }                                      \
+    } while (0)
+#endif
+
+/*
+    Limit a value between an upper and lower limit.
+    When the value exceeds the range of the minimum and maximum values,
+    select a value between the minimum and maximum values.
+*/
 #ifndef CLAMP
 #define CLAMP(value, min, max)                                  \
     ({                                                          \
@@ -128,10 +181,12 @@
     })
 #endif
 
+// Round a value up
 #ifndef ROUNDUP
 #define ROUNDUP(x) ((x) < 0 ? (int)(x) : (int)((x) + 1))
 #endif
 
+// Round a value down
 #ifndef ROUNDDOWN
 #define ROUNDDOWN(x) ((x) < 0 ? (int)((x)-1) : (int)(x))
 #endif
@@ -291,6 +346,18 @@ int kbhit(void);
 char wait_4_key(void);
 
 /**
+ * @brief
+ *
+ */
+void set_terminal_attributes(void);
+
+/**
+ * @brief
+ *
+ */
+void restore_terminal_attributes(void);
+
+/**
  * @brief show cursor
  *
  */
@@ -319,14 +386,6 @@ void bubble_sort(int arr[], int len);
  * @return int
  */
 int cmp(const void *pa, const void *pb);
-
-/**
- * @brief
- *
- * @param data
- * @param len
- */
-void dump_x(const uint8_t *data, size_t len);
 
 /**
  * @brief
@@ -393,5 +452,129 @@ char *int2string(int num, char *str);
  * @return int
  */
 int string2int(char *str);
+
+/**
+ * @brief reverse string
+ *
+ * @param s source string
+ * @param l left char postion
+ * @param r right char postion
+ */
+void reverse(char *s, int l, int r);
+
+/**
+ * @brief hex to dec
+ *
+ * @param hex
+ * @return int
+ */
+int hex2dec(char hex[]);
+
+/**
+ * @brief dec to hex
+ *
+ * @param dec
+ * @return char*
+ */
+char *dec2hex(int dec);
+
+/**
+ * @brief
+ *
+ * @param num
+ * @return int
+ */
+int count_digits(int num);
+
+/**
+ * @brief Create a 2darray object, but memory addresses are not consecutive
+ *
+ * @param row
+ * @param col
+ * @return int**
+ */
+int **create_2darray(int row, int col);
+
+/**
+ * @brief destroy a 2darray object
+ *
+ * @param a
+ */
+void destroy_2darray(int **a);
+
+/**
+ * @brief
+ *
+ * @param num
+ */
+void printf_bin(int num);
+
+typedef unsigned long Uint;
+
+/**
+ * @brief Setting a bit
+ *
+ * @param number
+ * @param n
+ * @return Uint
+ */
+static inline Uint bit_set(Uint number, Uint n)
+{
+    return number | ((Uint)1 << n);
+}
+
+/**
+ * @brief Clearing a bit
+ *
+ * @param number
+ * @param n
+ * @return Uint
+ */
+static inline Uint bit_clear(Uint number, Uint n)
+{
+    return number & ~((Uint)1 << n);
+}
+
+/**
+ * @brief Toggling a bit
+ *
+ * @param number
+ * @param n
+ * @return Uint
+ */
+static inline Uint bit_toggle(Uint number, Uint n)
+{
+    return number ^ ((Uint)1 << n);
+}
+
+/**
+ * @brief Checking a bit
+ *
+ * @param number
+ * @param n
+ * @return true
+ * @return false
+ */
+static inline bool bit_check(Uint number, Uint n)
+{
+    return (number >> n) & (Uint)1;
+}
+
+/**
+ * @brief Changing the nth bit to x
+ *
+ * @param number
+ * @param n
+ * @param x
+ * @return Uint
+ */
+static inline Uint bit_set_to(Uint number, Uint n, bool x)
+{
+    return (number & ~((Uint)1 << n)) | ((Uint)x << n);
+}
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

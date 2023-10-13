@@ -1,3 +1,13 @@
+/**
+ * @file error.h
+ * @author your name (you@domain.com)
+ * @brief
+ * @version 0.1
+ * @date 2023-10-13
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
 #ifndef _ERROR_H_
 #define _ERROR_H_
 

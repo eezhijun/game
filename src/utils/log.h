@@ -1,12 +1,12 @@
 /**
  * @file log.h
- * @author eehongzhijun (eehongzhijun@outlook.com)
- * @brief 
- * @version 0.0.1
+ * @author hongzhijun (eehongzhijun@outlook.com)
+ * @brief
+ * @version 0.1
  * @date 2023-08-24
- * 
+ *
  * @copyright Copyright (c) 2023
- * 
+ *
  */
 
 #ifndef _LOG_H_

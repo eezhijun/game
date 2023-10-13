@@ -1,8 +1,8 @@
 /**
  * @file utils.c
- * @author eehongzhijun (eehongzhijun@outlook.com)
+ * @author hongzhijun (eehongzhijun@outlook.com)
  * @brief
- * @version 0.0.1
+ * @version 0.1
  * @date 2023-08-24
  *
  * @copyright Copyright (c) 2023
@@ -169,6 +169,22 @@ char wait_4_key(void)
     return (char)pressed;
 }
 
+void set_terminal_attributes(void)
+{
+    struct termios term;
+    tcgetattr(STDOUT_FILENO, &term);
+    term.c_lflag &= ~ECHO;
+    tcsetattr(STDOUT_FILENO, TCSANOW, &term);
+}
+
+void restore_terminal_attributes(void)
+{
+    struct termios term;
+    tcgetattr(STDOUT_FILENO, &term);
+    term.c_lflag |= ECHO;
+    tcsetattr(STDOUT_FILENO, TCSANOW, &term);
+}
+
 void hide_cursor(void)
 {
     printf("\e[?25l");
@@ -226,51 +242,6 @@ int ctz(int x)
     return count;
 }
 
-#define DUMP_BYTES 16
-#define DUMP_BUFFER_SIZE 512
-
-static char dump_buffer[DUMP_BUFFER_SIZE] = { 0 };
-
-void dump_x(const uint8_t *data, size_t len)
-{
-    size_t line = len / DUMP_BYTES;
-    int offset = 0;
-    for (int i = 0; i < line; i++) {
-        if (((int)sizeof(dump_buffer) - offset) < 0) {
-            break;
-        }
-
-        for (int j = i * DUMP_BYTES; j < DUMP_BYTES + DUMP_BYTES * i; j++) {
-            offset += snprintf(dump_buffer + offset,
-                               sizeof(dump_buffer) - offset, "%02X ", data[j]);
-        }
-        offset +=
-            snprintf(dump_buffer + offset, sizeof(dump_buffer) - offset, "\n");
-    }
-
-    if (len > line * DUMP_BYTES) {
-        for (int i = line * DUMP_BYTES; i < DUMP_BYTES + line * DUMP_BYTES;
-             i++) {
-            if (((int)sizeof(dump_buffer) - offset) < 0) {
-                break;
-            }
-
-            if (i < len) {
-                offset += snprintf(dump_buffer + offset,
-                                   sizeof(dump_buffer) - offset, "%02X ",
-                                   data[i]);
-            } else {
-                offset += snprintf(dump_buffer + offset,
-                                   sizeof(dump_buffer) - offset, "%02X ", 0);
-            }
-        }
-        offset +=
-            snprintf(dump_buffer + offset, sizeof(dump_buffer) - offset, "\n");
-    }
-    printf("date len: %d\n", len);
-    printf("%s", dump_buffer);
-}
-
 void print_int(void *elem)
 {
     int *num = (int *)elem;
@@ -306,17 +277,167 @@ char *int2string(int num, char *str)
 
 int string2int(char *str)
 {
-    char flag = '+';
-    long res = 0;
+    char sign = '+';
+    long n = 0;
 
     if (*str == '-') {
         ++str;
-        flag = '-';
+        sign = '-';
     }
 
-    sscanf(str, "%ld", &res);
-    if (flag == '-') {
-        res = -res;
+    sscanf(str, "%ld", &n);
+    if (sign == '-') {
+        n = -n;
     }
-    return (int)res;
+    return (int)n;
+}
+
+void reverse(char *s, int l, int r)
+{
+    while (l < r) {
+        SWAP(char, &s[l], &s[r]);
+        l++;
+        r--;
+    }
+}
+
+int hex2dec(char hex[])
+{
+    if (hex == NULL) {
+        return -1;
+    }
+
+    int dec = 0;
+    int len = strlen(hex);
+
+    for (int i = 0; hex[i] != '\0'; i++) {
+        if (hex[i] >= '0' && hex[i] <= '9') {
+            dec += pow(16, len - i - 1) * (hex[i] - '0');
+        } else if (hex[i] >= 'A' && hex[i] <= 'F') {
+            dec += pow(16, len - i - 1) * (hex[i] - 'A' + 10);
+        } else if (hex[i] >= 'a' && hex[i] <= 'f') {
+            dec += pow(16, len - i - 1) * (hex[i] - 'a' + 10);
+        } else {
+            printf("invalid char %c\n", hex[i]);
+            return -1;
+        }
+    }
+    return dec;
+}
+
+char *dec2hex(int dec)
+{
+    char *s;
+    int q, r;
+    int i = 0;
+    int len = 0;
+    int temp = dec;
+
+    if (dec < 0) {
+        return NULL;
+    }
+
+    while (temp > 0) {
+        temp = temp / 16;
+        len++;
+    }
+
+    if (dec == 0) {
+        len++;
+    }
+    s = (char *)malloc(sizeof(char) * (len + 1));
+    if (s == NULL) {
+        printf("malloc fail/n");
+        return NULL;
+    }
+    s[len] = '\0';
+
+    if (dec == 0) {
+        s[0] = '0';
+        return s;
+    }
+    while (dec > 0) {
+        r = dec % 16;
+
+        if (r < 10) {
+            s[i] = r + '0';
+        } else {
+            s[i] = r - 10 + 'A';
+        }
+
+        i++;
+        dec /= 16;
+    }
+
+    reverse(s, 0, len - 1);
+    return s;
+}
+
+int count_digits(int num)
+{
+    int count = 0;
+
+    if (num == 0) {
+        return 1;
+    }
+
+    while (num != 0) {
+        num /= 10;
+        count++;
+    }
+
+    return count;
+}
+
+int **create_2darray(int row, int col)
+{
+    int **a = (int **)malloc(sizeof(int *) * row);
+    if (!a) {
+        printf("a malloc failed\n");
+        exit(-1);
+    }
+    memset(a, 0, sizeof(int *) * row);
+    for (int i = 0; i < row; i++) {
+        a[i] = (int *)malloc(sizeof(int) * col);
+        if (!a[i]) {
+            printf("a[%d] malloc failed\n", i);
+            exit(-1);
+        }
+        memset(a[i], 0, sizeof(int) * col);
+    }
+    return a;
+}
+
+void destroy_2darray(int **a)
+{
+    if (!a) {
+        printf("destroy failed\n");
+        exit(-1);
+    }
+    int row = sizeof(a) / sizeof(a[0]);
+    int col = sizeof(a[0]) / sizeof(a[0][0]);
+    for (int i = 0; i < row; i++) {
+        free(a[i]);
+    }
+    free(a);
+}
+
+void printf_bin(int num)
+{
+    int i, j, k;
+    unsigned char *p = (unsigned char *)&num + 3;
+
+    for (i = 0; i < 4; i++) //处理4个字节(32位）
+    {
+        j = *(p - i); //取每个字节的首地址
+        for (int k = 7; k >= 0; k--) //处理每个字节的8个位
+        {
+            if (j & (1 << k))
+                printf("1");
+            else
+                printf("0");
+        }
+        printf(" ");
+    }
+    printf("\r\n");
 }
